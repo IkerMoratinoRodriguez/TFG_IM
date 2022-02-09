@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css" >
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> <!--Para que el servidor pueda trabajar tiene que traerse el archivo socket.io. Puerto 3000 es donde va a estar el servidor -->
+                                                                               <!-- Defer lo trae de forma asíncrona-->
+    <script defer src="js/poker.js"></script>                                                                    
+    <title>Poker Game</title>
+    
+</head>
+<body class="general-page-poker">
+    <h1 class="titleP">POKER GAME</h1>
+    <h3 class="textP">Elija una de las siguientes cartas:</h3>
+    <div class="cardPool">
+        <button id="btn0" class="buttonP">0</button>
+        <button id="btn12" class="buttonP">1/2</button>
+        <button id="btn1" class="buttonP">1</button>
+        <button id="btn2" class="buttonP">2</button>
+        <button id="btn3" class="buttonP">3</button>
+        <br>
+        <button id="btn5" class="buttonP">5</button>
+        <button id="btn8" class="buttonP">8</button>
+        <button id="btn13" class="buttonP">13</button>
+        <button id="btn20" class="buttonP">20</button>
+        <button id="btn40" class="buttonP">40</button>
+        <br>
+        <button id="btn100" class="buttonP">100</button>
+        <button id="btnInte" class="buttonP">?</button>
+        <button id="btnInf" class="buttonP">∞</button>
+        <button id="btnCafe" class="buttonPC">☕</button>
+        <br>
+        <button id="btnSend" class="accept">ENVIAR ESTIMACIÓN</button>
+    </div>
+    <div class="lateralBar">
+        <h4 class="titleAsis">Asistentes:</h4>
+        <div id="estimacionesParticipantes">
+            <!--PARA LAS VOTACIONES DE LOS PARTICIPANTES-->
+        </div>
+        <h4 class="titleAsis">Votado:</h4>
+        <div id="votesMarker">
+            <!--PARA EL CONTADOR-->
+        </div>
+        <div class="buttonsVotes">
+            <button id="btnShow" class="show">MOSTRAR ESTIMACIONES</button>
+            <button id="btnReset" class="reset">RESETEAR ESTIMACIÓN</button>
+        </div>
+    </div>  
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script>  
+</body>
+</html>

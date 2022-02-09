@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Document</title>
+</head>
+<body class="rooms">
+    <div class="cuadro-principal">
+        <header>
+            <h1 class="room-title">Poker Game</h1>
+        </header>
+        <main class="room-main">
+            <form action="poker.html">
+                <div class="room-form">
+                    <label for="username">Nombre de usuario<br></label>
+						<input
+							type="text"
+							name="username"
+							id="username"
+							placeholder="Enter username..."
+							required
+						/>
+                </div>
+                <div class="room-form">
+                    <label for="room">Sala<br></label>
+                    <select name="room" id="room">
+                        <option value="JavaScript">JavaScript</option>
+                        <option value="Python">Python</option>
+                        <option value="Java">Java</option>
+                    </select>
+                </div>
+                <button type="submit" class="room-button">Unirse a sala</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

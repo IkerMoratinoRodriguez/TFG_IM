@@ -1,0 +1,389 @@
+*{
+    box-sizing:border-box;
+    font-family: Arial;
+    overflow: auto;
+}
+body{
+    margin: 0;
+}
+/*INDEX.HTML*/
+
+.general-page{
+    background-color:whitesmoke;
+}
+
+.cabecera{
+    background-color:lightseagreen;
+}
+
+.title{
+    margin-left: auto;
+    text-align: center;
+    background-color: lightseagreen;
+}
+
+.nav-enlace{
+    color: black;
+    float:left;
+    width: 50%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-decoration: none; /*quitar linea de enlace*/
+    text-align: center;
+}
+
+.nav-enlace:hover{ /*Propiedad que cambia cuando ratón encima*/
+    background-color:darkcyan;
+}
+
+.nav{
+    background-color: lightseagreen;
+    padding: 10px;
+}
+
+.centered{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-footer{
+    margin-top: 15px;
+    width: 100%;
+    background-color:lightgrey;
+    color: black;
+    text-align: center;
+}
+
+.footer-personal{
+    float:left;
+    width: 50%;
+}
+
+.footer-project{
+    float:right;
+    width: 50%;
+}
+
+.index-content{
+    margin-top: 10px;
+    margin-left: 7%;
+    margin-right: 7%;
+    background-color:azure;
+    box-shadow: 8px 4px 8px 4px rgba(0,0,0,0.2);
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+/*--------------------------------------------------------------------*/
+/*AGILE.HTML*/
+.value-card{
+    float: left;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-width: 10px;
+    width: 20%;
+    height: 200px;
+    border-radius: 20px;
+}
+
+.value-photo{
+    margin:10px auto;
+	display:block;
+}
+
+.value-text{
+    margin:5px;
+    text-align: center;
+}
+
+.principe{
+    margin-left: 2%;
+}
+
+.agile-link{
+    text-decoration: none; /*quitar linea de enlace*/
+    color:rgb(6, 102, 187);
+    margin-bottom: 10px;
+}
+/*SCRUM.HTML*/
+
+.scrum-general-content{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.scrum-nav{
+    padding: 10px;
+    float: left;
+    width: 15%;
+}
+
+.scrum-nav-enlace{
+    text-decoration: none; /*quitar linea de enlace*/
+    color: black;
+    display: block;
+    padding-top: 8px;
+    padding-bottom: 8px;
+   
+}
+
+.scrum-nav-enlace:hover{
+    background-color:lightseagreen;
+}
+
+.scrum-info{
+    float:right;
+    width: 85%;
+}
+
+/*--------------------------------------------------------------------*/
+/*TOOLS.HTML*/
+
+
+.tool-cards{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+.tool{
+    float: left;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-width: 10px;
+    width: 24%;
+    height: 180px;
+    border-radius: 20px;
+    padding-left: 20px;
+}
+
+.tool-botton{
+    float: right;
+    margin-right: 10px;
+    text-decoration: none;
+    width: max-content; 
+    width: 40%;
+    background-color: lightseagreen;
+    text-align: center;
+    margin-top: 5%;
+    color: black;
+    border-radius: 15px;
+}
+
+.tool-botton-direct{
+    float: right;
+    margin-right: 10px;
+    text-decoration: none;
+    width: 20%;
+    background-color:  lightseagreen;
+    text-align: center;
+    margin-top:34px;
+    color: black;
+    border-radius: 15px;
+}
+
+/*POKER GAME*/
+/*--------------------------------------------------------------------------------*/
+
+.general-page-poker{
+    background-color:whitesmoke;
+}
+
+.titleP{
+    text-align: center;
+}
+
+.textP{
+    margin-left: 5%;
+    font-size: 25px;
+}
+
+.cardPool{
+    margin-left: 5%;
+    float: left;
+    width: 60%;
+}
+
+.buttonP{
+    background-color:white;
+    color:lightseagreen;
+    font-size: 40px;
+    font-weight: normal;
+    width: 13%;
+    height: 180px;
+    margin-top: 10px;
+    border-radius: 10%;
+}
+
+.buttonP:active, .buttonP:focus, .buttonP:hover{
+    background-color: lightseagreen;
+    color: white;
+    font-size: 40px;
+    width: 13%;
+    height: 180px;
+    margin-top: 10px;
+    border-radius: 10%;
+}
+
+.buttonPC{
+    background-color:white;
+    color:lightseagreen;
+    font-size: 29px;
+    width: 13%;
+    height: 180px;
+    margin-top: 10px;
+    border-radius: 10%;
+}
+
+.buttonPC:active, .buttonPC:focus, .buttonPC:hover{
+    background-color: lightseagreen;
+    color: white;
+    font-size: 29px;
+    width: 13%;
+    height: 180px;
+    margin-top: 10px;
+    border-radius: 10%;
+}
+
+.accept{
+    background-color: #afafaf;
+    float: left;
+    margin-left: 28%;
+    margin-top: 40px;
+    margin-bottom: 30px;
+    width: 13%;
+    height: 75px;
+    border-radius: 10%;
+}
+
+.accept:hover{
+    background-color: #969595;
+    border-radius: 10%;
+}
+
+.lateralBar{
+    float: right;
+    margin-right: 1%;
+    width: 27%;
+}
+
+.titleAsis{
+    margin-left: 10px;
+    font-size: 25px;
+}
+
+
+.votes{
+    font-size: 25px;
+    text-align: center;
+    padding-top: 6px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+    height: 50px;
+    border-style:solid;
+}
+
+.show{
+    background-color: #afafaf;
+    margin-left: 10%;
+    margin-bottom: 10px;
+    width: 30%;
+    height: 75px;
+    border-radius: 10%;
+}
+
+.show:hover{
+    background-color: #969595;
+    border-radius: 10%; 
+}
+
+.reset{
+    background-color: #afafaf;
+    float: left;
+    margin-left: 17%;
+    width: 30%;
+    height: 75px;
+    border-radius: 10%;
+}
+
+.reset:hover{
+    background-color: #969595;
+    border-radius: 10%;
+}
+
+.participant{
+    margin-left: 25px;
+    margin-top: 0px;
+    width: 75%;
+    height: 50px;
+    float: left;
+    font-size: 25px;
+    padding-top: 10px;
+    
+}
+
+.vote{
+    background-color: lightseagreen;
+    color: white;
+    float: left;
+    margin-left:20px;
+    margin-top: 0px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 25px;
+    padding-top: 8px;
+    border-style:solid;
+    border-width: 2px;
+    border-radius: 10%;
+}
+
+.buttonsVotes{
+    margin-top: 20%;
+    border-radius: 10%;
+}
+
+/*ELEGIR ROOM*/
+.rooms{
+    background-color: whitesmoke;
+}
+.cuadro-principal{
+    max-width: 500px;
+	margin: 120px auto;
+	background-color: lightseagreen;
+    border-radius: 20px;
+}
+
+.room-title{
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.room-form{
+    padding-top: 10px;
+    margin-left: 10%;
+    width: 80%;
+}
+
+.room-button{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10%;
+    width: 80%;
+    height: 15%;
+    border-radius: 8px;
+}
+
+.room-button:hover{
+    background-color:lightgray;
+}
+
+
