@@ -198,9 +198,14 @@ body{
 
 .titleP{
     text-align: center;
+    background-color: lightseagreen;
+    margin-top: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .textP{
+    margin-top: 100px;
     margin-left: 5%;
     font-size: 25px;
 }
@@ -271,7 +276,7 @@ body{
 .lateralBar{
     float: right;
     margin-right: 1%;
-    width: 27%;
+    width: 30%;
 }
 
 .titleAsis{
