@@ -7,6 +7,11 @@ body{
     margin: 0;
 }
 /*INDEX.HTML*/
+.logo-top{
+
+    width: 8%;
+    margin-left: 46%;
+}
 
 .general-page{
     background-color:whitesmoke;
@@ -425,4 +430,66 @@ body{
 
 .text-alternative{
     margin-left: 5%;
+}
+
+/*
+    TÉCNCICAS DE ESTIMACIÓN
+*/
+
+.estimation-title{
+    margin-top: 0px;
+    margin-bottom: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    text-align: center;
+    background-color: lightseagreen;
+}
+
+.tool-ref-card{
+    box-shadow: 1px 1px 4px 2px rgba(0, 0, 0, .2);
+    margin-top: 50px;
+    margin-bottom: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+    border-radius: 10px;
+}
+
+.title-photo{
+    float: left;
+    width: 20%;
+}
+
+.procedure{
+    float: left;
+    width: 80%;
+    padding-left: 3%;
+    padding-right: 2%;
+    border-left: 1px solid #ddd;
+}
+
+.ref-card-title{
+    text-align: center;
+}
+
+.ref-card-photo{
+    margin: auto;
+    width: 60%;
+    height: 60%;
+    margin-left: 20%;
+}
+
+.get-into-tool{
+    float: right;
+    text-align: center;
+    width: 13%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 7%;
+    margin-bottom: 3%;
+    margin-top: 2%;
+    color: black;
+    background-color: lightseagreen;
+    text-decoration: none;
+    border-radius: 5px;
 }
