@@ -4,6 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const {userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
 const {estimationJoin, resetEstimation, showEstimation, deleteUserEstimation } = require('./utils/estimaciones');
+const {roomJoin, roomLeave, verify} = require('./utils/salas');
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +33,6 @@ io.on('connection', socket =>{
         }
             
 
-
     });
 
     console.log("New WS connection");
@@ -54,17 +54,39 @@ io.on('connection', socket =>{
         if(ests.length > 0){
             socket.broadcast.to(sala).emit('returnShowEstimations',ests);
             socket.emit('returnShowEstimations',ests);
-            
         }
-    })
+    });
+
+    socket.on('verifyPassword', infoSala=>{
+        const roomV = infoSala.sala;
+        const passwd = infoSala.pssw;
+        console.log(`Accediento a:\nSala:${roomV}\nContraseña:${passwd}`);
+        const valido = verify(roomV, passwd)
+        console.log(`Contraseña:${valido}`);
+        if(valido == false)
+            socket.emit('wrongPassword');
+    });
+
+    socket.on('newRoom', infoSala=>{
+        const nRoom = infoSala.sala;
+        const passwd = infoSala.pssw;
+        console.log(`Creando la siguiente sala:\nSala:${nRoom}\nContraseña:${passwd}`);
+        const exito = roomJoin(nRoom, passwd)
+        if(!exito){
+            socket.emit('roomAlreadyExists');
+        }
+    });
     
     socket.on('disconnect', () => {
         const user = userLeave(socket.id);
         
-
         if(user){
             io.to(user.room).emit('message', `${user.username} salió de la sala`);
-            actualizarContadorPoker(user.room);
+            const t = actualizarContadorPoker(user.room);
+            if(t == 0){
+                console.log(`Sala ${user.room} eliminada`);
+                roomLeave(user.room);
+            }
             deleteUserEstimation(user.username, user.room);
             console.log(`Usuario ${user.username} desconectado de la sala ${user.room}`);
         }
@@ -79,6 +101,7 @@ io.on('connection', socket =>{
         const ests = estsSala.length;
         socket.broadcast.to(sala).emit('actualizarContador',{ests, tamanio});
         socket.emit('actualizarContador',{ests, tamanio});
+        return tamanio;
     }
 });
 

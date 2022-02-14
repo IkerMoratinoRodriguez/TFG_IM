@@ -5,38 +5,55 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/pokerRoom.js"></script> 
     <title>Document</title>
 </head>
-<body class="rooms">
+<body id="room-selector-body" class="rooms">
     <div class="cuadro-principal">
         <header>
             <h1 class="room-title">Poker Game</h1>
         </header>
         <main class="room-main">
             <form action="poker.html">
+                <button id="principal-button" type="submit" class="room-button">UNIRSE A LA SALA</button>
                 <div class="room-form">
                     <label for="username">Nombre de usuario<br></label>
-						<input
-							type="text"
-							name="username"
-							id="username"
-							placeholder="Enter username..."
-							required
-						/>
+                    <input
+                        class="write-box"
+                        type="text"
+                        name="username"
+                        id="username"
+                        placeholder="Enter username..."
+                        required
+                    />
                 </div>
                 <div class="room-form">
                     <label for="room">Nombre de sala<br></label>
-						<input
-							type="text"
-							name="room"
-							id="room"
-							placeholder="Enter room name..."
-							required
-						/>
+                    <input
+                        class="write-box"
+                        type="text"
+                        name="room"
+                        id="room"
+                        placeholder="Enter room name..."
+                        required
+                    />
                 </div>
-                <button type="submit" class="room-button">Unirse a sala</button>
             </form>
+            <div class="passwd">
+                <label for="password">Contraseña<br></label>
+                <input
+                    class="write-box"
+                    type="password"
+                    name="password"
+                    id="password"
+                    placeholder="Enter room password..."
+                    required
+                />
+            </div>
         </main>
+        <h4 id="alternative-text" class="text-alternative">Si no conoces una sala existente, puedes crear una...</h4>
+        <button id="alternative-button" class="alternative-button">CREAR UNA NUEVA SALA</button>
     </div>
 </body>
 </html>

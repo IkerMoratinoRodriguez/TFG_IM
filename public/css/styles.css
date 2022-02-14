@@ -357,11 +357,12 @@ body{
 }
 
 /*ELEGIR ROOM*/
+
 .rooms{
     background-color: whitesmoke;
 }
 .cuadro-principal{
-    max-width: 500px;
+    max-width: 810px;
 	margin: 120px auto;
 	background-color: lightseagreen;
     border-radius: 20px;
@@ -372,23 +373,56 @@ body{
     margin-bottom: 10px;
 }
 
+
 .room-form{
+    float: left;
     padding-top: 10px;
-    margin-left: 10%;
-    width: 80%;
+    margin-left: 5%;
+    margin-bottom: 10px;
+    width: 60%;
+    
 }
 
 .room-button{
-    margin-top: 10px;
+    float: right;
+    margin-top: 60px;
     margin-bottom: 10px;
-    margin-left: 10%;
-    width: 80%;
-    height: 15%;
+    width: 30%;
+    height: 60px;
     border-radius: 8px;
+    margin-right: 20px;
 }
 
 .room-button:hover{
     background-color:lightgray;
 }
 
+.write-box{
+    width: 100%;
+    float: left;
+}
 
+.passwd{
+    float: left;
+    margin-left: 5%;
+    margin-bottom: 20px;
+    width: 60%;
+}
+
+.existent-room-text{
+    margin-left: 5%;
+    margin-bottom: 10px;
+}
+
+.alternative-button{
+    margin-left: 305px;
+    margin-right: 305px;
+    width: 200px;
+    height: 60px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+}
+
+.text-alternative{
+    margin-left: 5%;
+}

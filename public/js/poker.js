@@ -27,8 +27,6 @@ const { username, room } = Qs.parse(location.search, {
 
 var estimaciones;
 var personas;
-
-
 var estimacionPoker;
 
 
@@ -41,24 +39,24 @@ socket.on('message', message =>{
 socket.on('nameRepeated', ()=>{
     alert('NOMBRE DE USUARIO REPETIDO.\nAL ACEPTAR SERÁS REDIRECCIONADO AL FORMULARIO INICIAL');
     redirecc("http://localhost:3000/pokerRoom.html");
-})
+});
 
 socket.on('returnReset', () =>{
     mostrarEstimaciones.innerHTML = "";
-})
+});
 
 socket.on('returnShowEstimations', ests =>{
     showEst(ests);
     console.log("ESTIMACIONES RECIBIDAS DE LA BD");
     console.log(ests);
-})
+});
 
 socket.on('actualizarContador', actualizacion=>{
     estimaciones = actualizacion.ests;
     personas = actualizacion.tamanio;
     const nuevoConta = `<p class="votes">${estimaciones}/${personas}</p>`;
     showVotes.innerHTML = nuevoConta;
-})
+});
 
 
 function redirecc(url) { 
