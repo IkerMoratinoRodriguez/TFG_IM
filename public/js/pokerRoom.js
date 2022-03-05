@@ -1,7 +1,9 @@
 const socket = io();
+const socket1=io();
 
 const btnAlt = document.getElementById('alternative-button');
 const ppalButton = document.getElementById('principal-button');
+const btnSingUp = document.getElementById('sing-up-button');
 
 var pulsado = false;
 
@@ -9,29 +11,58 @@ var pulsado = false;
 ppalButton.onclick = function(){
     const contra = document.getElementById('password').value;
     const room = document.getElementById('room').value;
-    var info = {
+
+    const usrContra = document.getElementById('usr-password').value;
+    const usr = document.getElementById('username').value;
+
+    console.log(usrContra,usr);
+
+    var infoUsr = {
+        nombre:usr,
+        pssw:usrContra
+    };
+
+    var info= {
         sala:room,
         pssw:contra
     };
+
+    socket.emit('verifyUser',infoUsr);
     if(!pulsado){
         //Se une a sala existente
-        socket.emit('verifyPassword',info);
-        alert(`ACCEDIENDO A LA SALA "${info.sala}"...`);
+        socket1.emit('verifyRoomPassword',info);
+        
     }else{
         //Create new room
-        socket.emit('newRoom',info);
-        alert(`CREANDO LA SALA "${info.sala}"...`);
+        socket1.emit('newRoom',info);
     }
-    
-    socket.on('wrongPassword', ()=>{
-        alert('CONTRASEÑA INCORRECTA');
-        window.location.href = "http://localhost:3000/pokerRoom.html";
-    });
-    
-    socket.on('roomAlreadyExists', ()=>{
-        alert('LA SALA YA EXISTE, POR FAVOR, ELIJA OTRO NOMBRE');
-        window.location.href = "http://localhost:3000/pokerRoom.html";
-    })
+    console.log(`Usuario:${usr} Contraseña:${usrContra} Sala:${room} Contraseña:${contra}`);
+    alert(`USUARIO ${infoUsr.nombre} ACCEDIENDO A LA SALA "${info.sala}"...`);
+
+        socket.on('invalidUsrCredentials', ()=>{
+            alert('CREDENCIALES DEL USUARIO INVÁLIDAS');
+            location.reload();
+        });
+        socket.on('unexpectedError', ()=>{
+            alert('HA OCURRIDO UN ERROR INESPERADO, POR FAVOR, VUELVA A INTENTARLO');
+            location.reload();
+        });
+        socket1.on('missingRoom', ()=>{
+            alert('SALA INEXISTENTE');
+            location.reload();
+        });
+        socket1.on('wrongRoomPassword', ()=>{
+            alert('CONTRASEÑA DE SALA INCORRECTA');
+            location.reload();
+        });
+        socket1.on('roomAlreadyExists', ()=>{
+            alert('LA SALA YA EXISTE, POR FAVOR, ELIJA OTRO NOMBRE');
+            location.reload();
+        });
+        socket1.on('unexpectedError', ()=>{
+            alert('ESTE USUARIO YA ESTÁ EN ESTA SALA, POR FAVOR, INTENTELO CON OTRO USUARIO O EN OTRA SALA');
+            location.reload();
+        });
 }
 
 btnAlt.onclick = function(){
@@ -62,6 +93,10 @@ btnAlt.onclick = function(){
         btnAlt.innerHTML=frase;
     }
     
+}
+
+btnSingUp.onclick=function(){
+    window.location.href = "http://localhost:3000/signup.html";
 }
 
 

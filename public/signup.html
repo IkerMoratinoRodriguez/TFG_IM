@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/singup.js"></script> 
+    <title>Document</title>
+</head>
+<body>
+    <div class="cuadro-principal">
+        <header>
+            <h1 class="room-title">SIGN-UP</h1>
+        </header>
+        <main class="room-main">
+            <form action="pokerRoom.html">
+                <div class="room-form">
+                    <label for="new-username">Nombre de usuario<br></label>
+                    <input
+                        class="write-box"
+                        type="text"
+                        name="new-username"
+                        id="new-username"
+                        placeholder="Enter username..."
+                        required
+                    />
+                </div>
+                <div class="room-form">
+                    <label for="new-password">Contraseña<br></label>
+                    <input
+                        class="write-box"
+                        type="password"
+                        name="new-password"
+                        id="new-password"
+                        placeholder="Enter new passwd..."
+                        required
+                    />
+                </div>
+                <button id="principal-signup-button" type="submit" class="principal-signup-button">SIGN UP</button>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

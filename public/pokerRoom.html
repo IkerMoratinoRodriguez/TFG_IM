@@ -16,15 +16,24 @@
         </header>
         <main class="room-main">
             <form action="poker.html">
-                <button id="principal-button" type="submit" class="room-button">UNIRSE A LA SALA</button>
                 <div class="room-form">
-                    <label for="username">Nombre de usuario<br></label>
+                    <label for="username">Nombre de usuario (Si no lo has hecho, date de alta)<br></label>
                     <input
                         class="write-box"
                         type="text"
                         name="username"
                         id="username"
                         placeholder="Enter username..."
+                        required
+                    />
+                </div>
+                <div class="room-form">
+                    <label for="usr-password">Contraseña del usuario<br></label>
+                    <input
+                        class="write-box"
+                        type="password"
+                        id="usr-password"
+                        placeholder="Enter user password..."
                         required
                     />
                 </div>
@@ -39,21 +48,23 @@
                         required
                     />
                 </div>
+                <div class="room-form">
+                    <label for="password">Contraseña de la sala<br></label>
+                    <input
+                        class="write-box"
+                        type="password"
+                        id="password"
+                        placeholder="Enter room password..."
+                        required
+                    />
+                </div>
+                <button id="principal-button" type="submit" class="room-button">UNIRSE A LA SALA</button>
             </form>
-            <div class="passwd">
-                <label for="password">Contraseña<br></label>
-                <input
-                    class="write-box"
-                    type="password"
-                    name="password"
-                    id="password"
-                    placeholder="Enter room password..."
-                    required
-                />
-            </div>
         </main>
         <h4 id="alternative-text" class="text-alternative">Si no conoces una sala existente, puedes crear una...</h4>
         <button id="alternative-button" class="alternative-button">CREAR UNA NUEVA SALA</button>
+        <h4 class="text-alternative">Si no tienes una cuenta, puedes crearla aqui...</h4>
+        <button id="sing-up-button" class="alternative-button">CREAR UN NUEVO USUARIO</button>
     </div>
 </body>
 </html>

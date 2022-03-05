@@ -12,9 +12,18 @@
   "dependencies": {
     "express": "^4.17.2",
     "moment": "^2.29.1",
+    "mysql": "^2.18.1",
     "socket.io": "^4.4.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IkerMoratinoRodriguez/TFG_IM.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IkerMoratinoRodriguez/TFG_IM/issues"
+  },
+  "homepage": "https://github.com/IkerMoratinoRodriguez/TFG_IM#readme"
 }

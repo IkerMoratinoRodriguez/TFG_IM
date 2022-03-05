@@ -32,6 +32,11 @@ var estimacionPoker;
 
 socket.emit('joinRoom',{ username, room});
 
+socket.on('unexpectedError',()=>{
+    alert('HA OCURRIDO UN ERROR INESPERADO');
+    redirecc("http://localhost:3000/pokerRoom.html");
+});
+
 socket.on('message', message =>{
     console.log(message);
 });
@@ -45,18 +50,20 @@ socket.on('returnReset', () =>{
     mostrarEstimaciones.innerHTML = "";
 });
 
-socket.on('returnShowEstimations', ests =>{
-    showEst(ests);
+socket.on('returnShowEstimation', ests =>{
     console.log("ESTIMACIONES RECIBIDAS DE LA BD");
     console.log(ests);
+    showEst(ests);
 });
 
 socket.on('actualizarContador', actualizacion=>{
     estimaciones = actualizacion.ests;
-    personas = actualizacion.tamanio;
+    personas = actualizacion.usuarios;
+    console.log("NUEVA PERSONA UNIDA");
     const nuevoConta = `<p class="votes">${estimaciones}/${personas}</p>`;
     showVotes.innerHTML = nuevoConta;
 });
+
 
 
 function redirecc(url) { 
@@ -64,13 +71,15 @@ function redirecc(url) {
 };
 
 function showEst(estis){
+    console.log("MODIFICANDO HTML DE ESTIMACIONES PARA MOSTRARLAS");
     mostrarEstimaciones.innerHTML = "";
     estis.forEach(function(elemento) {
-        const nuevaEstimacion = `<p class="participant">${elemento.user}</p> <p class="vote">${elemento.est}</p>`;
+        console.log("NOMBRE:"+elemento.nombre);
+        console.log("ESTIMACION:"+elemento.Estimacion);
+        const nuevaEstimacion = `<p class="participant">${elemento.nombre}</p> <p class="vote">${elemento.Estimacion}</p>`;
         mostrarEstimaciones.innerHTML += nuevaEstimacion;
     })
 }
-
 
 /*
     CAPTAR LAS PULSACIONES DE LOS BOTONES
@@ -167,21 +176,28 @@ btnSend.onclick = function(){
         room: room,
         est: estimacionPoker
     }
-    socket.emit('envioEstimacion',estimacion);
+    if(!estimacionPoker || estimacionPoker==-1)
+        alert("ELIJA PRIMERO UN VALOR PARA LA ESTIMACIÓN");
+    else{
+        socket.emit('envioEstimacion',estimacion);
+    }
 
 }
 
 btnReset.onclick = function(){
     console.log("Pulsado botón RESETEAR ESTIMACIÓN");
+    estimacionPoker=-1;
     socket.emit('resetEstimation', room);
 }
 
 btnShow.onclick = function(){
     console.log("Pulsado botón MOSTRAR ESTIMACIONES");
-    if(estimaciones === personas){
+    if(estimaciones == personas){
         socket.emit('showEstimation', room);
     }else{
-        alert("ES NECESARIO QUE TODOS LOS ASISTENTES VOTEN PARA MOSTRAR LAS ESTIMACIONES");
+        alert(`ES NECESARIO QUE TODOS LOS ASISTENTES VOTEN PARA MOSTRAR LAS ESTIMACIONES. ${estimaciones}/${personas}`);
     }
     
 }
+
+
