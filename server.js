@@ -12,8 +12,11 @@ const express = require('express');
 const socketio = require('socket.io');
 
 //BASE DE DATOS
-const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, resetEstimation, showEstimation,printEsts} = require('./utils/pokerTable');
 const {actualizarPuntuacion, aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr} = require('./utils/database');
+const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, resetEstimation, showEstimation,printEsts} = require('./utils/pokerTable');
+const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting} = require('./utils/dotVotingTable');
+const {insertarUS} = require('./utils/userStorie');
+
 const res = require('express/lib/response');
 
 const app = express();
@@ -24,8 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', socket =>{
 
-
-
+    //POKER JOIN ROOM
     socket.on('joinRoom', ({username, room}) => {
 
         insertarUsuarioPoker(connection,username,room,socket.id,(obj) =>{
@@ -41,6 +43,21 @@ io.on('connection', socket =>{
         });
         actualizarContadorPoker(room);
      });
+
+    //DOT VOTING JOIN ROOM
+    socket.on('dotJoinRoom', ({username, room}) =>{
+        console.log(`SERVER: Introduciendo nuevo usuario ${username} en la sala ${room}`);
+        insertarUsuarioDotVoting(connection,username,room,socket.id,(obj)=>{
+            const err = obj.error;
+            const result = obj.res;
+            if(result[0].result!=0 || err){
+                console.log("CÓDIGO DE ERROR AL INSERTAR UN USUARIO EN LA SALA:"+result[0].result);
+                socket.emit('unexpectedError');
+            }else{
+               socket.join(room);  
+            }
+        });
+    })
 
     console.log("New WS connection");
 
@@ -137,32 +154,42 @@ io.on('connection', socket =>{
             }
         });
     })
+
+    //DEL DOT VOTING
+    socket.on('newUserStorie', data =>{
+        //const title = data.title;
+        //const room = data.room;
+        console.log("SERVIDOR: HE RECIBIDO LA NUEVA US A INSERTAR");
+        insertarUS(connection,res =>{
+            console.log(res);
+        });
+    })
+
     
     socket.on('disconnect', () => {
             
-        //AUNQUE SALGAN TODOS LOS USUARIOS, LA SALA SIGUE EXISTIENDO
-        //deleteUserEstimation(user.username, user.room); Se eliminará automáticamente cuando se elimine la fila de la tabla conexion
+        //SI EL SOCKET COINCIDE CON LA SALA DE POKER, EL USUARIO SE SALDRÁ DEL POKER
         eliminarUsuarioSala(connection,socket.id,(result) =>{
-            if(result[0].result.length == 0)
-                    console.log(`NO SE HABIA INSERTADO EL SOCKET.ID EN LA CONEXION`);
-            else{
+            if(result[0].result.length != 0){
+                console.log(`UN USUARIO HA SALIDO DE LA SALA DE POKER`);
                 sala = result[0].result;
                 actualizarContadorPoker(sala);
-                //Mandar la actualizacion del contador al cliente(poker.js)
-
             }
         });
+        //SI EL SOCKET COINCIDE CON LA SALA DE DOT VOTING, EL USUARIO SE SALDRÁ DEL DOT VOTING
+        eliminarUsuarioSalaDotVoting(connection,socket.id,(err)=>{
+            if(!err)
+                console.log(`UN USUARIO HA SALIDO DE LA SALA DE DOT VOTING`);
+        })
         
     });
 
     //DEL CUESTIONARIO
-
     socket.on('ins', (puntuacion) =>{
         actualizarPuntuacion(connection,puntuacion);
-     })
+    });
 
-
-    //PARA ACTUALIZAR CONTADOR
+    //PARA ACTUALIZAR CONTADOR POKER
     function actualizarContadorPoker(sala){
         showEstimation(connection,sala,(res)=>{
             if(res[0].result==-1){

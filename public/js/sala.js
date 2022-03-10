@@ -14,6 +14,7 @@ overlay.onclick = function(){
   popup.style.display = 'none';
 }
 
+
 // Close Popup Event
 closePopup.onclick = function() {
   overlay.style.display = 'none';
@@ -43,6 +44,8 @@ buttonB.onclick = function() {
   overlay.style.display = 'block';
   popup.style.display = 'block';
 
+  popup.scrollTop;
+
 }
 
 
@@ -52,6 +55,9 @@ buttonRe.onclick = function() {
 
   overlay.style.display = 'block';
   popup.style.display = 'block';
+
+  
+
 }
 
 buttonP.onclick = function() {

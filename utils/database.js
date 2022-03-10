@@ -1,8 +1,6 @@
-const mysql = require('mysql');
 
 function actualizarPuntuacion(connection, puntuacion){
     let insertQuery=`UPDATE Usuario SET Cuestionario=${puntuacion} WHERE Nombre='Iker'`;
-    let query = mysql.format(insertQuery,[puntuacion]);
 
     connection.query(insertQuery, function(err, result){
         if(err)
