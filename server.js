@@ -12,10 +12,12 @@ const express = require('express');
 const socketio = require('socket.io');
 
 //BASE DE DATOS
-const {actualizarPuntuacion, aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr} = require('./utils/database');
+const {actualizarPuntuacion, aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr,comprobarEstadoDotVotingRoom, setEstadoDotVotingRoom, getEstadoDotVotingRoom} = require('./utils/database');
 const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, resetEstimation, showEstimation,printEsts} = require('./utils/pokerTable');
-const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting} = require('./utils/dotVotingTable');
-const {insertarUS} = require('./utils/userStorie');
+const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting,insertarVotingMode, getAvailableVotes, eliminarPuntosUsuario} = require('./utils/dotVotingTable');
+const {insertarUS, userStoriesRoom, deleteUSRoom, addPoints,clearVotesRoom} = require('./utils/userStorie');
+const {addUserRoomRetro, eliminarUsuarioSalaRetro} = require('./utils/retrospectiveTable');
+const {addPostitRetro} = require('./utils/postitRetro');
 
 const res = require('express/lib/response');
 
@@ -34,8 +36,8 @@ io.on('connection', socket =>{
              const err = obj.error;
              const result = obj.res;
              if(result[0].result!=0 || err){
-                 console.log("CÓDIGO DE ERROR AL INSERTAR UN USUARIO EN LA SALA:"+result[0].result);
-                 socket.emit('unexpectedError');
+                 msg= "CÓDIGO DE ERROR AL INSERTAR UN USUARIO EN LA SALA:"+result[0].result;
+                 socket.emit('unexpectedError',msg);
              }else{
                 socket.join(room);  
              }
@@ -50,23 +52,80 @@ io.on('connection', socket =>{
         insertarUsuarioDotVoting(connection,username,room,socket.id,(obj)=>{
             const err = obj.error;
             const result = obj.res;
-            if(result[0].result!=0 || err){
-                console.log("CÓDIGO DE ERROR AL INSERTAR UN USUARIO EN LA SALA:"+result[0].result);
-                socket.emit('unexpectedError');
+            if(err){
+                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                console.log(err);
+                socket.emit('unexpectedError1',msg);
+            }else if(result[0].result!=0 ){
+                msg="NO SE HA ENCONTRADO EL USUARIO EN LA SALA:"+result[0].result;
+                socket.emit('unexpectedError',msg);
             }else{
-               socket.join(room);  
+               socket.join(room); 
+               userStoriesRoom(connection,room,(res)=>{
+                    console.log(res);
+                    socket.emit('userStoriesRoomInit',res);
+                });
+                comprobarEstadoDotVotingRoom(connection,room,(res)=>{
+                    let est = res[0].estado;
+                    if(est==0){
+                        console.log("ESTADO DE LA SALA: MODO EDICIÓN");
+                        socket.emit('editMode');
+                    }else if(est==1 || est==2 || est==3){
+                        console.log("ESTADO DE LA SALA: MODO VOTACIÓN");
+                        //ESCRIBO SUS VOTOS DISPONIBLES EN LA BASE DE DATOS OBTENIDOS DEL MODO DE VOTACIÓN DE LA TABLA SALA
+                        getEstadoDotVotingRoom(connection,room,(res)=>{
+                            if(res==-1){
+                                msg="NO SE HA ENCONTRADO EL MODO DE VOTO EN LA SALA:"+room;
+                                socket.emit('unexpectedError',msg);
+                            }else{
+                                insertarVotingMode(connection,room,res,(resp)=>{
+                                    if(resp){
+                                        msg="ERROR INESPERADO AL INSERTAR VOTING MODE EN LA BASE DE DATOS";
+                                        socket.emit('unexpectedError',msg);
+                                    }
+                                });
+                            }
+                        });
+                        socket.emit('voteMode');
+                    }else{
+                        msg="ESTADO DE LA SALA INDEFINIDO"
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
             }
         });
-    })
+    });
+
+    socket.on('joinRetroRoom',({username,room})=>{
+        console.log(`USUARIO:${username} uniendose a la sala de retrospectiva ${room}`);
+        addUserRoomRetro(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                console.log(err);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+            }
+        });
+    });
 
     console.log("New WS connection");
 
+
+    //POKER FUNCTIONALITIES
     socket.on('envioEstimacion',estimacion=>{
         estimationJoin(connection,estimacion.usrName,estimacion.room,estimacion.est,(res)=>{
             if(res[0].result!=0){
-                console.log(res[0].result);
-                console.log("ERROR INESPERADO AL INSERTAR ESTIMACION");
-                socket.emit('unexpectedError');
+                console.log("ERROR INESPERADO AL INSERTAR ESTIMACION. CÓDIGO DE ERROR"+res[0].result);
+                msg="ERROR INESPERADO AL INSERTAR ESTIMACION. CÓDIGO DE ERROR"+res[0].result;
+                socket.emit('unexpectedError',msg);
             }
         });
         actualizarContadorPoker(estimacion.room);
@@ -75,9 +134,9 @@ io.on('connection', socket =>{
     socket.on('resetEstimation', sala=>{
         resetEstimation(connection, sala, (res)=>{
             if(res[0].result!=0){
-                console.log(res[0].result);
-                console.log("ERROR INESPERADO AL RESETEAR ESTIMACIONES DE UNA SALA");
-                socket.emit('unexpectedError');
+                console.log("ERROR INESPERADO AL RESETEAR ESTIMACIONES DE UNA SALA. CODIGO:"+res[0].result);
+                msg="ERROR INESPERADO AL RESETEAR ESTIMACIONES DE UNA SALA";
+                socket.emit('unexpectedError',msg);
             }
         });
         socket.broadcast.to(sala).emit('returnReset');
@@ -93,6 +152,149 @@ io.on('connection', socket =>{
             socket.emit('returnShowEstimation',res);
         });
     });
+
+    //DOT VOTING FUNCTIONALITIES
+    socket.on('newUserStorie', ({room,title}) =>{
+        console.log("SERVIDOR: HE RECIBIDO LA NUEVA US A INSERTAR");
+        insertarUS(connection,title,room,res =>{
+            if(res){
+                msg="ERROR AL INSERTAR USER STORIE EN UNA SALA DOT VOTING";
+                console.log(msg);
+                console.log(res);
+                socket.emit('unexpectedError',msg);
+            }else{ //SI  NO HAY ERRORES
+                userStoriesRoom(connection,room,(result)=>{
+                    socket.emit('userStoriesRoomInit',result);
+                    socket.broadcast.to(room).emit('userStoriesRoomInit',result);
+                });
+            }
+        });
+    });
+    socket.on('drawPannel',room=>{
+        userStoriesRoom(connection,room,(res)=>{
+            socket.emit('userStoriesRoomInit',res);
+            socket.broadcast.to(room).emit('userStoriesRoomInit',res);
+        })
+    });
+    socket.on('userStoriesFixed',info =>{
+        //Escribir en la BD el número de votos
+        insertarVotingMode(connection,info.sala,info.votingMode,(res)=>{
+            if(res){
+                msg="ERROR INESPERADO AL INSERTAR VOTING MODE EN LA BASE DE DATOS";
+                socket.emit('unexpectedError',msg);
+            }
+        });
+        setEstadoDotVotingRoom(connection,info.sala,info.votingMode,(res)=>{
+            if(res){
+                msg = "ERROR AL CAMBIAR EL ESTADO DE LA SALA A MODO VOTACIÓN";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+        socket.emit('userStoriesFixedReturn');
+        socket.broadcast.to(info.sala).emit('userStoriesFixedReturn');
+    });
+
+    socket.on('userStoriesUnlocked',room=>{
+        setEstadoDotVotingRoom(connection,room,0,(res)=>{
+            if(res){
+                msg = "ERROR AL CAMBIAR EL ESTADO DE LA SALA A MODO EDICIÓN";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+        socket.emit('userStoriesUnlockedReturn');
+        socket.broadcast.to(room).emit('userStoriesUnlockedReturn');
+    });
+
+    socket.on('writeList',room=>{
+        userStoriesRoom(connection,room,(res)=>{
+            socket.emit('writeListReturn',res);
+        });
+    });
+
+   socket.on('deleteUS',({room, title})=>{
+        deleteUSRoom(connection,room,title,(res)=>{
+            if(res){
+                console.log(res);
+                msg =`HA OCURRIDO UN ERROR ELIMINANDO LA USER STORY:${title}.`;
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.broadcast.to(room).emit('deleteUSReturn');
+            }
+        });
+   });
+
+   socket.on('blockDelete',room=>{
+        socket.broadcast.to(room).emit('blockDeleteReturn');
+   });
+
+   socket.on('freeDelete',room=>{
+        socket.broadcast.to(room).emit('freeDeleteReturn');
+   });
+    
+
+   socket.on('writeAvailableVotes',({room, username})=>{
+        getAvailableVotes(connection,room,username,(votos)=>{
+            if(votos==0){
+                let msg= `ERROR AL OBTENER LOS VOTOS DISPONIBLES DEL USUARIO ${user}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                userStoriesRoom(connection,room,(titles)=>{
+                    let info={
+                        votes:votos,
+                        titulos:titles
+                    }
+                    socket.emit('writeAvailableVotesReturn',info);
+                });
+            }
+        });
+   });
+
+   socket.on('addPoints',info=>{
+       addPoints(connection,info.titles);
+       eliminarPuntosUsuario(connection,info.usr,info.sala,info.votos,(res)=>{
+           console.log(`SERVER: ELIMINANDO ${votosUsados} DEL USUARIO${info.usr} EN LA SALA ${info.sala}`);
+           if(res){
+                console.log("ERROR ELIMINANDO VOTOS DE UN USUARIO:"+res);
+                msg =`HA OCURRIDO UN ERROR ELIMINANDO VOTOS DE UN USUARIO EN UNA SALA`;
+                socket.emit('unexpectedError',msg);
+            }
+       });
+       userStoriesRoom(connection,info.sala,(result)=>{
+        socket.emit('userStoriesRoomInit',result);
+        socket.broadcast.to(info.sala).emit('userStoriesRoomInit',result);
+    });
+   });
+
+   socket.on('clearVotes',room =>{
+        clearVotesRoom(connection,room,(e)=>{
+            if(e){
+                console.log("ERROR EN CLEAR VOTES:"+res);
+                msg =`HA OCURRIDO UN ERROR LIMPIANDO LAS VOTACIONES DE LAS USER STORIES`;
+                socket.emit('unexpectedError',msg);
+            }
+        });
+        socket.broadcast.to(room).emit('clearVotesReturn');
+   });
+
+   //DE LA RETROSPECTIVA
+   socket.on('createPostit',info=>{
+       let tit=info.title;
+       let tipo=info.type;
+       let room=info.sala;
+       console.log(`INSERTANDO POSTIT EN LA BD DE RETRO: TITULO:${tit}, TIPO:${tipo}, SALA:${room}`);
+       //ALMACENAR EN LA BD
+       addPostitRetro(connection,room,tit,tipo,(res)=>{
+           if(res){
+                console.log("ERROR ALMACENANDO POSTIT EN BD:"+res);
+                msg =`HA OCURRIDO UN ERROR ALMACENANDO EL POSTIT EN LA BASE DE DATOS`;
+                socket.emit('unexpectedError',msg);
+           }
+       });
+       socket.broadcast.to(room).emit('createPostitReturn',{tit,tipo});
+   })
 
     //DE LA PANTALLA DE ENTRADA A SALA
 
@@ -112,7 +314,9 @@ io.on('connection', socket =>{
             }else{
                 if(err){
                     console.log(err);
-                    socket.emit('unexpectedError');//CAMBIAR POR ERROR INESPERADO
+                    msg="ERROR INESPERADO AL VERIFICAR LA CONTRASEÑA DE LA SALA";
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);//CAMBIAR POR ERROR INESPERADO
                 }
             }
         });
@@ -127,12 +331,15 @@ io.on('connection', socket =>{
                 socket.emit('invalidUsrCredentials');
             }else{
                 if(err){
+                    msg="ERROR INESPERADO AL VERIFICAR LA CONTRASEÑA DEL USUARIO";
+                    console.log(msg);
                     console.log(err);
-                    socket.emit('unexpectedError');//CAMBIAR POR ERROR INESPERADO
+                    socket.emit('unexpectedError',msg);
                 }
             } 
         });
     });
+
 
     //DEL SIGNUP
 
@@ -152,16 +359,8 @@ io.on('connection', socket =>{
                 console.log(result);
                 socket.emit('usrAlreadyExists');
             }
-        });
-    })
-
-    //DEL DOT VOTING
-    socket.on('newUserStorie', data =>{
-        //const title = data.title;
-        //const room = data.room;
-        console.log("SERVIDOR: HE RECIBIDO LA NUEVA US A INSERTAR");
-        insertarUS(connection,res =>{
-            console.log(res);
+            else
+                socket.emit('userCreatedSuccesfully');
         });
     })
 
@@ -178,10 +377,23 @@ io.on('connection', socket =>{
         });
         //SI EL SOCKET COINCIDE CON LA SALA DE DOT VOTING, EL USUARIO SE SALDRÁ DEL DOT VOTING
         eliminarUsuarioSalaDotVoting(connection,socket.id,(err)=>{
-            if(!err)
-                console.log(`UN USUARIO HA SALIDO DE LA SALA DE DOT VOTING`);
-        })
-        
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE DOT VOTING";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+
+        eliminarUsuarioSalaRetro(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+
     });
 
     //DEL CUESTIONARIO
@@ -194,8 +406,8 @@ io.on('connection', socket =>{
         showEstimation(connection,sala,(res)=>{
             if(res[0].result==-1){
                 console.log(res[0].result);
-                console.log("ERROR INESPERADO AL MOSTRAR EL NÚMERO DE ESTIMACIONES DE UNA SALA");
-                socket.emit('unexpectedError');
+                msg="ERROR INESPERADO AL MOSTRAR EL NÚMERO DE ESTIMACIONES DE UNA SALA";
+                socket.emit('unexpectedError',msg);
             }else{
                 let ests = res[0].result;
                 getRoomUsers(connection,sala,(result) =>{

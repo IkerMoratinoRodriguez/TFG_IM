@@ -17,7 +17,7 @@
             <span class="popupclose" id="popupclose">X</span>
         </div>
         <div id="popup-content" class="popupcontent">
-            <h3 class="dotV-title">ELIJA LAS USER STORIES QUE DESEE ELIMINAR</h3>
+            <h3 class="dotV-title">ELIJA LOS ELEMENTOS QUE DESEE ELIMINAR</h3>
             <div id="popup-content-pool" class="us-delete">
             </div>
             <button id="btn-borrar-us" class="btn-borrar-us">BORRAR</button>
@@ -25,35 +25,60 @@
     </div>
     <!-- POPUP FIX -->
     <div class="overlay" id="overlay-fix"></div>
-    <div class="popup-fix" id="popup-fix">
+    <div class="popup" id="popup-fix">
         <div class="popupcontrols">
             <span class="popupclose" id="popupclose-fix">X</span>
         </div>
         <div id="popup-content-fix" class="popupcontent">
-            <h3 class="dotV-title">SE VAN A FIJAR LAS USER STORIES Y NO SE PODRÁN CAMBIAR</h3>
+            <h3 class="dotV-title">SE VAN A FIJAR LOS ELEMENTOS Y NO SE PODRÁN CAMBIAR</h3>
             <p class="text-fix">A continuación se fijarán las user stories para realizar la votación y estas no se podrán cambiar hasta que no se desbloqueen. Al aceptar fijarlas, se hará la repartición de votos en función de la cantidad de los mismos que se elija entre las siguientes opciones:</p>
+            <p class="text-fix">Explicación de los modos de votación:</p>
+            <p class="text-fix">1/2: Usa la relgla 1/2, es decir, el número de votos por persona es el número de user stories entre 2.</p>
+            <p class="text-fix">1/3: Usa la relgla 1/3, es decir, el número de votos por persona es el número de user stories entre 3.</p>
+            <p class="text-fix">Pareto: Utiliza la regla del Pareto(80/20), es decir, el número de votos es el número de user stories entre 5. </p>
             <div class="voting-mode-pool">
-                <button id="third-mode" class="voting-mode-button" >1/3</button>
                 <button id="half-mode" class="voting-mode-button">1/2</button>
+                <button id="third-mode" class="voting-mode-button" >1/3</button>
+                <button id="pareto-mode" class="voting-mode-button">Pareto</button>
             </div>
             <p class="text-fix">¿Estás seguro que deseas fijar las user stories?</p>
             <button id="btn-fix" class="btn-borrar-us">FIJAR</button>
         </div>
     </div>
+    <!-- POPUP VOTOS -->
+    <div class="overlay" id="overlay-vote"></div>
+    <div class="popup" id="popup-vote">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-vote">X</span>
+        </div>
+        <div id="popup-content-vote" class="popupcontent">
+            <h3 class="dotV-title">INTRODUZCA LAS VOTACIONES QUE DESEE REALIZAR</h3>
+            <div id="voting-pool">
+                <h4 id="available-votes" class="votes-in-all">TIENES X VOTOS EN TOTAL</h4>
+                <div id="votes-pool">
+                </div>
+            </div>
+            <button id="btn-send-vote" class="btn-borrar-us">ENVIAR VOTACIÓN</button>
+        </div>
+    </div>
     <h1 class="dotV-title">DOT VOTING</h1>
     <div id="modify-us-pool">
         <div class="new-us-pool">
-            <label class="new-us" for="new-user-story">Nueva User Story</label>
+            <label class="new-us" for="new-user-story">Nuevo ítem</label>
             <input class="input-new-us" id="new-user-story" type="text" required>
             <button class="add-us-button" id="add-us-button">AÑADIR</button>
         </div>
         <br>
-        <button id="delete-us" class="delete-us">BORRAR USER STORIES</button>
-        <button id="fix-us" class="delete-us">FIJAR USER STORIES</button>
+        <button id="delete-us" class="delete-us">BORRAR ÍTEMS</button>
+        <button id="fix-us" class="delete-us">FIJAR ÍTEMS Y VOTAR</button>
+        <button id="clear-votes" class="clr-votes">LIMPIAR VOTOS</button>
     </div>
     <div id="us-card-pool" class="us-card-pool">      
     </div>
-    <button id="btn-edit-us" class="btn-edit-us" disabled="disabled">VOLVER A EDITAR USER STORIES</button>
+    <div id="vote-us-pool">
+        <button id="btn-vote" class="btn-edit-us">VOTAR</button>
+        <button id="btn-edit-us" class="btn-edit-us">VOLVER A EDITAR </button>
+    </div>   
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
       integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="

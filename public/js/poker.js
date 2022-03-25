@@ -32,8 +32,8 @@ var estimacionPoker;
 
 socket.emit('joinRoom',{ username, room});
 
-socket.on('unexpectedError',()=>{
-    alert('HA OCURRIDO UN ERROR INESPERADO');
+socket.on('unexpectedError', msg=>{
+    alert(msg);
     redirecc("http://localhost:3000/pokerRoom.html");
 });
 

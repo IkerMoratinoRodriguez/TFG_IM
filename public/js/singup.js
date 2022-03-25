@@ -19,8 +19,12 @@ btnPpal.onclick = function(){
         alert('CREANDO NUEVO USUARIO...');
         socket.on('usrAlreadyExists', ()=>{
             alert('EL NOMBRE DE USUARIO YA EXISTE, POR FAVOR, ESCOJA OTRO DIFERENTE.');
-            window.location.href = "http://localhost:3000/signup.html";
+            location.reload;
         });
+        socket.on('userCreatedSuccesfully',()=>{
+            alert('USUARIO CREADO CORRECTAMENTE');
+            location.reload;
+        })
     }
     
 }

@@ -60,10 +60,40 @@ function comprobarContraUsr(connection, info, callback){
 
 }
 
+function comprobarEstadoDotVotingRoom(connection,room,callback){
+    let query = `SELECT EstadoDotVoting as estado FROM sala WHERE Nombre='${room}'; `;
+
+    connection.query(query,function(err,result){
+        callback(result);
+    })
+}
+
+function setEstadoDotVotingRoom(connection,room,est,callback){
+    let query = `UPDATE sala SET EstadoDotVoting=${est} WHERE Nombre='${room}'; `;
+
+    connection.query(query,function(err,result){
+        callback(err);
+    });
+}
+
+function getEstadoDotVotingRoom(connection,room,callback){
+    let query = `SELECT EstadoDotVoting as state FROM sala WHERE nombre='${room}'; `;
+
+    connection.query(query,function(err,result){
+        if(err)
+            callback(-1);
+        else
+            callback(result[0].state);
+    });
+}
+
 module.exports={
     actualizarPuntuacion,
     aniadirUsuario,
     aniadirSala,
     comprobarContraSala,
-    comprobarContraUsr
+    comprobarContraUsr,
+    comprobarEstadoDotVotingRoom,
+    setEstadoDotVotingRoom,
+    getEstadoDotVotingRoom
 }

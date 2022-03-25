@@ -6,6 +6,7 @@
 body{
     margin: 0;
 }
+
 /*INDEX.HTML*/
 .logo-top{
 
@@ -719,24 +720,15 @@ body{
     border-style: solid;
     text-align: center;
     border-width: 3px;
-    font-size: 40px;
+    font-size: 45px;
     margin-top: 20px;
-    margin-left: 2%;
+    margin-left: 38%;
     width: 20%;
     height: 70px;
     padding:5px;
     margin-bottom: 10px;
 }
 
-.modifier{
-    margin-top: -10px;
-    width: 70%;
-    overflow: hidden;
-    text-align: center;
-    height: 25px;
-    margin-top: 20px;
-    margin-left: 5%;
-}
 
 .cnt-btn{
     height: 50%;
@@ -770,35 +762,195 @@ body{
 
 .voting-mode-button{
     margin-top: 30px;
-    margin-left: 20%;
+    margin-left: 10%;
     width: 20%;
     height: 40px;
 }
 
 .voting-mode-button:active, .voting-mode-button:focus, .voting-mode-button:hover{
     margin-top: 30px;
-    margin-left: 20%;
+    margin-left: 10%;
     width: 20%;
     height: 40px;
     background-color: lightseagreen;
 }
 
-.popup-fix {
+
+.btn-edit-us{
+    margin-left: 40%;
+    width: 20%;
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+.clr-votes{
+    margin-left: 45%;
+    width: 10%;
+    height: 40px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+.us-title-votes, .us-list{
+    font-size: 20px;
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+}
+
+.votes-in-all{
+    font-size: 20px;
+    width: 50%;
+    margin-left: 25%;
+    text-align: center;
+}
+
+/* PRIORIZATION PAGE*/
+
+.dot-voting-photo{
+    width: 80%;
+    height: 90%;
+    margin-left: 10%;
+}
+
+/*RETROSPECTIVE*/
+
+.wind{
+    float: left;
+    background-image: url("/resources/wind.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.anchor{
+    float: left;
+    background-image: url("/resources/anchor.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.iceberg{
+    float: left;
+    background-image: url("/resources/iceberg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.4%;
+}
+
+.title-side{
+    float: left;
+    margin-left: 20%;
+    font-size: 30px;
+}
+
+.button-more{
+    float: left;
+    font-size: 30px;
+    margin-left: 20%;
+    margin-top: 28px;
+    width: 10%;
+    height: 50px;
+}
+
+.button-ask{
+    float: left;
+    font-size: 30px;
+    margin-left: 3%;
+    margin-top: 28px;
+    width: 10%;
+    height: 50px;
+}
+
+.wind-img{
+    margin-top: 12px;
+    float: left;
+    margin-left: 5%;
+}
+
+.anchor-img{
+    margin-top: 12px;
+    float: left;
+    margin-left: 5%;
+}
+
+.iceberg-img{
+    margin-top: 12px;
+    float: left;
+    margin-left: 5%;
+}
+
+.postit{
+    float: left;
+    background-color: rgb(255, 255, 85);
+    width: 40%;
+    margin-left: 5%;
+    margin-top: 20px;
+}
+
+.postit-title{
+    margin-left: 5%;
+}
+
+.pupup-title{
+    margin-top: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 99%;
+    background-color: lightseagreen;
+    text-align: center;
+}
+
+.text-input{
+    margin-left: 3%;
+    font-size: 30px;
+    text-align: center;
+}
+
+.input-postit{
+    margin-left: 10%;
+    width: 80%;
+    height: 30px;
+    font-size: 20px;
+}
+
+.btn-public{
+    margin-top: 30px;
+    font-size: 20px;
+    width: 20%;
+    height: 40px;
+    margin-left:40% ;
+}
+
+.popup-new-postit{
     display: none;
     position: absolute;
     top: 50%;
     left: 50%;
     background: whitesmoke;
     width: 850px;
-    height: 400px;
+    height: 350px;
     margin-left: -425px; /*Half the value of width to center div*/
-    margin-top: -250px; /*Half the value of height to center div*/
+    margin-top: -200px; /*Half the value of height to center div*/
     z-index: 200;
 }
 
-.btn-edit-us{
-    margin-left: 40%;
-    width: 20%;
-    height: 30px;
-    margin-bottom: 50px;
+.ret-title{
+    text-align: center;
+    background-color: lightseagreen;
+    margin-top: 0px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 0px;
+}
+
+.help-text{
+    margin-top: 30px;
+    margin-left: 2%;
+    font-size: 20px;
 }

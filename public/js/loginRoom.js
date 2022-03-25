@@ -43,8 +43,8 @@ ppalButton.onclick = function(){
             alert('CREDENCIALES DEL USUARIO INVÁLIDAS');
             location.reload();
         });
-        socket.on('unexpectedError', ()=>{
-            alert('HA OCURRIDO UN ERROR INESPERADO, POR FAVOR, VUELVA A INTENTARLO');
+        socket.on('unexpectedError', msg=>{
+            alert(msg);
             location.reload();
         });
         socket1.on('missingRoom', ()=>{

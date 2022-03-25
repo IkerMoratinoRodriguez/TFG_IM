@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/retro.js"></script> 
+    <title>Document</title>
+</head>
+<body style="height: 100%;">
+    <!-- POPUP ADD POSTIT -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-new-postit" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup"></h3>
+            <p class="text-input">Texto del postit:</p>
+            <input type="text" class="input-postit" id="wind-postit">
+            <button class="btn-public" id="btn-public">PUBLICAR</button>
+        </div>
+    </div>
+    <!-- POPUP INFO CATEGORY -->
+    <div class="overlay" id="overlay-info"></div>
+    <div class="popup-new-postit" id="popup-info">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-info">X</span>
+        </div>
+        <div id="popup-content-info" class="popupcontent">
+            
+        </div>
+    </div>
+    <h1 class="ret-title">RETROSPECTIVA DEL BARCO DE VELA</h1>
+    <div id="wind" class="wind" style="height: 100%;">
+        <div class="upper-wind">
+            <h3 class="title-side">VIENTO</h3>
+            <button class="button-more" id="more-wind">+</button>
+            <button  class="button-ask" id="ask-wind">?</button>
+        </div>
+        <div id="wind-pool" class="wind-pool">
+
+        </div>
+    </div>
+    <div id="anchor" class="anchor" style="height: 100%;">
+        <div class="upper-anchor">
+            <h3 class="title-side">ANCLA</h3>
+            <button class="button-more" id="more-anchor">+</button>
+            <button class="button-ask" id="ask-anchor">?</button>
+        </div>
+        <div id="anchor-pool" class="anchor-pool">
+
+        </div>
+    </div>
+    <div id="iceberg" class="iceberg" style="height: 100%;">
+        <div class="upper-iceberg">
+            <h3 class="title-side">ICEBERG</h3>
+            <button class="button-more" id="more-iceberg">+</button>
+            <button class="button-ask" id="ask-iceberg">?</button>
+        </div>
+        <div id="iceberg-pool" class="iceberg-pool">
+
+        </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script> 
+</body>
+</html>
