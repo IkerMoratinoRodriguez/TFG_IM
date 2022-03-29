@@ -18,6 +18,14 @@ const overlayInfo = document.getElementById("overlay-info");
 const popupInfo = document.getElementById("popup-info");
 const popupContentInfo = document.getElementById("popup-content-info");
 
+//POPUP OPCIONES
+const closePopupOptions = document.getElementById("popupclose-options");
+const overlayOptions = document.getElementById("overlay-options");
+const popupOptions = document.getElementById("popup-options");
+const popupContentOptions = document.getElementById("popup-content-options");
+const deletePool = document.getElementById('delete-pool');
+const btnDeleteSeleced = document.getElementById('btn-delete-selected');
+
 //ELEMENTOS DOM
 const btnMoreWind = document.getElementById('more-wind');
 const btnMoreAnchor = document.getElementById('more-anchor');
@@ -28,10 +36,12 @@ const btnAskIceberg = document.getElementById('ask-iceberg');
 const windPool = document.getElementById('wind-pool');
 const anchorPool = document.getElementById('anchor-pool');
 const icebergPool = document.getElementById('iceberg-pool');
+const btnOptions = document.getElementById('option-button');
 
 
 //GLOBAL VARS
 var sec=0; //INDICA LA SECCIÓN EN LA QUE AÑADIR EL NUEVO POSTIT. 1->WIND   2->ANCHOR   3->ICEBERG
+var psts=0;
 
 socket.emit('joinRetroRoom',{username,room});
 
@@ -48,6 +58,22 @@ socket.on('createPostitReturn',({tit,tipo})=>{
     createPostit(tit,tipo);
 });
 
+socket.on('loadPositsJoin',posits=>{
+    loadRoomPostits(posits);
+});
+
+socket.on('showListPositsReturn',postits=>{
+    showListToDelete(postits);
+});
+
+socket.on('allowOptionsReturn',()=>{
+    btnOptions.disabled= false;
+})
+
+socket.on('blockOptionsReturn',()=>{
+    btnOptions.disabled= true;
+    alert('OTRO USUARIO DE LA SALA ESTÁ MODIFICANDO ELEMENTOS DE LA MISMA, MIENTRAS TANTO, USTED NO PODRÁ HACERLO');
+})
 
 //POP UP CLOSED INITIALY
 overlay.onclick = function(){
@@ -82,6 +108,31 @@ btnPublic.onclick = function(){
         alert("TÍTULO VACÍO");
     }
     
+}
+
+function showListToDelete(postits){
+    psts=postits.length;
+    deletePool.innerHTML="";
+    for(i=0;i<postits.length;i++){
+        t = postits[i].Tipo;
+        if(t == 1)
+            type="viento";
+        else if(t==2)
+            type="ancla";
+        else if(t==3)
+            type="iceberg";
+        let html = `<input id="p${i}" class="selected-postit" type="checkbox" value="${postits[i].Titulo}"/>${postits[i].Titulo} (${type})<br>`;
+        deletePool.innerHTML+=html;
+    }
+}
+
+function loadRoomPostits(postits){
+    windPool.innerHTML="";
+    anchorPool.innerHTML="";
+    icebergPool.innerHTML="";
+    for(i=0;i<postits.length;i++){
+        createPostit(postits[i].Titulo, postits[i].Tipo);
+    }
 }
 
 function createPostit(title,t){
@@ -156,3 +207,36 @@ btnAskIceberg.onclick = function(){
     popupContentInfo.innerHTML=html;
 }
 
+//POP UP CLOSED INITIALY
+overlayOptions.onclick = function(){
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+    socket.emit('allowOptions',room);
+}
+  
+// Close Popup Event
+closePopupOptions.onclick = function() {
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+    socket.emit('allowOptions',room);
+};
+
+btnOptions.onclick = function(){
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+    socket.emit('blockOptions',room);
+    socket.emit('showListPosits',room);
+}
+
+btnDeleteSeleced.onclick = function(){
+    let titlesDelete= [];
+    var j=0;
+    for(i=0;i<psts;i++){
+        const check = document.getElementById(`p${i}`);
+        if(check.checked){
+            titlesDelete[j]=check.value;
+            j++;
+        }
+    }
+    socket.emit('titlesToDelete',{titlesDelete,room});
+}

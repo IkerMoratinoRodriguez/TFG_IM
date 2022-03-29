@@ -17,7 +17,7 @@ const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, 
 const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting,insertarVotingMode, getAvailableVotes, eliminarPuntosUsuario} = require('./utils/dotVotingTable');
 const {insertarUS, userStoriesRoom, deleteUSRoom, addPoints,clearVotesRoom} = require('./utils/userStorie');
 const {addUserRoomRetro, eliminarUsuarioSalaRetro} = require('./utils/retrospectiveTable');
-const {addPostitRetro} = require('./utils/postitRetro');
+const {addPostitRetro, loadRoomPostits, deletePostit} = require('./utils/postitRetro');
 
 const res = require('express/lib/response');
 
@@ -112,6 +112,16 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError1',msg);
             }else{
                 socket.join(room);
+                //CARGAR POSTITS DE ESA SALA
+                loadRoomPostits(connection,room,(res)=>{
+                    if(res!=-1){
+                        socket.emit('loadPositsJoin',res);
+                    }else{
+                        msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
             }
         });
     });
@@ -294,7 +304,62 @@ io.on('connection', socket =>{
            }
        });
        socket.broadcast.to(room).emit('createPostitReturn',{tit,tipo});
-   })
+   });
+    socket.on('showListPosits',room=>{
+        loadRoomPostits(connection,room,(res)=>{
+            if(res!=-1){
+                socket.emit('showListPositsReturn',res);
+            }else{
+                msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+
+    socket.on('titlesToDelete',({titlesDelete, room})=>{
+        console.log(titlesDelete);
+        for(i=0;i<titlesDelete.length;i++){
+            //BORRO
+            deletePostit(connection,room,titlesDelete[i],(e)=>{
+                if(e){
+                    msg=`ERROR ELIMINANDO EL POSIT ${titlesDelete[i]} DE LA SALA:${room}`;
+                    console.log(msg);
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+            //MANDAR RESULTANTES A REPERESENTAR A TODOS
+            loadRoomPostits(connection,room,(res)=>{
+                if(res!=-1){
+                    socket.emit('loadPositsJoin',res);
+                    socket.broadcast.to(room).emit('loadPositsJoin',res);
+                }else{
+                    msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+            loadRoomPostits(connection,room,(res)=>{
+                if(res!=-1){
+                    socket.emit('showListPositsReturn',res);
+                }else{
+                    msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+        }
+        //ACTUALIZAR LISTA DEL QUE BORRA
+    });
+
+    socket.on('blockOptions',room=>{
+        socket.broadcast.to(room).emit('blockOptionsReturn');
+    });
+
+    socket.on('allowOptions',room=>{
+        socket.broadcast.to(room).emit('allowOptionsReturn');
+    });
 
     //DE LA PANTALLA DE ENTRADA A SALA
 
