@@ -17,7 +17,8 @@ const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, 
 const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting,insertarVotingMode, getAvailableVotes, eliminarPuntosUsuario} = require('./utils/dotVotingTable');
 const {insertarUS, userStoriesRoom, deleteUSRoom, addPoints,clearVotesRoom} = require('./utils/userStorie');
 const {addUserRoomRetro, eliminarUsuarioSalaRetro} = require('./utils/retrospectiveTable');
-const {addPostitRetro, loadRoomPostits, deletePostit} = require('./utils/postitRetro');
+const {addPostitRetro, loadRoomPostits, deletePostit, vinculatePostitRetro,getPostitsRoomRetro} = require('./utils/postitRetro');
+const {addRetro,listRetro,idRetroRoom} = require('./utils/historialRetro');
 
 const res = require('express/lib/response');
 
@@ -360,6 +361,69 @@ io.on('connection', socket =>{
     socket.on('allowOptions',room=>{
         socket.broadcast.to(room).emit('allowOptionsReturn');
     });
+
+    socket.on('saveRetro',({titulo,room})=>{
+        addRetro(connection,titulo,room,(r)=>{
+            if(r>0){
+                console.log("TODO HA IDO CORRECTO AL AÑADIR UNA NUEVA RETRO Y DEVOLVER SU ID");
+                socket.emit('saveRetro2',{room,r});
+            }   
+            else{
+                msg=`ERROR INESPERADO AL INSERTAR RETRO ${titulo} EN LA SALA ${room} Y OBTENER SU ID, `;
+                if(r==-1)
+                    msg +="DEBIDO A QUE YA EXISTÍA EL TÍTULO PARA ESA SALA";
+                else
+                    msg+="DEBIDO A QUE NO SE HA ENCONTRADO LA SALA";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+
+    socket.on('saveRetro2Server',({room,r})=>{
+        console.log("SAVE RETRO 2 SERVER RECEIVED");
+        vinculatePostitRetro(connection,room,r,(error)=>{
+            if(error.length>0){
+                console.log(error);
+                msg=`ERROR INESPERADO AL INSERTAR EL ID DE LA RETROSPECTIVA EN LOS POSITS DE LA MISMA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                console.log("TODO HA IDO CORRECTAMENTE, RETROSPECTIVA GUARDADA CON ÉXITO");
+                socket.emit('retroSavedReturn');
+                socket.broadcast.to(room).emit('retroSavedReturn');
+            }
+        });
+    })
+
+    socket.on('loadRetroHistoryList',room=>{
+        listRetro(connection,room,(res)=>{
+            socket.emit('loadRetroHistoryListReturn',res);
+        })
+    });
+
+    socket.on('loadRetroInPopup',({room,tituloRetroLoad})=>{
+        idRetroRoom(connection,room,tituloRetroLoad,(res)=>{
+            if(res!=-1){
+                console.log("ID DE LA RETROSPECTIVA A RECUPERAR"+res);
+                //TODOS LOS POSTITS DE LA SALA Y DE LA RETRO CON ID RES
+                getPostitsRoomRetro(connection,room,res,(titulos)=>{
+                    if(titulos!=-1){
+                        socket.emit('loadRetroInPopupReturn',titulos);
+                    }else{
+                        msg=`ERROR OBTENIENDO LOS TITULOS DE LA RETROSPECTIVA ${tituloRetroLoad} EN LA SALA ${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }else{
+                msg=`ERROR OBTENIENDO EL ID DE LA RETROSPECTIVA CON TÍTULO ${tituloRetroLoad} EN LA SALA ${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+
+        })
+    })
 
     //DE LA PANTALLA DE ENTRADA A SALA
 

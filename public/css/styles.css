@@ -131,7 +131,7 @@ body{
     float: left;
     text-decoration: none;
     background-color: lightseagreen;
-    padding: 14px;
+    padding: 10px;
     color: black;
     margin-bottom: 10px;
     border-radius: 20px;
@@ -199,20 +199,6 @@ body{
     width: max-content; 
     width: 40%;
     background-color: lightseagreen;
-    text-align: center;
-    color: black;
-    border-radius: 15px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-right: 5%;
-    margin-top: 10%;
-}
-
-.tool-botton-direct{
-    float: right;
-    text-decoration: none;
-    width: 20%;
-    background-color:  lightseagreen;
     text-align: center;
     color: black;
     border-radius: 15px;
@@ -817,7 +803,7 @@ body{
 
 .wind{
     float: left;
-    background-image: url("/resources/wind.png");
+    background-image: url("/resources/wind256.png");
     background-position: center;
     background-repeat: no-repeat;
     width: 33.3%;
@@ -827,7 +813,7 @@ body{
 
 .anchor{
     float: left;
-    background-image: url("/resources/anchor.png");
+    background-image: url("/resources/anchor256.png");
     background-position: center;
     background-repeat: no-repeat;
     width: 33.3%;
@@ -837,7 +823,35 @@ body{
 
 .iceberg{
     float: left;
-    background-image: url("/resources/iceberg.png");
+    background-image: url("/resources/iceberg256.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.4%;
+}
+
+.wind-load{
+    float: left;
+    background-image: url("/resources/wind256.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.anchor-load{
+    float: left;
+    background-image: url("/resources/anchor256.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.iceberg-load{
+    float: left;
+    background-image: url("/resources/iceberg256.png");
     background-position: center;
     background-repeat: no-repeat;
     width: 33.4%;
@@ -1008,4 +1022,62 @@ body{
     width: 96%;
     height: 375px;
     border-style: inset;
+}
+
+.save-retro-tit{
+    text-align: center;
+    font-size: 25px;
+}
+
+.save-input{
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 30px;
+    height: 35px;
+    font-size: 25px;
+}
+
+.save-save{
+    margin-left: 40%;
+    width: 20%;
+    margin-top: 30px;
+    height: 40px;
+}
+
+.popup-options{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: whitesmoke;
+    width: 850px;
+    height: 800px;
+    margin-left: -425px; /*Half the value of width to center div*/
+    margin-top: -400px; /*Half the value of height to center div*/
+    z-index: 200;
+}
+
+.popup-reload{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: whitesmoke;
+    width: 1400px;
+    height: 750px;
+    margin-left: -700px; /*Half the value of width to center div*/
+    margin-top: -320px; /*Half the value of height to center div*/
+    z-index: 200;
+}
+
+.title-load{
+    font-size: 30px;
+    text-align: center;
+}
+
+.retro-list-history{
+    font-size: 22px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 3%;
 }

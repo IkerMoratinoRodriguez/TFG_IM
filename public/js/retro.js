@@ -26,6 +26,33 @@ const popupContentOptions = document.getElementById("popup-content-options");
 const deletePool = document.getElementById('delete-pool');
 const btnDeleteSeleced = document.getElementById('btn-delete-selected');
 
+//POPUP SAVE RETRO
+const closePopupHistory = document.getElementById("popupclose-history");
+const overlayHistory = document.getElementById("overlay-history");
+const popupHistory = document.getElementById("popup-history");
+const popupContentHistory = document.getElementById("popup-content-history");
+const saveInput = document.getElementById('save-input');
+const btnSaveSave = document.getElementById('btn-save-save');
+const btnRetroHistory = document.getElementById('retro-history-btn');
+
+//POPUP HISTORIAL RETROS
+const closePopupRetros = document.getElementById("popupclose-retros");
+const overlayRetros = document.getElementById("overlay-retros");
+const popupRetros = document.getElementById("popup-retros");
+const popupContentRetros = document.getElementById("popup-content-retros");
+const poolRetro = document.getElementById('retro-pool');
+const btnLoadRetro = document.getElementById('load-retro');
+
+//POPUP CARGAR RETRO DEL HISTORIAL
+const closePopupShowRetro = document.getElementById("popupclose-show-retro");
+const overlayShowRetro = document.getElementById("overlay-show-retro");
+const popupShowRetro = document.getElementById("popup-show-retro");
+const popupContentShowRetro = document.getElementById("popup-show-retro");
+const poolWindLoad= document.getElementById('wind-load-pool');
+const poolAnchorLoad= document.getElementById('anchor-load-pool');
+const poolIcebergLoad= document.getElementById('iceberg-load-pool');
+
+
 //ELEMENTOS DOM
 const btnMoreWind = document.getElementById('more-wind');
 const btnMoreAnchor = document.getElementById('more-anchor');
@@ -37,11 +64,13 @@ const windPool = document.getElementById('wind-pool');
 const anchorPool = document.getElementById('anchor-pool');
 const icebergPool = document.getElementById('iceberg-pool');
 const btnOptions = document.getElementById('option-button');
+const btnSaveRetro = document.getElementById('save-retro');
 
 
 //GLOBAL VARS
 var sec=0; //INDICA LA SECCIÓN EN LA QUE AÑADIR EL NUEVO POSTIT. 1->WIND   2->ANCHOR   3->ICEBERG
 var psts=0;
+var retros=0;
 
 socket.emit('joinRetroRoom',{username,room});
 
@@ -68,12 +97,44 @@ socket.on('showListPositsReturn',postits=>{
 
 socket.on('allowOptionsReturn',()=>{
     btnOptions.disabled= false;
-})
+});
 
 socket.on('blockOptionsReturn',()=>{
     btnOptions.disabled= true;
     alert('OTRO USUARIO DE LA SALA ESTÁ MODIFICANDO ELEMENTOS DE LA MISMA, MIENTRAS TANTO, USTED NO PODRÁ HACERLO');
+});
+
+socket.on('saveRetro2',({room,r})=>{
+    console.log("SAVE RETRO 2 RECEIVED");
+    socket.emit('saveRetro2Server',{room,r});
 })
+
+socket.on('retroSavedReturn',()=>{
+    console.log("RECIBIDO RETURN DEL SAVE");
+    alert("SE HA ALMACENADO CORRECTAMENTE LA RETROSPECTIVA EN EL HISTORIAL DE LA SALA");
+    overlayHistory.style.display = 'none';
+    popupHistory.style.display = 'none';
+    windPool.innerHTML="";
+    anchorPool.innerHTML="";
+    icebergPool.innerHTML="";
+    btnOptions.disabled= false;
+});
+
+socket.on('loadRetroHistoryListReturn',titles=>{
+    poolRetro.innerHTML="";
+    retros=titles.length;
+    for(i=0;i<titles.length;i++){
+        let html = `<input class="retro-list-history" type="radio" name="history" value="${titles[i].Nombre}" id="retro${i}"/> ${titles[i].Nombre}<br>`;
+        poolRetro.innerHTML+=html;
+    }
+});
+
+socket.on('loadRetroInPopupReturn',result=>{
+    //RESULT ES UN ARRAY CON Titulo Y Tipo
+    for(i=0;i<result.length;i++){
+        loadRoomPostitsHistory(result);
+    }
+});
 
 //POP UP CLOSED INITIALY
 overlay.onclick = function(){
@@ -115,6 +176,7 @@ function showListToDelete(postits){
     deletePool.innerHTML="";
     for(i=0;i<postits.length;i++){
         t = postits[i].Tipo;
+        let type;
         if(t == 1)
             type="viento";
         else if(t==2)
@@ -152,6 +214,27 @@ function createPostit(title,t){
         anchorPool.innerHTML+=html;
     else if(t==3)
         icebergPool.innerHTML+=html;
+}
+
+function loadRoomPostitsHistory(postits){
+    poolWindLoad.innerHTML="";
+    poolAnchorLoad.innerHTML="";
+    poolIcebergLoad.innerHTML="";
+    for(i=0;i<postits.length;i++){
+        createPostitHistory(postits[i].Titulo, postits[i].Tipo);
+    }
+}
+
+function createPostitHistory(title,t){
+    let html = `<div class="postit">
+                <p class="postit-title">${title}</p>
+                </div>`;
+    if(t==1)
+        poolWindLoad.innerHTML+=html;
+    else if(t==2)
+        poolAnchorLoad.innerHTML+=html;
+    else if(t==3)
+        poolIcebergLoad.innerHTML+=html;
 }
 
 
@@ -240,3 +323,101 @@ btnDeleteSeleced.onclick = function(){
     }
     socket.emit('titlesToDelete',{titlesDelete,room});
 }
+
+//POP UP CLOSED INITIALY
+overlayHistory.onclick = function(){
+    overlayHistory.style.display = 'none';
+    popupHistory.style.display = 'none';
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+}
+  
+// Close Popup Event
+closePopupHistory.onclick = function() {
+    overlayHistory.style.display = 'none';
+    popupHistory.style.display = 'none';
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+};
+
+btnSaveRetro.onclick = function(){
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+    overlayHistory.style.display = 'block';
+    popupHistory.style.display = 'block';
+}
+
+btnSaveSave.onclick = function(){
+    let titulo = saveInput.value;
+    if(titulo.length>0)
+        socket.emit('saveRetro',{titulo,room});
+    else
+        alert("TÍTULO DE RETROSPECTIVA VACÍO.");
+}
+
+//POP UP CLOSED INITIALY
+overlayRetros.onclick = function(){
+    overlayRetros.style.display = 'none';
+    popupRetros.style.display = 'none';
+
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+}
+  
+// Close Popup Event
+closePopupRetros.onclick = function() {
+    overlayRetros.style.display = 'none';
+    popupRetros.style.display = 'none';
+
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+
+};
+
+btnRetroHistory.onclick = function(){
+    overlayRetros.style.display = 'block';
+    popupRetros.style.display = 'block';
+
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+
+    socket.emit('loadRetroHistoryList',room);
+}
+
+btnLoadRetro.onclick = function(){
+    var i=0, encontrado=false;
+    let tituloRetroLoad;
+    while(i<retros && !encontrado){
+        let ret = document.getElementById(`retro${i}`);
+        if(ret.checked){
+            tituloRetroLoad=ret.value;
+            encontrado=true;
+        }
+        i++;
+    }
+    console.log(tituloRetroLoad);
+    if(encontrado){
+        socket.emit('loadRetroInPopup',{room,tituloRetroLoad});
+        overlayShowRetro.style.display = 'block';
+        popupShowRetro.style.display = 'block';
+        overlayRetros.style.display = 'none';
+        popupRetros.style.display = 'none';
+    }else{
+        alert("SELECCIONE ALGUNA DE LAS RETROSPECTIVAS");
+    }
+    
+}
+
+overlayShowRetro.onclick = function(){
+    overlayShowRetro.style.display = 'none';
+    popupShowRetro.style.display = 'none';
+}
+
+closePopupShowRetro.onclick = function() {
+    overlayShowRetro.style.display = 'none';
+    popupShowRetro.style.display = 'none';
+}
+
+
+
+
