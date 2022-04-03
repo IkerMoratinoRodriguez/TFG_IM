@@ -24,7 +24,7 @@ function loadRoomPostits(connection,sala,callback){
             console.log(`ERROR OBTENIENDO EL ID DE LA SALA ${sala}`);
             callback(-1);
         }else if(id != -1){
-                let query = `SELECT Titulo, Tipo FROM postit_retro WHERE IDSala=${id} AND IDRetro IS NULL`;
+                let query = `SELECT ID, Titulo, Tipo FROM postit_retro WHERE IDSala=${id} AND IDRetro IS NULL`;
                 connection.query(query,function(e,r){
                     callback(r);
                 });
@@ -41,7 +41,7 @@ function deletePostit(connection,sala,title,callback){
             callback(e);
         }else if(id != -1){
                 let query = `DELETE FROM postit_retro
-                             WHERE IDSala=${id} AND Titulo='${title}' AND IDRetro IS NULL; `;
+                             WHERE IDSala=${id} AND ID='${title}' AND IDRetro IS NULL; `;
                 connection.query(query,function(e,r){
                     callback(e);
                 });

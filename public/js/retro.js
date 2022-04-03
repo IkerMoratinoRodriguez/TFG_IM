@@ -183,7 +183,7 @@ function showListToDelete(postits){
             type="ancla";
         else if(t==3)
             type="iceberg";
-        let html = `<input id="p${i}" class="selected-postit" type="checkbox" value="${postits[i].Titulo}"/>${postits[i].Titulo} (${type})<br>`;
+        let html = `<input id="p${i}" class="selected-postit" type="checkbox" value="${postits[i].ID}"/>${postits[i].Titulo} (${type})<br>`;
         deletePool.innerHTML+=html;
     }
 }

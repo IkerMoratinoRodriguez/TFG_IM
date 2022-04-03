@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css" >
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> 
+    <script defer src="js/daily.js"></script>
+    <title>Document</title>
+</head>
+<body style="height: 100%;">
+    <!-- POPUP ADD POSTIT -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-new-postit" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup"></h3>
+            <p class="text-input">Texto del postit:</p>
+            <input type="text" class="input-postit" id="general-postit">
+            <button class="btn-public" id="btn-public">PUBLICAR</button>
+        </div>
+    </div>
+    <!-- POPUP OPTIONS -->
+    <div class="overlay" id="overlay-options"></div>
+    <div class="popup-options" id="popup-options">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-options">X</span>
+        </div>
+        <div id="popup-content-options" class="popupcontent">
+            <h3 class="pupup-title">OTRAS OPCIONES...</h3>
+            <button id="btn-delete-selected" class="btn-delete-selected">BORRAR SELECCIONADAS</button>
+            <div class="delete">
+                <h4 class="title-delete">BORRAR POSTITS</h4>
+                <p class="text-delete">Seleccione los postit que quiere borrar:</p>
+                <div class="delete-pool" id="delete-pool">
+                    <input id="" class="selected-postit" type="checkbox" value=""/>POSTIT 1<br>
+                </div>
+            </div>
+            <button id="" class="stote-new">ALMACENAR DAILY MEETING Y CREAR UNA NUEVA</button>
+            <button id="" class="stote-new">HISTORIAL DE DAILY MEETING DE LA SALA</button>
+        </div>
+    </div>
+
+
+    <h1 class="ret-title">DAILY MEETING<button id="more-options" class="option-button">OPCIONES...</button></h1>
+    <div class="yesterday" style="height: 100%;">
+        <div class="upper-wind">
+            <h3 class="title-side-daily">¿QUÉ HICISTE AYER?</h3>
+            <button class="button-more-daily" id="btn-more-ytd">+</button>
+        </div>
+        <div id="pool-yesterday">
+
+        </div>
+    </div>
+    <div class="problems" style="height: 100%;">
+        <div class="upper-anchor">
+            <h3 class="title-side-daily">¿QUÉ PROBLEMAS TUVISTE?</h3>
+            <button class="button-more-daily" id="btn-more-prb">+</button>
+        </div>
+        <div id="pool-problems">
+
+        </div>
+    </div>
+    <div class="today" style="height: 100%;">
+        <div class="upper-iceberg">
+            <h3 class="title-side-daily">¿QUÉ HARÁS HOY?</h3>
+            <button class="button-more-daily" id="btn-more-today">+</button>
+        </div>
+        <div id="pool-today">
+
+        </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script> 
+</body>
+</html>
