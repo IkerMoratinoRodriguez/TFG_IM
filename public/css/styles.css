@@ -1051,9 +1051,9 @@ body{
     left: 50%;
     background: whitesmoke;
     width: 850px;
-    height: 800px;
+    height: 750px;
     margin-left: -425px; /*Half the value of width to center div*/
-    margin-top: -400px; /*Half the value of height to center div*/
+    margin-top: -320px; /*Half the value of height to center div*/
     z-index: 200;
 }
 

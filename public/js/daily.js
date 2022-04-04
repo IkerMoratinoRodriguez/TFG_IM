@@ -14,7 +14,26 @@ const popupOptions = document.getElementById("popup-options");
 const popupContentOptions = document.getElementById("popup-content-options");
 const deletePool = document.getElementById('delete-pool');
 const btnDeleteSeleced = document.getElementById('btn-delete-selected');
+const btnSaveDaily = document.getElementById('btn-save-daily');
+const btnDailyHistory = document.getElementById('btn-daily-history');
 
+//POPUP SAVE DAILY MEETING
+const closePopupHistory = document.getElementById("popupclose-history");
+const overlayHistory = document.getElementById("overlay-history");
+const popupHistory = document.getElementById("popup-history");
+const popupContentHistory = document.getElementById("popup-content-history");
+const saveInput = document.getElementById('save-input');
+const btnSaveSave = document.getElementById('btn-save-save');
+
+//POPUP HISTORIAL DAILY
+const closePopupDaily = document.getElementById("popupclose-daily");
+const overlayDaily = document.getElementById("overlay-daily");
+const popupDaily = document.getElementById("popup-daily");
+const popupContentDaily = document.getElementById("popup-content-daily");
+const poolDaily = document.getElementById('daily-pool');
+const btnLoadDaily = document.getElementById('load-daily');
+
+//POPUP CARGAR DAILY DEL HISTORIAL
 
 //ELEMENTOS DEL DOM
 const btnMoreYesterday = document.getElementById('btn-more-ytd');
@@ -88,3 +107,43 @@ btnMoreOptions.onclick = function(){
     overlayOptions.style.display = 'block';
     popupOptions.style.display = 'block';
 }
+
+//POPUP SAVE DAILY MEETING
+overlayHistory.onclick = function(){
+    overlayHistory.style.display = 'none';
+    popupHistory.style.display = 'none';
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+}
+closePopupHistory.onclick = function() {
+    overlayHistory.style.display = 'none';
+    popupHistory.style.display = 'none';
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+};
+btnSaveDaily.onclick = function(){
+    overlayHistory.style.display = 'block';
+    popupHistory.style.display = 'block';
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+};
+
+//POPUP HISTORIAL DAILY
+overlayDaily.onclick = function(){
+    overlayDaily.style.display = 'none';
+    popupDaily.style.display = 'none';
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+}
+closePopupDaily.onclick = function() {
+    overlayDaily.style.display = 'none';
+    popupDaily.style.display = 'none';
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+};
+btnDailyHistory.onclick = function(){
+    overlayDaily.style.display = 'block';
+    popupDaily.style.display = 'block';
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+};

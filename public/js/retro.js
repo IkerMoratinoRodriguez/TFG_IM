@@ -25,6 +25,8 @@ const popupOptions = document.getElementById("popup-options");
 const popupContentOptions = document.getElementById("popup-content-options");
 const deletePool = document.getElementById('delete-pool');
 const btnDeleteSeleced = document.getElementById('btn-delete-selected');
+const btnRetroHistory = document.getElementById('retro-history-btn');
+
 
 //POPUP SAVE RETRO
 const closePopupHistory = document.getElementById("popupclose-history");
@@ -33,7 +35,6 @@ const popupHistory = document.getElementById("popup-history");
 const popupContentHistory = document.getElementById("popup-content-history");
 const saveInput = document.getElementById('save-input');
 const btnSaveSave = document.getElementById('btn-save-save');
-const btnRetroHistory = document.getElementById('retro-history-btn');
 
 //POPUP HISTORIAL RETROS
 const closePopupRetros = document.getElementById("popupclose-retros");

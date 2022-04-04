@@ -39,11 +39,37 @@
                     <input id="" class="selected-postit" type="checkbox" value=""/>POSTIT 1<br>
                 </div>
             </div>
-            <button id="" class="stote-new">ALMACENAR DAILY MEETING Y CREAR UNA NUEVA</button>
-            <button id="" class="stote-new">HISTORIAL DE DAILY MEETING DE LA SALA</button>
+            <button id="btn-save-daily" class="stote-new">ALMACENAR DAILY MEETING Y CREAR UNA NUEVA</button>
+            <button id="btn-daily-history" class="stote-new">HISTORIAL DE DAILY MEETING DE LA SALA</button>
         </div>
     </div>
+    <!-- POP UP NAME FOR DAILY MEETING-->
+    <div class="overlay" id="overlay-history"></div>
+    <div class="popup-new-postit" id="popup-history">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-history">X</span>
+        </div>
+        <div id="popup-content-history" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup-info">GUARDAR DAILY MEETING</h3>
+            <p class="save-retro-tit">INTRODUZCA UN NOMBRE PARA LA DAILY MEETING</p>
+            <input id="save-input" class="save-input" type="text">
+            <button id="btn-save-save" class="save-save">GUARDAR</button>
+        </div>
+    </div>
+    <!-- POP UP HISTORIAL DAILY MEETINGS-->
+    <div class="overlay" id="overlay-daily"></div>
+    <div class="popup" id="popup-daily">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-daily">X</span>
+        </div>
+        <div id="popup-content-daily" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup-info">SELECCIONE LA DAILY MEETING QUE DESEA CARGAR</h3>
+            <div class="retro-pool" id="daily-pool">
 
+            </div>
+            <button id="load-daily" class="save-save">CARGAR DAILY MEETING</button>
+        </div>
+    </div>
 
     <h1 class="ret-title">DAILY MEETING<button id="more-options" class="option-button">OPCIONES...</button></h1>
     <div class="yesterday" style="height: 100%;">
