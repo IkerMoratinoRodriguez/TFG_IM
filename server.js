@@ -19,6 +19,8 @@ const {insertarUS, userStoriesRoom, deleteUSRoom, addPoints,clearVotesRoom} = re
 const {addUserRoomRetro, eliminarUsuarioSalaRetro} = require('./utils/retrospectiveTable');
 const {addPostitRetro, loadRoomPostits, deletePostit, vinculatePostitRetro,getPostitsRoomRetro} = require('./utils/postitRetro');
 const {addRetro,listRetro,idRetroRoom} = require('./utils/historialRetro');
+const {addUserRoomDaily, eliminarUsuarioSalaDaily} = require('./utils/dailyTable');
+const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily} = require('./utils/postitDaily');
 
 const res = require('express/lib/response');
 
@@ -99,7 +101,6 @@ io.on('connection', socket =>{
     });
 
     socket.on('joinRetroRoom',({username,room})=>{
-        console.log(`USUARIO:${username} uniendose a la sala de retrospectiva ${room}`);
         addUserRoomRetro(connection,room,username,socket.id,(result)=>{
             let codigo = result.res;
             let e = result.error;
@@ -109,12 +110,40 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError1',msg);
             }else if(codigo[0].result!=0){
                 msg=`USUARIO REPETIDO EN LA SALA:${room}`;
-                console.log(err);
+                console.log(msg);
                 socket.emit('unexpectedError1',msg);
             }else{
                 socket.join(room);
                 //CARGAR POSTITS DE ESA SALA
                 loadRoomPostits(connection,room,(res)=>{
+                    if(res!=-1){
+                        socket.emit('loadPositsJoin',res);
+                    }else{
+                        msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }
+        });
+    });
+
+    socket.on('dailyJoinRoom',({username, room})=>{
+        addUserRoomDaily(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+                //CARGAR LOS POSTITS DE LA SALA QUE NO PERTENECEN A NINGUNA DAILY ALMACENADA
+                loadRoomPostitsDaily(connection,room,(res)=>{
                     if(res!=-1){
                         socket.emit('loadPositsJoin',res);
                     }else{
@@ -333,19 +362,11 @@ io.on('connection', socket =>{
             //MANDAR RESULTANTES A REPERESENTAR A TODOS
             loadRoomPostits(connection,room,(res)=>{
                 if(res!=-1){
+                    socket.emit('showListPositsReturn',res);
                     socket.emit('loadPositsJoin',res);
                     socket.broadcast.to(room).emit('loadPositsJoin',res);
                 }else{
                     msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
-                    console.log(msg);
-                    socket.emit('unexpectedError',msg);
-                }
-            });
-            loadRoomPostits(connection,room,(res)=>{
-                if(res!=-1){
-                    socket.emit('showListPositsReturn',res);
-                }else{
-                    msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
                     console.log(msg);
                     socket.emit('unexpectedError',msg);
                 }
@@ -423,6 +444,63 @@ io.on('connection', socket =>{
             }
 
         })
+    });
+
+    //DE LA DAILY MEETING
+    socket.on('newDailyPostit',info=>{
+        addPostitDaily(connection,info,(res)=>{
+            if(res!=0){
+                console.log(res);
+                msg="ERROR INESPERADO AL INSERTAR POSTIT CON USUARIO EN LA SALA";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.broadcast.to(info.sala).emit('newDailyPostitReturn',info);
+            }
+        });
+        
+    });
+    socket.on('fillDeletePool',sala =>{
+        loadRoomPostitsDaily(connection,sala,(res)=>{
+            if(res!=-1){
+                socket.emit('fillDeletePoolReturn',res);
+            }else{
+                msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+
+    socket.on('deletePostitDaily',({id,room})=>{
+        deletePostitDaily(connection,id,(err)=>{
+            if(err!=0){
+                msg=`ERROR ELIMINANDO POSTIT DE LA SALA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                console.log("CARGANDO POSTITS...");
+                loadRoomPostitsDaily(connection,room,(res)=>{
+                    if(res!=-1){
+                        socket.emit('fillDeletePoolReturn',res);
+                        socket.emit('loadPositsJoin',res);
+                        socket.broadcast.to(room).emit('loadPositsJoin',res);
+                    }else{
+                        msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }
+        })
+    });
+
+    socket.on('lockOptionsDaily',room=>{
+        socket.broadcast.to(room).emit('lockOptionsDailyReturn');
+    });
+
+    socket.on('unlockOptionsDaily',room=>{
+        socket.broadcast.to(room).emit('unlockOptionsDailyReturn');
     })
 
     //DE LA PANTALLA DE ENTRADA A SALA
@@ -522,6 +600,15 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError',msg);
             }
         });
+
+        eliminarUsuarioSalaDaily(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE DAILY MEETING";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        })
 
     });
 

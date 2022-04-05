@@ -1,3 +1,5 @@
+const socket = io();
+
 //POPUP NEW POSTIT
 const closePopup = document.getElementById("popupclose");
 const overlay = document.getElementById("overlay");
@@ -46,6 +48,53 @@ const btnMoreOptions = document.getElementById('more-options');
 
 //VARIABLES GLOBALES
 var pool; //PARA SABER A QUE POOL AÑADIR EL NUEVO POSTIT 1->Ayer 2->Problemas 3->Hoy
+var npostits;
+
+const { username, room } = Qs.parse(location.search, {
+    ignoreQueryPrefix:true
+});
+
+socket.emit('dailyJoinRoom',{username, room});
+
+socket.on('unexpectedError1', msg=>{
+    alert(msg);
+    redirecc("http://localhost:3000/dotRoom.html");
+});
+
+socket.on('unexpectedError', msg=>{
+    alert(msg);
+});
+
+socket.on('loadPositsJoin',titles=>{
+    poolYesterday.innerHTML="";
+    poolProblems.innerHTML="";
+    poolToday.innerHTML="";
+    for(i=0;i<titles.length;i++){
+        let p = titles[i];
+        publicarPostit(p.Titulo,p.Tipo,p.Name);
+    }
+});
+
+socket.on('newDailyPostitReturn',info=>{
+    let usr = info.usr;
+    let tipo = info.tipo;
+    let titulo = info.titulo;
+    publicarPostit(titulo,tipo,usr);
+});
+
+socket.on('fillDeletePoolReturn',titles=>{
+    fillDeletePool(titles);
+});
+
+socket.on('lockOptionsDailyReturn',()=>{
+    btnMoreOptions.disabled = true;
+    alert('OTRO USUARIO DE LA SALA ESTÁ MODIFICANDO ELEMENTOS DE LA MISMA, MIENTRAS TANTO, USTED NO PODRÁ HACERLO');
+});
+
+socket.on('unlockOptionsDailyReturn',()=>{
+    btnMoreOptions.disabled = false;
+});
+
 
 
 //POP UP ADD POSTIT
@@ -76,7 +125,14 @@ btnMoreToday.onclick = function(){
     pool=3;
 }
 btnPublic.onclick = function(){
-    publicarPostit(inputPostit.value,pool,"NOMBRE DE USUARIO");
+    let info = {
+        sala:room,
+        usr:username,
+        tipo:pool,
+        titulo:inputPostit.value
+    }
+    publicarPostit(inputPostit.value,pool,username);
+    socket.emit('newDailyPostit',info);
 }
 
 function publicarPostit(titulo, tipo, name){
@@ -98,14 +154,49 @@ function publicarPostit(titulo, tipo, name){
 overlayOptions.onclick = function(){
     overlayOptions.style.display = 'none';
     popupOptions.style.display = 'none';
+    socket.emit('unlockOptionsDaily',room);
 }
 closePopupOptions.onclick = function() {
     overlayOptions.style.display = 'none';
     popupOptions.style.display = 'none';
+    socket.emit('unlockOptionsDaily',room);
 };
 btnMoreOptions.onclick = function(){
     overlayOptions.style.display = 'block';
     popupOptions.style.display = 'block';
+    socket.emit('fillDeletePool',room);
+    socket.emit('lockOptionsDaily',room);
+}
+function fillDeletePool(titles){
+    deletePool.innerHTML="";
+    npostits=titles.length;
+    for(i=0;i<titles.length;i++){
+        let t = titles[i];
+        let type;
+        switch(t.Tipo){
+            case 1:
+                type="ayer";
+                break;
+            case 2:
+                type="problemas";
+                break;
+            case 3:
+                type="hoy";
+                break;          
+                
+        }
+        let html=`<input id="tit${i}" class="selected-postit" type="checkbox" value="${t.ID}"/>${t.Titulo} (${type}) por ${t.Name}<br>`;
+        deletePool.innerHTML+=html;
+    }
+}
+btnDeleteSeleced.onclick = function(){
+    for(i=0;i<npostits;i++){
+        var elem = document.getElementById(`tit${i}`);
+        if(elem.checked){ // SI MARCADO PARA BORRAR
+            id = elem.value;
+            socket.emit('deletePostitDaily',{id,room});
+        }
+    }
 }
 
 //POPUP SAVE DAILY MEETING

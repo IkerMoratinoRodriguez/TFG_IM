@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/loginRoom.js"></script>
+    <title>Document</title>
+</head>
+<body id="room-selector-body" class="rooms">
+    <div class="cuadro-principal">
+        <header>
+            <h1 class="room-title">Daily meeting</h1>
+        </header>
+        <main class="room-main">
+            <form action="dailymeeting.html">
+                <div class="room-form">
+                    <label for="username">Nombre de usuario (Si no lo has hecho, date de alta)<br></label>
+                    <input
+                        class="write-box"
+                        type="text"
+                        name="username"
+                        id="username"
+                        placeholder="Enter username..."
+                        required
+                    />
+                </div>
+                <div class="room-form">
+                    <label for="usr-password">Contraseña del usuario<br></label>
+                    <input
+                        class="write-box"
+                        type="password"
+                        id="usr-password"
+                        placeholder="Enter user password..."
+                        required
+                    />
+                </div>
+                <div class="room-form">
+                    <label for="room">Nombre de sala<br></label>
+                    <input
+                        class="write-box"
+                        type="text"
+                        name="room"
+                        id="room"
+                        placeholder="Enter room name..."
+                        required
+                    />
+                </div>
+                <div class="room-form">
+                    <label for="password">Contraseña de la sala<br></label>
+                    <input
+                        class="write-box"
+                        type="password"
+                        id="password"
+                        placeholder="Enter room password..."
+                        required
+                    />
+                </div>
+                <button id="principal-button" type="submit" class="room-button">UNIRSE A LA SALA</button>
+            </form>
+        </main>
+        <h4 id="alternative-text" class="text-alternative">Si no conoces una sala existente, puedes crear una...</h4>
+        <button id="alternative-button" class="alternative-button">CREAR UNA NUEVA SALA</button>
+        <h4 class="text-alternative">Si no tienes una cuenta, puedes crearla aqui...</h4>
+        <button id="sing-up-button" class="alternative-button">CREAR UN NUEVO USUARIO</button>
+    </div>
+</body>
+</html>
