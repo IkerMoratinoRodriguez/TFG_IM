@@ -36,6 +36,14 @@ const poolDaily = document.getElementById('daily-pool');
 const btnLoadDaily = document.getElementById('load-daily');
 
 //POPUP CARGAR DAILY DEL HISTORIAL
+const closePopupShowDaily = document.getElementById("popupclose-show-daily");
+const overlayShowDaily = document.getElementById("overlay-show-daily");
+const popupShowDaily = document.getElementById("popup-show-daily");
+const popupContentShowDailyy = document.getElementById("popup-content-show-daily");
+let yesterdayLoadPool = document.getElementById('yesterday-load-pool');
+let problemsLoadPool = document.getElementById('problems-load-pool');
+let todayLoadPool = document.getElementById('today-load-pool');
+
 
 //ELEMENTOS DEL DOM
 const btnMoreYesterday = document.getElementById('btn-more-ytd');
@@ -49,6 +57,7 @@ const btnMoreOptions = document.getElementById('more-options');
 //VARIABLES GLOBALES
 var pool; //PARA SABER A QUE POOL AÑADIR EL NUEVO POSTIT 1->Ayer 2->Problemas 3->Hoy
 var npostits;
+var ndailys;
 
 const { username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix:true
@@ -95,7 +104,37 @@ socket.on('unlockOptionsDailyReturn',()=>{
     btnMoreOptions.disabled = false;
 });
 
+socket.on('dailySavedSuccesfuly',()=>{
+    poolProblems.innerHTML="";
+    poolYesterday.innerHTML="";
+    poolToday.innerHTML="";
+    overlayHistory.style.display = 'none';
+    popupHistory.style.display = 'none';
+    alert('DAILY MEETING ALMACENADA CORRECTAMENTE');
+});
 
+socket.on('loadDailyHistoryReturn',titles=>{
+    ndailys = titles.length;
+    poolDaily.innerHTML="";
+    for(i=0;i<ndailys;i++){
+        let html = `<input class="retro-list-history" type="radio" name="history" value="${titles[i].ID}" id="daily${i}"/> ${titles[i].Nombre}<br>`;
+        poolDaily.innerHTML+=html;
+    }
+});
+
+socket.on('loadDailyPostitsReturn',titles=>{
+    //MOSTRAR EL POPUP DE LA DAILY Y OCULTAR EL ACTUAL
+    overlayDaily.style.display = 'none';
+    popupDaily.style.display = 'none';
+    overlayShowDaily.style.display = 'block';
+    popupShowDaily.style.display = 'block';
+    yesterdayLoadPool.innerHTML="";
+    todayLoadPool.innerHTML="";
+    problemsLoadPool.innerHTML="";
+    for(i=0;i<titles.length;i++){
+        publicarPostitLoad(titles[i].Titulo, titles[i].Tipo, titles[i].Name);
+    }
+});
 
 //POP UP ADD POSTIT
 overlay.onclick = function(){
@@ -149,6 +188,19 @@ function publicarPostit(titulo, tipo, name){
     }
 }
 
+function publicarPostitLoad(titulo, tipo, name){
+    let html = `<div class="postit">
+                    <p class="postit-title">${titulo}</p>
+                    <p class="postit-name">${name}</p>
+                </div>`;
+    if(tipo==1){
+        yesterdayLoadPool.innerHTML+=html;
+    }else if(tipo==2){
+        problemsLoadPool.innerHTML+=html;
+    }else if(tipo==3){
+        todayLoadPool.innerHTML+=html;
+    }
+}
 
 //POPUP OPTIONS...
 overlayOptions.onclick = function(){
@@ -218,6 +270,11 @@ btnSaveDaily.onclick = function(){
     overlayOptions.style.display = 'none';
     popupOptions.style.display = 'none';
 };
+btnSaveSave.onclick = function(){
+    let nombre = saveInput.value;
+    socket.emit('saveDaily',{room,nombre});
+    socket.emit('unlockOptionsDaily',room);
+}
 
 //POPUP HISTORIAL DAILY
 overlayDaily.onclick = function(){
@@ -233,8 +290,37 @@ closePopupDaily.onclick = function() {
     popupOptions.style.display = 'block';
 };
 btnDailyHistory.onclick = function(){
+    socket.emit('loadDailyHistory',room);
     overlayDaily.style.display = 'block';
     popupDaily.style.display = 'block';
     overlayOptions.style.display = 'none';
     popupOptions.style.display = 'none';
+};
+btnLoadDaily.onclick = function(){
+    var i=0, encontrado=false;
+    let idDailyLoad;
+    while(i<ndailys && !encontrado){
+        let d = document.getElementById(`daily${i}`);
+        if(d.checked){
+            idDailyLoad=d.value;
+            encontrado=true;
+        }
+        i++;
+    }
+    console.log("ID DE LA DAILY MEETING:"+idDailyLoad);
+    if(encontrado){
+        socket.emit('loadDailyPostits',{room,idDailyLoad});
+        socket.emit('unlockOptionsDaily',room);
+    }else{
+        alert("SELECCIONE ALGUNA DE LAS RETROSPECTIVAS");
+    }
+}
+//POP UP CARGAR DAILY
+overlayShowDaily.onclick = function(){
+    overlayShowDaily.style.display = 'none';
+    popupShowDaily.style.display = 'none';
+}
+closePopupShowDaily.onclick = function() {
+    overlayShowDaily.style.display = 'none';
+    popupShowDaily.style.display = 'none';
 };

@@ -20,7 +20,8 @@ const {addUserRoomRetro, eliminarUsuarioSalaRetro} = require('./utils/retrospect
 const {addPostitRetro, loadRoomPostits, deletePostit, vinculatePostitRetro,getPostitsRoomRetro} = require('./utils/postitRetro');
 const {addRetro,listRetro,idRetroRoom} = require('./utils/historialRetro');
 const {addUserRoomDaily, eliminarUsuarioSalaDaily} = require('./utils/dailyTable');
-const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily} = require('./utils/postitDaily');
+const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily, addPostitToDaily, loadDailyPostits} = require('./utils/postitDaily');
+const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
 
 const res = require('express/lib/response');
 
@@ -501,6 +502,51 @@ io.on('connection', socket =>{
 
     socket.on('unlockOptionsDaily',room=>{
         socket.broadcast.to(room).emit('unlockOptionsDailyReturn');
+    });
+
+    socket.on('saveDaily',({room,nombre})=>{
+        addDaily(connection,nombre,room,(res)=>{
+            if(res==-1 || res==-2){
+                msg=`ERROR AL REGISTRAR LA NUEVA RETROSPECTIVA EN LA BASE DE DATOS`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                addPostitToDaily(connection,res,room,(resul)=>{
+                    if(resul==-1){
+                        msg=`ERROR AL ASOCIAR POSTITS A LA RETROSPECTIVA AÑADIDA ANTERIORMENTE`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }else{
+                        socket.emit('dailySavedSuccesfuly');
+                        socket.broadcast.to(room).emit('dailySavedSuccesfuly');
+                    }
+                });
+            }
+        });
+    });
+
+    socket.on('loadDailyHistory',room=>{
+        loadDailyHistory(connection,room,(res)=>{
+            if(res!=-1){
+                socket.emit('loadDailyHistoryReturn',res)
+            }else{
+                msg=`ERROR AL RECUPERAR LAS DAILY MEETINGS DE LA SALA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        })
+    });
+
+    socket.on('loadDailyPostits',({room,idDailyLoad})=>{
+        loadDailyPostits(connection,room,idDailyLoad,(res)=>{
+            if(res!=-1){
+                socket.emit('loadDailyPostitsReturn',res);
+            }else{
+                msg=`ERROR AL RECUPERAR LOS POSTITS DE LA DAILY MEETING SELECCIONADA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg); 
+            }
+        });
     })
 
     //DE LA PANTALLA DE ENTRADA A SALA
