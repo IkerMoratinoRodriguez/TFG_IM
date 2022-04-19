@@ -598,10 +598,8 @@ io.on('connection', socket =>{
     });
 
     socket.on('newUsr',info =>{
-        console.log(info);
         aniadirUsuario(connection,info, (result) =>{
             if(result){
-                console.log(result);
                 socket.emit('usrAlreadyExists');
             }
             else
