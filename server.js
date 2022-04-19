@@ -39,20 +39,23 @@ io.on('connection', socket =>{
         insertarUsuarioPoker(connection,username,room,socket.id,(obj) =>{
              const err = obj.error;
              const result = obj.res;
-             if(result[0].result!=0 || err){
-                 msg= "CÓDIGO DE ERROR AL INSERTAR UN USUARIO EN LA SALA:"+result[0].result;
-                 socket.emit('unexpectedError',msg);
+             if(err){
+                msg=`USUARIO REPETIDO EN LA SALA DE POKER:${room}`;
+                console.log(err);
+                socket.emit('unexpectedError1',msg);
+            }else if(result[0].result!=0 ){
+                msg="NO SE HA ENCONTRADO EL USUARIO EN LA SALA:"+result[0].result;
+                socket.emit('unexpectedError1',msg);
              }else{
-                socket.join(room);  
+                socket.join(room); 
+                actualizarContadorPoker(room); 
              }
              
         });
-        actualizarContadorPoker(room);
      });
 
     //DOT VOTING JOIN ROOM
     socket.on('dotJoinRoom', ({username, room}) =>{
-        console.log(`SERVER: Introduciendo nuevo usuario ${username} en la sala ${room}`);
         insertarUsuarioDotVoting(connection,username,room,socket.id,(obj)=>{
             const err = obj.error;
             const result = obj.res;
@@ -156,43 +159,73 @@ io.on('connection', socket =>{
             }
         });
     });
-
-    console.log("New WS connection");
-
-
     //POKER FUNCTIONALITIES
     socket.on('envioEstimacion',estimacion=>{
         estimationJoin(connection,estimacion.usrName,estimacion.room,estimacion.est,(res)=>{
-            if(res[0].result!=0){
-                console.log("ERROR INESPERADO AL INSERTAR ESTIMACION. CÓDIGO DE ERROR"+res[0].result);
+            if(res==-1){
+                msg="ERROR INESPERADO AL MOSTRAR LAS ESTIMACIONES DE LA SALA";
+                socket.emit('unexpectedError',msg);
+            }else if(res[0].result!=0){
                 msg="ERROR INESPERADO AL INSERTAR ESTIMACION. CÓDIGO DE ERROR"+res[0].result;
                 socket.emit('unexpectedError',msg);
+            }else{
+                actualizarContadorPoker(estimacion.room);
             }
         });
-        actualizarContadorPoker(estimacion.room);
     });
 
     socket.on('resetEstimation', sala=>{
         resetEstimation(connection, sala, (res)=>{
-            if(res[0].result!=0){
-                console.log("ERROR INESPERADO AL RESETEAR ESTIMACIONES DE UNA SALA. CODIGO:"+res[0].result);
+            if(res == -1){
+                msg="ERROR INESPERADO AL RESETEAR ESTIMACIONES DE UNA SALA DEBIDO A UN ERROR SQL";
+                socket.emit('unexpectedError',msg);
+            }else if(res[0].result!=0){
                 msg="ERROR INESPERADO AL RESETEAR ESTIMACIONES DE UNA SALA";
                 socket.emit('unexpectedError',msg);
+            }else{
+                socket.broadcast.to(sala).emit('returnReset');
+                socket.emit('returnReset');
+                actualizarContadorPoker(sala);
             }
         });
-        socket.broadcast.to(sala).emit('returnReset');
-        socket.emit('returnReset');
-        actualizarContadorPoker(sala);
     });
     
     socket.on('showEstimation', sala =>{ //DEVOLVER AL CLIENTE UNA LISTA DE USUARIOS Y SUS VOTACIONES (nombre, votacion)
         printEsts(connection, sala ,(res)=>{
-            console.log("IMPRIMIENDO ESTIMACIONES...");
-            console.log(res);
-            socket.broadcast.to(sala).emit('returnShowEstimation',res);
-            socket.emit('returnShowEstimation',res);
+            if(res == -1){
+                msg = "HA OCURRIDO UN ERROR OBTENIENDO LAS ESTIMACIONES DE LOS USUARIOS LA SALA POKER";
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.broadcast.to(sala).emit('returnShowEstimation',res);
+                socket.emit('returnShowEstimation',res);
+            }
         });
     });
+
+    function actualizarContadorPoker(sala){
+        showEstimation(connection,sala,(res)=>{
+            if(res==-1){
+                msg="ERROR INESPERADO MOSTRANDO NÚMERO DE ESTIMACIONES DE UNA SALA";
+                socket.emit('unexpectedError',msg);
+            }else if(res[0].result==-1){
+                msg="ERROR INESPERADO AL MOSTRAR EL NÚMERO DE ESTIMACIONES DE UNA SALA, YA QUE NO SE ENCUENTRA LA SALA";
+                socket.emit('unexpectedError',msg);
+            }else{
+                let ests = res[0].result;
+                getRoomUsers(connection,sala,(result) =>{
+                    if(result==-1){
+                        msg="ERROR AL OBTENER EL NÚMERO DE USUARIOS DE LA SALA PARA EL CONTADOR";
+                        socket.emit('unexpectedError',msg);
+                    }else{
+                        let usuarios = result[0].usuarios;
+                        socket.broadcast.to(sala).emit('actualizarContador',{ests, usuarios});
+                        socket.emit('actualizarContador',{ests, usuarios});
+                    }    
+                });
+            }
+        });
+        
+    }
 
     //DOT VOTING FUNCTIONALITIES
     socket.on('newUserStorie', ({room,title}) =>{
@@ -660,8 +693,11 @@ io.on('connection', socket =>{
             
         //SI EL SOCKET COINCIDE CON LA SALA DE POKER, EL USUARIO SE SALDRÁ DEL POKER
         eliminarUsuarioSala(connection,socket.id,(result) =>{
+            if(result == -1){
+                msg="ERROR ELIMINANDO USUARIO DE SALA DE POKER GAME. ERROR SQL.";
+                socket.emit('unexpectedError',msg);
+            }
             if(result[0].result.length != 0){
-                console.log(`UN USUARIO HA SALIDO DE LA SALA DE POKER`);
                 sala = result[0].result;
                 actualizarContadorPoker(sala);
             }
@@ -700,26 +736,7 @@ io.on('connection', socket =>{
     socket.on('ins', (puntuacion) =>{
         actualizarPuntuacion(connection,puntuacion);
     });
-
-    //PARA ACTUALIZAR CONTADOR POKER
-    function actualizarContadorPoker(sala){
-        showEstimation(connection,sala,(res)=>{
-            if(res[0].result==-1){
-                console.log(res[0].result);
-                msg="ERROR INESPERADO AL MOSTRAR EL NÚMERO DE ESTIMACIONES DE UNA SALA";
-                socket.emit('unexpectedError',msg);
-            }else{
-                let ests = res[0].result;
-                getRoomUsers(connection,sala,(result) =>{
-                    let usuarios = result[0].usuarios;
-                    console.log("Número de usuarios de la sala:"+usuarios);
-                    socket.broadcast.to(sala).emit('actualizarContador',{ests, usuarios});
-                    socket.emit('actualizarContador',{ests, usuarios});
-                });
-            }
-        });
-        
-    }
+    
 });
 
 const PORT = 3000 || process.env.PORT;
