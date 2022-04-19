@@ -12,7 +12,7 @@ const express = require('express');
 const socketio = require('socket.io');
 
 //IMPORTS PARA BASE DE DATOS
-const {actualizarPuntuacion, aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr,comprobarEstadoDotVotingRoom, setEstadoDotVotingRoom, getEstadoDotVotingRoom} = require('./utils/database');
+const {actualizarPuntuacion, aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr,comprobarEstadoDotVotingRoom, setEstadoDotVotingRoom, getEstadoDotVotingRoom, changeRoomPswd, changeUsrPswd} = require('./utils/database');
 const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, resetEstimation, showEstimation,printEsts} = require('./utils/pokerTable');
 const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting,insertarVotingMode, getAvailableVotes, eliminarPuntosUsuario} = require('./utils/dotVotingTable');
 const {insertarUS, userStoriesRoom, deleteUSRoom, addPoints,clearVotesRoom} = require('./utils/userStorie');
@@ -617,7 +617,55 @@ io.on('connection', socket =>{
         });
     })
 
-    
+    //USR PASSWORD CHANGE
+    socket.on('usrPswdChange',data=>{
+        changeUsrPswd(connection,data.usr,data.psw,data.newpsw,(res)=>{
+            let msg="";
+            switch(res){
+                case -1:{
+                    msg="ERROR INESPERADO AL CAMBIAR LA CONTRASEÑA DEL USUARIO";
+                    break;
+                }case 0:{
+                    msg="CONTRASEÑA CAMBIADA CORRECTAMENTE";
+                    break;
+                }case 1:{
+                    msg="USUARIO NO ENCONTRADO EN LA BASE DE DATOS";
+                    break;
+                }case 2:{
+                    msg="LA CONTRASEÑA ANTIGUA NO COINCIDE";
+                    break;
+                }
+            }
+            console.log(msg);
+            socket.emit('changePswdResult',msg);
+        });
+    });
+
+    //ROOM PASSWORD CHANGE
+    socket.on('roomPswdChange',data=>{
+        changeRoomPswd(connection,data.room,data.psw,data.newpsw,(res)=>{
+            let msg="";
+            switch(res){
+                case -1:{
+                    msg="ERROR INESPERADO AL CAMBIAR LA CONTRASEÑA DE LA SALA";
+                    break;
+                }case 0:{
+                    msg="CONTRASEÑA CAMBIADA CORRECTAMENTE";
+                    break;
+                }case 1:{
+                    msg="SALA NO ENCONTRADO EN LA BASE DE DATOS";
+                    break;
+                }case 2:{
+                    msg="LA CONTRASEÑA ANTIGUA NO COINCIDE";
+                    break;
+                }
+            }
+            console.log(msg);
+            socket.emit('changeRoomPswdResult',msg);
+        });
+    });
+
+
     socket.on('disconnect', () => {
             
         //SI EL SOCKET COINCIDE CON LA SALA DE POKER, EL USUARIO SE SALDRÁ DEL POKER

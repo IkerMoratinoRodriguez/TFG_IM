@@ -87,6 +87,28 @@ function getEstadoDotVotingRoom(connection,room,callback){
     });
 }
 
+function changeUsrPswd(connection,usr,oldPswd,newPswd,callback){
+    let query = `SELECT usrPasswdChange('${usr}','${oldPswd}','${newPswd}') as result;`;
+    connection.query(query,function(err,result){
+        if(err){
+            console.log(err);
+            callback(-1);
+        }else
+            callback(result[0].result);
+    });
+}
+
+function changeRoomPswd(connection,room,oldPswd,newPswd,callback){
+    let query = `SELECT roomPasswdChange('${room}','${oldPswd}','${newPswd}') as result;`;
+    connection.query(query,function(err,result){
+        if(err){
+            console.log(err);
+            callback(-1);
+        }else
+            callback(result[0].result);
+    });
+}
+
 module.exports={
     actualizarPuntuacion,
     aniadirUsuario,
@@ -95,5 +117,7 @@ module.exports={
     comprobarContraUsr,
     comprobarEstadoDotVotingRoom,
     setEstadoDotVotingRoom,
-    getEstadoDotVotingRoom
+    getEstadoDotVotingRoom,
+    changeRoomPswd,
+    changeUsrPswd
 }

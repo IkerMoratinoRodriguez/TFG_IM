@@ -1187,3 +1187,15 @@ body{
     margin-left: 5%;
     width: 90%;
 }
+
+.password-forgot{
+    color: black;
+    text-decoration: none;
+    margin-left: 5%;
+}
+
+.password-forgot:hover{
+    color: rgb(33, 57, 33);
+    text-decoration: none;
+    margin-left: 5%;
+}
