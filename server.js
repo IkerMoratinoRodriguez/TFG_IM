@@ -551,45 +551,37 @@ io.on('connection', socket =>{
 
     //DE LA PANTALLA DE ENTRADA A SALA
 
-    socket.on('verifyRoomPassword', infoSala=>{
-        const roomV = infoSala.sala;
-        const passwd = infoSala.pssw;
-        console.log(`Accediento a:\nSala:${roomV}\nContraseña:${passwd}`);
-        comprobarContraSala(connection,infoSala,(obj)=>{
-            const err = obj.error;
-            const result = obj.res;
-            if(result[0].result==1){
-                console.log("CONTRASEÑA DE SALA INCORRECTA");
-                socket.emit('wrongRoomPassword');
-            }else if(result[0].result==2){
-                console.log("SALA INEXISTENTE");
-                socket.emit('missingRoom');
-            }else{
-                if(err){
-                    console.log(err);
-                    msg="ERROR INESPERADO AL VERIFICAR LA CONTRASEÑA DE LA SALA";
-                    console.log(msg);
-                    socket.emit('unexpectedError',msg);//CAMBIAR POR ERROR INESPERADO
+    socket.on('verifyRoom', infoSala=>{
+        comprobarContraSala(connection,infoSala,(res)=>{
+            let msg="";
+            if(res != 0){
+                if(res==-1){
+                    msg="ERROR INESPERADO AL VERIFICAR LAS CREDENCIALES DE LA SALA";
+                }else if(res == 1){
+                    msg="CONTRASEÑA DE SALA INVÁLIDA";
+                }else if(res == 2){
+                    msg="NO SE HA ENCONTRADO LA SALA";
                 }
+                console.log(msg);
+                socket.emit('verificationResult',msg);
             }
         });
     });
 
     socket.on('verifyUser', infoUsr =>{
-        comprobarContraUsr(connection, infoUsr, (obj) =>{
-            const err = obj.error;
-            const result = obj.res;
-            if(result[0].result==1 || result[0].result==2){
-                console.log(`Código de error ${result[0].result} -> 1-Contraseña inválida 2-No existe usr`);
-                socket.emit('invalidUsrCredentials');
-            }else{
-                if(err){
-                    msg="ERROR INESPERADO AL VERIFICAR LA CONTRASEÑA DEL USUARIO";
-                    console.log(msg);
-                    console.log(err);
-                    socket.emit('unexpectedError',msg);
+        comprobarContraUsr(connection, infoUsr, (res) =>{
+            let msg="";
+            if(res!=0){
+                if(res==-1){
+                    msg="ERROR INESPERADO AL VERIFICAR LAS CREDENCIALES DEL USUARIO";
+                }else if(res == 1){
+                    msg="CONTRASEÑA DE USUARIO INVÁLIDA";
+                }else if(res == 2){
+                    msg="NO SE HA ENCONTRADO AL USUARIO";
                 }
-            } 
+                console.log(msg);
+                socket.emit('verificationResult',msg);
+            }
         });
     });
 

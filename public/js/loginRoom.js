@@ -1,5 +1,5 @@
 const socket = io();
-const socket1=io();
+const socket1= io();
 
 const btnAlt = document.getElementById('alternative-button');
 const ppalButton = document.getElementById('principal-button');
@@ -8,61 +8,55 @@ const btnSingUp = document.getElementById('sing-up-button');
 var pulsado = false;
 
 
+socket.on('verificationResult', msg=>{
+    alert(msg);
+    location.reload();
+});
+
+socket1.on('verificationResult', msg=>{
+    alert(msg);
+    location.reload();
+});
+
+socket1.on('roomAlreadyExists',()=>{
+    alert('ERROR AL CREAR Y ACCEDER A UNA NUEVA SALA. DICHA SALA YA EXISTE, POR FAVOR, ESCOJA OTRO NOMBRE');
+    location.reload();
+});
+
+
+
 ppalButton.onclick = function(){
-    const contra = document.getElementById('password').value;
     const room = document.getElementById('room').value;
+    const contra = document.getElementById('password').value;
 
-    const usrContra = document.getElementById('usr-password').value;
     const usr = document.getElementById('username').value;
+    const usrContra = document.getElementById('usr-password').value;
 
-    console.log(usrContra,usr);
-
-    var infoUsr = {
-        nombre:usr,
-        pssw:usrContra
-    };
-
-    var info= {
-        sala:room,
-        pssw:contra
-    };
-
-    socket.emit('verifyUser',infoUsr);
-    if(!pulsado){
-        //Se une a sala existente
-        socket1.emit('verifyRoomPassword',info);
-        
+    if(room.length == 0 || contra.length == 0 || usr.length == 0 || usrContra.length == 0){
+        alert("UNO DE LOS CAMPOS ESTÁ VACÍO. ASEGÚRESE DE QUE TODOS ESTÁN RELLENOS DEBIDAMENTE");
     }else{
-        //Create new room
-        socket1.emit('newRoom',info);
-    }
-    console.log(`Usuario:${usr} Contraseña:${usrContra} Sala:${room} Contraseña:${contra}`);
-    alert(`USUARIO ${infoUsr.nombre} ACCEDIENDO A LA SALA "${info.sala}"...`);
 
-        socket.on('invalidUsrCredentials', ()=>{
-            alert('CREDENCIALES DEL USUARIO INVÁLIDAS');
-            location.reload();
-        });
-        socket.on('unexpectedError', msg=>{
-            alert(msg);
-            location.reload();
-        });
-        socket1.on('missingRoom', ()=>{
-            alert('SALA INEXISTENTE');
-            location.reload();
-        });
-        socket1.on('wrongRoomPassword', ()=>{
-            alert('CONTRASEÑA DE SALA INCORRECTA');
-            location.reload();
-        });
-        socket1.on('roomAlreadyExists', ()=>{
-            alert('LA SALA YA EXISTE, POR FAVOR, ELIJA OTRO NOMBRE');
-            location.reload();
-        });
-        socket1.on('unexpectedError', ()=>{
-            alert('ESTE USUARIO YA ESTÁ EN ESTA SALA, POR FAVOR, INTENTELO CON OTRO USUARIO O EN OTRA SALA');
-            location.reload();
-        });
+        let infoUsr = {
+            nombre:usr,
+            pssw:usrContra
+        };
+
+        let infoSala= {
+            sala:room,
+            pssw:contra
+        };
+    
+        socket.emit('verifyUser',infoUsr);
+
+        if(!pulsado){//Se une a sala existente
+            socket1.emit('verifyRoom',infoSala);
+        }else{ //Create new room
+            socket1.emit('newRoom',infoSala);
+        }
+        
+        alert(`USUARIO ${infoUsr.nombre} ACCEDIENDO A LA SALA "${infoSala.sala}"...`);
+    }
+ 
 }
 
 btnAlt.onclick = function(){

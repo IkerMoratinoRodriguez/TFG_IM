@@ -35,12 +35,13 @@ function comprobarContraSala(connection, info, callback){
     let tryPasswd =`SELECT try_passwd('${psw}','${sala}',1) as result;`;
 
     connection.query(tryPasswd, function(err,result){
-        const obj ={
-            error:err,
-            res:result
-        } 
-        callback(obj);
-    })
+        if(err){
+            console.log(err);
+            callback(-1);
+        }else{
+            callback(result[0].result);
+        }
+    });
 
 }
 
@@ -51,12 +52,13 @@ function comprobarContraUsr(connection, info, callback){
     let tryPasswd =`SELECT try_passwd('${psw}','${usuario}',0) as result;`;
 
     connection.query(tryPasswd, function(err,result){
-        const obj ={
-            error:err,
-            res:result
-        } 
-        callback(obj);
-    })
+        if(err){
+            console.log(err);
+            callback(-1);
+        }else{
+            callback(result[0].result);
+        }
+    });
 
 }
 
