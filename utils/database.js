@@ -1,13 +1,3 @@
-
-function actualizarPuntuacion(connection, puntuacion){
-    let insertQuery=`UPDATE Usuario SET Cuestionario=${puntuacion} WHERE Nombre='Iker'`;
-
-    connection.query(insertQuery, function(err, result){
-        if(err)
-            throw err;
-    });
-}
-
 function aniadirSala(connection, info, callback){
     const sala = info.sala;
     const psw = info.pssw;
@@ -112,7 +102,6 @@ function changeRoomPswd(connection,room,oldPswd,newPswd,callback){
 }
 
 module.exports={
-    actualizarPuntuacion,
     aniadirUsuario,
     aniadirSala,
     comprobarContraSala,

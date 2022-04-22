@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css" >
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/testRoom.js"></script> 
+    <title>Document</title>
+</head>
+<body class="general-page">
+    <div class="overlay-test" id="overlay"></div>
+    <div class="popup-enviar-resps" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 id="popup-title" class="pupup-title"></h3>
+            <div class="login-box">
+                <main class="room-main">
+                    <form action="agileTest.html">
+                        <div class="room-form">
+                            <br>
+                            <label for="username">Nombre de usuario (Si no lo has hecho, date de alta)<br></label>
+                            <input
+                                class="write-box"
+                                type="text"
+                                name="username"
+                                id="username"
+                                placeholder="Enter username..."
+                                required
+                            />
+                        </div>
+                        <div class="room-form">
+                            <label for="usr-password">Contraseña del usuario<br></label>
+                            <input
+                                class="write-box"
+                                type="password"
+                                id="usr-password"
+                                placeholder="Enter user password..."
+                                required
+                            />
+                        </div>
+                        <a class="password-forgot" href="password.html">Cambiar contraseña de mi usuario...</a> <br>
+                        <button id="acceder-q" type="submit" class="go-button">IR AL CUESTIONARIO</button>
+                    </form>
+                </main>
+            </div>
+            <button id="create-usr" class="go-button">CREAR USUARIO</button>
+        </div>
+    </div>
+    <h1 class="titleP">CUESTIONARIOS DE AUTOEVALUACIÓN</h1>
+    <div class="index-content">
+        <h2>INFORMACIÓN GENERAL SOBRE LOS CUESTIONARIOS</h2>
+        <p>A continuación se pueden encontrar una colección de cuestionarios de autoevaluación que pueden servir al usuario para, como su propio nombre indica, autoevaluarse a sí mismos, es decir, comprobar el nivel de conocimiento, respecto a los temas de los que trata este portal web. En cada uno de los cuestionarios se define de qué tratan dichos cuestionarios para, que, antes de hacerlos, el alumno sepa en qué tema van a estar basadas las preguntas de las que dicho test se compone.</p>
+        <div class="tarjeta-cuestionario">
+            <h3 class="texto-tarjeta-cuestionario">CUESTIONARIO SOBRE METODOLOGÍAS ÁGILES</h3>
+            <p class="texto-tarjeta-cuestionario">Este cuestionario trata sobre cuestiones generales relacionadas con las metodologías ágiles, en particular, relacionadas con el Manifesto Ágil y los valores y principios que este define.</p>
+            <br>
+            <button id="ag-q" class="boton-cuestionario">IR AL CUESTIONARIO</button>
+        </div>
+        <div class="tarjeta-cuestionario">
+            <h3 class="texto-tarjeta-cuestionario">CUESTIONARIO SOBRE SCRUM 1</h3>
+            <p class="texto-tarjeta-cuestionario">Este cuestionario, como su nombre indica, está relacionado con Scrum. Contiene tanto preguntas generales sobre la metodología, como preguntas específicas centradas tanto en los roles, como eventos y artefactos en los que se divide esta metodología. Todas ellas están basadas en la Guía Scrum.</p>
+            <br>
+            <button id="sc1-q" class="boton-cuestionario">IR AL CUESTIONARIO</button>
+        </div>
+        <div class="tarjeta-cuestionario">
+            <h3 class="texto-tarjeta-cuestionario">CUESTIONARIO SOBRE SCRUM 2</h3>
+            <p class="texto-tarjeta-cuestionario">Cuestionario muy similar al anterior, relacionado tanto con cuestiones generales de Scrum, así como preguntas más específicas relacionadas con roles, eventos y artefactos Scrum. Todas ellas están basadas en la Guía Scrum.</p>
+            <br>
+            <button id="sc2-q" class="boton-cuestionario">IR AL CUESTIONARIO</button>
+        </div>
+        <div class="tarjeta-cuestionario">
+            <h3 class="texto-tarjeta-cuestionario">CUESTIONARIO SOBRE HERRAMIENTAS Y SUS PROCEDIMIENTOS</h3>
+            <p class="texto-tarjeta-cuestionario">Este cuestionario está enfocado en autoevaluar los conocimientos adquiridos a partir del uso de las herramientas que ASTools provee (herramienta de Daily Meeting, Poker Game, Dot Voting y Retrospectiva). En él se comprueba si el uso de dichas herramientas han sido útiles para el usuario a la hora de adquirir conocimientos sobre su utilidad, procedimiento, cuándo se aplican, por qué son importantes, etc.</p>
+            <br>
+            <button id="to-q" class="boton-cuestionario">IR AL CUESTIONARIO</button>
+        </div>
+    </div>    
+</body>
+</html>

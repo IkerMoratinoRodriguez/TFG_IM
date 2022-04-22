@@ -12,7 +12,7 @@ const express = require('express');
 const socketio = require('socket.io');
 
 //IMPORTS PARA BASE DE DATOS
-const {actualizarPuntuacion, aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr,comprobarEstadoDotVotingRoom, setEstadoDotVotingRoom, getEstadoDotVotingRoom, changeRoomPswd, changeUsrPswd} = require('./utils/database');
+const {aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr,comprobarEstadoDotVotingRoom, setEstadoDotVotingRoom, getEstadoDotVotingRoom, changeRoomPswd, changeUsrPswd} = require('./utils/database');
 const {insertarUsuarioPoker, getRoomUsers, eliminarUsuarioSala, estimationJoin, resetEstimation, showEstimation,printEsts} = require('./utils/pokerTable');
 const {insertarUsuarioDotVoting,eliminarUsuarioSalaDotVoting,insertarVotingMode, getAvailableVotes, eliminarPuntosUsuario} = require('./utils/dotVotingTable');
 const {insertarUS, userStoriesRoom, deleteUSRoom, addPoints,clearVotesRoom} = require('./utils/userStorie');
@@ -22,8 +22,7 @@ const {addRetro,listRetro,idRetroRoom} = require('./utils/historialRetro');
 const {addUserRoomDaily, eliminarUsuarioSalaDaily} = require('./utils/dailyTable');
 const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily, addPostitToDaily, loadDailyPostits} = require('./utils/postitDaily');
 const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
-
-const res = require('express/lib/response');
+const {getCuestionario} = require('./utils/cuestionarios');
 
 const app = express();
 const server = http.createServer(app);
@@ -733,8 +732,32 @@ io.on('connection', socket =>{
     });
 
     //DEL CUESTIONARIO
-    socket.on('ins', (puntuacion) =>{
-        actualizarPuntuacion(connection,puntuacion);
+    socket.on('verifyUserTest',info=>{
+        comprobarContraUsr(connection,info,(res)=>{
+            if(res==-1){
+                msg="ERROR INESPERADO COMPROBANDO LAS CREDENCIALES DEL USUARIO. ERROR EN LA BASE DE DATOS";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else if(res != 0){
+                msg="CREDENCIALES INVÁLIDAS";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('verifyUserTestTrue');
+            }
+        })
+    });
+
+    socket.on('getPreguntasCuestionario',idCuestionario=>{
+        getCuestionario(connection,idCuestionario,(res)=>{
+            if(res==-1){
+                msg = "ERROR AL OBTENER CUESTIONARIO. ERROR SQL."
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('getPreguntasCuestionarioReturn',res);
+            }
+        })
     });
     
 });
