@@ -22,7 +22,7 @@ const {addRetro,listRetro,idRetroRoom} = require('./utils/historialRetro');
 const {addUserRoomDaily, eliminarUsuarioSalaDaily} = require('./utils/dailyTable');
 const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily, addPostitToDaily, loadDailyPostits} = require('./utils/postitDaily');
 const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
-const {getCuestionario} = require('./utils/cuestionarios');
+const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, getIdRespuestasCorrectas} = require('./utils/cuestionarios');
 
 const app = express();
 const server = http.createServer(app);
@@ -756,6 +756,56 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError',msg);
             }else{
                 socket.emit('getPreguntasCuestionarioReturn',res);
+            }
+        });
+    });
+
+    socket.on('getNota',infoNota=>{
+        getNotaUsrCues(connection,infoNota.idC,infoNota.usr,(res)=>{
+            if(res==-1){
+                msg = "HA OCURRIDO UN ERROR AL OBTENER LA NOTA DEL USUARIO EN ESTE CUESTIONARIO. ERROR SQL.";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else if(res==0){
+                socket.emit('cuestionarioSinNota');
+            }else{
+                socket.emit('getNotaReturn',res);
+            }
+        });
+    });
+
+    socket.on('getTituloCuestionario',idCuestionario=>{
+        getTituloCuestionario(connection,idCuestionario,(res)=>{
+            if(res==-1){
+                msg = "HA OCURRIDO UN ERROR AL OBTENER EL TÍTULO DE ESTE CUESTIONARIO. ERROR SQL.";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('getTituloCuestionarioReturn',res);
+            }
+        });
+    });
+
+    socket.on('getRespuestasCorrectas',idCuestionario=>{
+        getIdRespuestasCorrectas(connection,idCuestionario,(res)=>{
+            if(res==-1){
+                msg = "HA OCURRIDO UN ERROR AL OBTENER LAS RESPUESTAS CORRECTAS DEL CUESTIONARIO DEL SERVIDOR. ERROR SQL.";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('getRespuestasCorrectasReturn',res);
+            }
+        });
+    });
+
+    socket.on('nuevaNota',info=>{
+        almacenarNota(connection,info.usr,info.q,info.n,(res)=>{
+            if(res==-1){
+                msg = "HA OCURRIDO UN ERROR AL ALMACENAR LA NUEVA CALIFICACIÓN EN ESTE CUESTIONARIO. ERROR SQL.";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('nuevaNotaReturn',info.n);
             }
         })
     });

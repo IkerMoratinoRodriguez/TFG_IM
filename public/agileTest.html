@@ -16,59 +16,26 @@
             <span class="popupclose" id="popupclose">X</span>
         </div>
         <div id="popup-content" class="popupcontent">
-            <h3 class="pupup-title">ENVIAR RESPUESTA</h3>
-            <p class="text-popup-sum">¿Está seguro de enviar su respuesta?</p>
-            <div class="resumen-respuestas">
-                <p class="resp-resumen-p">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-i">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-p">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-i">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-p">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-i">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-p">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-i">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-p">Pregunta 1 - Opción a</p>
-                <p class="resp-resumen-i">Pregunta 1 - Opción a</p>
-            </div>
-            <button id="btn-delete-selected" class="enviar-cuestionario">ENVIAR</button>
+            <h3 class="pupup-title">CALIFICACIÓN OBTENIDA</h3>
+            <p id="phrase-calif" class="phrase-calif"> ¡ENHORABUENA, HA SUPERADO SU MEJOR CALIFICACIÓN!</p>
+            <p id="nota-view" class="nota-view"></p>
         </div>
     </div>
     <h1 class="titleP">CUESTIONARIOS DE AUTOEVALUACIÓN</h1>
     <div>
-        <h2 class="titulo-cuestionario">TÍTULO DEL CUESTIONARIO</h2>
+        <h2 id="titulo-cuestionario" class="titulo-cuestionario">TÍTULO DEL CUESTIONARIO</h2>
         <div class="puntuacion-cuestionario">
-            <p class="text-puntuacion">TU PUNTUACIÓN ES: 8,66</p>
+            <p id="marcador-puntuacion" class="text-puntuacion"></p>
         </div>
     </div>
     <div id="pool-preguntas">
-        <div class="pregunta">
-            <h2 class="numero-pregunta">Pregunta 1</h2>
-            <h3 class="enunciado-pregunta">¿Este es un ejemplo de pregunta para ver simplemente como queda aunque creo que queda bien?</h3>
-            <div>
-                <input class="respuesta-pregunta" type="radio" value="si" name="pregunta1" id="pregunta_si"/> SI <br><br>
-                <input class="respuesta-pregunta" type="radio" value="no" name="pregunta1" id="pregunta_no"/> NO <br><br>
-                <input class="respuesta-pregunta" type="radio" value="nsnc" name="pregunta1" id="pregunta_nsnc"/> NS/NC <br><br>
-            </div>
-        </div>
-        <div class="pregunta">
-            <h2 class="numero-pregunta">Pregunta 1</h2>
-            <h3 class="enunciado-pregunta">¿Este es un ejemplo de pregunta para ver simplemente como queda aunque creo que queda bien?</h3>
-            <div>
-                <input class="respuesta-pregunta" type="radio" value="si" name="pregunta1" id="pregunta_si"/> SI <br><br>
-                <input class="respuesta-pregunta" type="radio" value="no" name="pregunta1" id="pregunta_no"/> NO <br><br>
-                <input class="respuesta-pregunta" type="radio" value="nsnc" name="pregunta1" id="pregunta_nsnc"/> NS/NC <br><br>
-            </div>
-        </div>
-        <div class="pregunta">
-            <h2 class="numero-pregunta">Pregunta 1</h2>
-            <h3 class="enunciado-pregunta">¿Este es un ejemplo de pregunta para ver simplemente como queda aunque creo que queda bien?</h3>
-            <div>
-                <input class="respuesta-pregunta" type="radio" value="si" name="pregunta1" id="pregunta_si"/> SI <br><br>
-                <input class="respuesta-pregunta" type="radio" value="no" name="pregunta1" id="pregunta_no"/> NO <br><br>
-                <input class="respuesta-pregunta" type="radio" value="nsnc" name="pregunta1" id="pregunta_nsnc"/> NS/NC <br><br>
-            </div>
-        </div>
+        
     </div>
     <button class="enviar-cuestionario" id="button-send-test">ENVIAR RESPUESTA</button>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script> 
 </body>
 </html>

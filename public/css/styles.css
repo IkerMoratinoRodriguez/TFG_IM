@@ -1345,4 +1345,24 @@ body{
     height: 60px;
     border-radius: 8px;
     margin-right: 20px;
+    background-color: lightseagreen;
+}
+
+.nota-view{
+    color: lightseagreen;
+    text-align: center;
+    margin-top: 70px;
+    margin-bottom: 0px;
+    font-size: 250px;
+    border-style: ridge;
+    border-width: 10px;
+    width: 50%;
+    margin-left: 25%;
+}
+
+.phrase-calif{
+    text-align: center;
+    width: 90%;
+    margin-left: 5%;
+    font-size: 23px;
 }
