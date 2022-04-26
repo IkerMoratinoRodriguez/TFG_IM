@@ -7,7 +7,7 @@ const popupContent = document.getElementById("popup-content");
 const notaView = document.getElementById('nota-view');
 const phraseCalif = document.getElementById('phrase-calif');
 
-let maxPuntuacion;
+let maxPuntuacion=0;
 let idsCorrectos = []; //ID's DE LAS RESPUESTAS CORRECTAS CARGADAS AL PRINCIPIO
 let longitud; //NÚMERO DE OPCIONES 
 
@@ -35,7 +35,6 @@ socket.on('unexpectedError',msg=>{
 });
 
 socket.on('getPreguntasCuestionarioReturn',res=>{
-    console.log(res);
     formarCuestionario(res);
 });
 
@@ -96,7 +95,7 @@ socket.on('nuevaNotaReturn',nota=>{
     var x = window.scrollX;
     var y = window.scrollY;
     window.onscroll = function(){ window.scrollTo(x, y) };
-    if(nota>maxPuntuacion && nota>5){
+    if(nota > maxPuntuacion && nota>5){
         phraseCalif.innerHTML='¡ENHORABUENA, HA SUPERADO SU MEJOR CALIFICACIÓN!';
     }else if(nota > maxPuntuacion && nota<5){
         phraseCalif.innerHTML='SIGA INTENTÁNDOLO, HA MEJORADO SU MEJOR CALIFICACIÓN, VA POR EL BUEN CAMINO';
@@ -111,12 +110,13 @@ overlay.onclick = function(){
     overlay.style.display = 'none';
     popup.style.display = 'none';
     window.onscroll = null;
-
+    location.reload();
 }
 closePopup.onclick = function() {
     overlay.style.display = 'none';
     popup.style.display = 'none';
     window.onscroll = null;
+    location.reload();
 };
 
 sendQ.onclick = function(){
