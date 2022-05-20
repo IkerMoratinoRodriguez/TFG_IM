@@ -4,7 +4,6 @@ function insertarUS(connection, titulo, sala,callback){
     let insertQuery = `SELECT insertUserStorie('${titulo}','${sala}') as result;`;
 
     connection.query(insertQuery, function(err, result){
-        console.log("USER STORIE INSERTADA");
         callback(err);
     });
 }
@@ -20,7 +19,11 @@ function userStoriesRoom(connection,room,callback){
         }else if(id != -1){
             let consulta = `SELECT Titulo, Votos FROM userstorie WHERE IDSala='${id}'`;
             connection.query(consulta,function(err,result){
-                callback(result);
+                if(err){
+                    console.log(err);
+                    callback(-1);
+                }else
+                    callback(result);
             });
         }
     });
@@ -44,13 +47,18 @@ function deleteUSRoom(connection, room, title, callback){
     });
 }
 
-function addPoints(connection,titles){
+function addPoints(connection,titles,callback){
     for(i=0;i<titles.length;i++){
         if(titles[i]!='-'){
             let query = `UPDATE userstorie
                      SET Votos=Votos+1
                      WHERE Titulo='${titles[i]}';`;
-            connection.query(query);
+            connection.query(query, function(err,res){
+                if(err){
+                    console.log(err);
+                    callback(-1);
+                }    
+            });
         }
     }
 }

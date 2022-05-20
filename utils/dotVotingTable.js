@@ -28,7 +28,6 @@ function insertarVotingMode(connection, sala, votingMode, callback){
             FROM userstorie
             WHERE IDSala='${result[0].result}';`;
             connection.query(countUsers,function(err,number){
-                console.log("NÚMERO DE USER STORIES: "+number[0].numero);
                 if(!err){
                     let votos;
                     if(votingMode==1){
@@ -69,13 +68,15 @@ function getAvailableVotes(connection, room, user, callback){
     let usuarioID =`SELECT userID('${user}') as result;`;
     connection.query(usuarioID,function(error,usrID){
         if(error)
-            callback(0);
+            callback(-1);
         else{
             let usuario=usrID[0].result;
             let roomID =`SELECT roomID('${room}') as result;`;
             connection.query(roomID,function(err,salaID){
-                if(err)
-                    callback(0);
+                if(err){
+                    console.log(err);
+                    callback(-1);
+                }
                 else{
                     let sala = salaID[0].result;
                     let query = `SELECT Votos as votes
@@ -84,7 +85,7 @@ function getAvailableVotes(connection, room, user, callback){
                                  AND IDSala='${sala}';`;
                     connection.query(query,function(e,result){
                         if(e)   
-                            callback(0);
+                            callback(-1);
                         else{
                             callback(result[0].votes);
                         }

@@ -144,6 +144,22 @@ body{
     height: max-content;
 }
 
+.btn-go-up{
+    position:fixed;
+    font-size: 30px;
+    padding: 6px;
+    background-color: lightseagreen;
+    width: 3%;
+    margin-top: 44%;
+    margin-left: 94%;
+    border-width: 0px;
+    border-radius: 10%;
+}
+
+.btn-go-up:hover{
+    background-color:cadetblue;
+}
+
 .scrum-nav{
     padding: 10px;
     float: left;

@@ -1,6 +1,3 @@
-const socket = io();
-
-
 //POPUP
 const closePopup = document.getElementById("popupclose");
 const overlay = document.getElementById("overlay");
@@ -40,7 +37,7 @@ const votePool = document.getElementById('vote-us-pool');
 const btnVote = document.getElementById('btn-vote');
 const clrVotes = document.getElementById('clear-votes');
 
-
+const socket = io();
 //USUARIO Y SALA DEL DOT VOTING
 const { username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix:true
@@ -49,8 +46,6 @@ const { username, room } = Qs.parse(location.search, {
 var userStories;
 var votingM=-1;
 var avVotes;
-
-votePool.style.display='none';
 
 socket.emit('dotJoinRoom',{username, room});
 
@@ -73,7 +68,6 @@ socket.on('unexpectedError', msg=>{
     alert(msg);
 });
 
-
 socket.on('userStoriesFixedReturn',()=>{
     //Deshabilitar las opciones de crear una nueva US O borrarlas
     modifyPool.style.display='none';
@@ -89,13 +83,8 @@ socket.on('userStoriesUnlockedReturn',()=>{
 
 });
 
-socket.on('newUserStorieReturn', () =>{
-    console.log("NEW USER STORIE RETURN CAPTADO");
-    pintarUserStories();
-});
 
 socket.on('userStoriesRoomInit', res =>{
-    console.log("HAN LLEGADO LAS USER STORIES PARA MOSTRAR CON SUS VOTOS AL CLIENTE");
     if(res){
         mostrarUserStories(res);
         userStories=res.length+1;
@@ -151,9 +140,9 @@ socket.on('clearVotesReturn',()=>{
 overlay.onclick = function(){
     overlay.style.display = 'none';
     popup.style.display = 'none';
+    socket.emit('freeDelete',room);
 }
   
-// Close Popup Event
 closePopup.onclick = function() {
     overlay.style.display = 'none';
     popup.style.display = 'none';
@@ -171,8 +160,6 @@ btnAdd.onclick = function(){
 }
 
 btnBorrar.onclick = function(){
-    console.log("PULSADO BOTON DE BORRAR");
-
     if(userStories==1){
         alert("NO SE HA INTRODUCIDO NINGUNA USER STORIE, POR TANTO, NO SE PUEDEN BORRAR");
     }else{
@@ -184,14 +171,12 @@ btnBorrar.onclick = function(){
 }
 
 btnBorrarUs.onclick = function(){
-    console.log("PULSADO BORRAR US");
     var i=1;
     for(;i<userStories; i++){
         var elem = document.getElementById(`us-${i}-delete`);
         if(elem.checked){ // SI MARCADO PARA BORRAR
             title = elem.value;
             //LO ELIMINO DE LA BASE DE DATOS MANDANDO EL TITULO
-            console.log("TITULO DE LA US A ELIMINAR:"+title);
             socket.emit('deleteUS',{room, title});
         }
 
@@ -232,7 +217,7 @@ function escribirListaDeVotacion(votos,titulos){
                         <select class="us-list" id="voto${j}">
                             <option value="-1" selected>-</option>`;
             for(i=0;i<titulos.length;i++){
-                html += `   <option class="us-number-votes" value="${i}">${titulos[i].Titulo}</option>  `;
+                html += `<option class="us-number-votes" value="${i}">${titulos[i].Titulo}</option>  `;
             }
             html+= `</select>`;
             poolVotes.innerHTML+=html;
@@ -245,6 +230,7 @@ function escribirListaDeVotacion(votos,titulos){
 overlayFix.onclick = function(){
     overlayFix.style.display = 'none';
     popupFix.style.display = 'none';
+    socket.emit('freeDelete',room);
 }
 
 closePopupFix.onclick = function() {
@@ -254,11 +240,9 @@ closePopupFix.onclick = function() {
 };
 
 btnFix.onclick = function(){
-    console.log("PULSADO FIJAR US");
     if(userStories==1) //SI NO HAY, ADVERTIRLO
         alert("NO SE HA INTRODUCIDO NINGUNA USER STORIE");
     else{
-        console.log("INICIALIZANDO EL POPUP FIX");
         overlayFix.style.display = 'block';
         popupFix.style.display = 'block';
         votingM=-1;
@@ -333,7 +317,7 @@ btnSendVote.onclick= function(){
     overlayVote.style.display = 'none';
     popupVote.style.display = 'none';
     //OBTENER PARA CADA VOTO (0->VOTOS-1) QUÉ TITULO HAN VOTADO (-1->NINGUNO 0...LENGTH-1)
-    let votosUsados;
+    let votosUsados=0;
     let tit = [];
     for(i=0;i<avVotes;i++){
         elem = document.getElementById(`voto${i}`);
@@ -341,6 +325,7 @@ btnSendVote.onclick= function(){
         tit[i]=elem[ind].text;
         if(elem[ind].text!='-')
             votosUsados++;
+        console.log(votosUsados);
     }
     let info={
         titles:tit,
@@ -353,7 +338,6 @@ btnSendVote.onclick= function(){
 }
 
 clrVotes.onclick = function(){
-    console.log("PULSADO BOTOÓN DE LIMPIAR VOTOS");
     socket.emit('clearVotes',room);
     location.reload();
 }

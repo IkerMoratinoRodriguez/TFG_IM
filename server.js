@@ -1,15 +1,26 @@
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "test"
-});
-
+const PORT = 3000 || process.env.PORT;
 const path = require('path');
 const http = require('http');
 const express = require('express');
+const app = express();
+const server = http.createServer(app);
+
 const socketio = require('socket.io');
+const io = socketio(server);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+//MYSQL
+const mysql = require('mysql');
+require("dotenv").config();
+const connection = mysql.createConnection({
+    host: process.env.dbhost,
+    user: process.env.dbuser,
+    password: process.env.dbpassword,
+    database: process.env.dbdatabase
+});
 
 //IMPORTS PARA BASE DE DATOS
 const {aniadirUsuario, aniadirSala, comprobarContraSala, comprobarContraUsr,comprobarEstadoDotVotingRoom, setEstadoDotVotingRoom, getEstadoDotVotingRoom, changeRoomPswd, changeUsrPswd} = require('./utils/database');
@@ -24,11 +35,7 @@ const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily, addPostitToDaily,
 const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
 const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, getIdRespuestasCorrectas} = require('./utils/cuestionarios');
 
-const app = express();
-const server = http.createServer(app);
-const io = socketio(server);
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', socket =>{
 
@@ -74,10 +81,8 @@ io.on('connection', socket =>{
                 comprobarEstadoDotVotingRoom(connection,room,(res)=>{
                     let est = res[0].estado;
                     if(est==0){
-                        console.log("ESTADO DE LA SALA: MODO EDICIÓN");
                         socket.emit('editMode');
                     }else if(est==1 || est==2 || est==3){
-                        console.log("ESTADO DE LA SALA: MODO VOTACIÓN");
                         //ESCRIBO SUS VOTOS DISPONIBLES EN LA BASE DE DATOS OBTENIDOS DEL MODO DE VOTACIÓN DE LA TABLA SALA
                         getEstadoDotVotingRoom(connection,room,(res)=>{
                             if(res==-1){
@@ -136,7 +141,7 @@ io.on('connection', socket =>{
             let codigo = result.res;
             let e = result.error;
             if(e){
-                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                msg=`ERROR SQL AÑADIENDO USUARIO A LA SALA:${room}`;
                 console.log(e);
                 socket.emit('unexpectedError1',msg);
             }else if(codigo[0].result!=0){
@@ -228,7 +233,6 @@ io.on('connection', socket =>{
 
     //DOT VOTING FUNCTIONALITIES
     socket.on('newUserStorie', ({room,title}) =>{
-        console.log("SERVIDOR: HE RECIBIDO LA NUEVA US A INSERTAR");
         insertarUS(connection,title,room,res =>{
             if(res){
                 msg="ERROR AL INSERTAR USER STORIE EN UNA SALA DOT VOTING";
@@ -237,8 +241,14 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError',msg);
             }else{ //SI  NO HAY ERRORES
                 userStoriesRoom(connection,room,(result)=>{
-                    socket.emit('userStoriesRoomInit',result);
-                    socket.broadcast.to(room).emit('userStoriesRoomInit',result);
+                    if(result==-1){
+                        msg="ERROR AL OBTENER LAS USER STORIES Y LOS VOTOS DE USA SALA. ERROR SQL.";
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }else{
+                        socket.emit('userStoriesRoomInit',result);
+                        socket.broadcast.to(room).emit('userStoriesRoomInit',result);
+                    }
                 });
             }
         });
@@ -282,7 +292,13 @@ io.on('connection', socket =>{
 
     socket.on('writeList',room=>{
         userStoriesRoom(connection,room,(res)=>{
-            socket.emit('writeListReturn',res);
+            if(res==-1){
+                msg = "ERROR AL OBTENER LAS USER STORIES DE LA SALA.ERROR SQL.";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('writeListReturn',res);
+            }
         });
     });
 
@@ -309,7 +325,7 @@ io.on('connection', socket =>{
 
    socket.on('writeAvailableVotes',({room, username})=>{
         getAvailableVotes(connection,room,username,(votos)=>{
-            if(votos==0){
+            if(votos==-1){
                 let msg= `ERROR AL OBTENER LOS VOTOS DISPONIBLES DEL USUARIO ${user}`;
                 console.log(msg);
                 socket.emit('unexpectedError',msg);
@@ -326,9 +342,14 @@ io.on('connection', socket =>{
    });
 
    socket.on('addPoints',info=>{
-       addPoints(connection,info.titles);
+       addPoints(connection,info.titles,(res)=>{
+           if(res==-1){
+               msg="ERROR ALMACENANDO LOS PUNTOS DE LAS USER STORIES EN LA BASE DE DATOS. ERROR SQL.";
+               console.log(msg);
+               socket.emit('unexpectedError',msg);
+           }
+       });
        eliminarPuntosUsuario(connection,info.usr,info.sala,info.votos,(res)=>{
-           console.log(`SERVER: ELIMINANDO ${votosUsados} DEL USUARIO${info.usr} EN LA SALA ${info.sala}`);
            if(res){
                 console.log("ERROR ELIMINANDO VOTOS DE UN USUARIO:"+res);
                 msg =`HA OCURRIDO UN ERROR ELIMINANDO VOTOS DE UN USUARIO EN UNA SALA`;
@@ -812,7 +833,5 @@ io.on('connection', socket =>{
     
 });
 
-const PORT = 3000 || process.env.PORT;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 

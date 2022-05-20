@@ -67,8 +67,12 @@ socket.emit('dailyJoinRoom',{username, room});
 
 socket.on('unexpectedError1', msg=>{
     alert(msg);
-    redirecc("http://localhost:3000/dotRoom.html");
+    console.log("ERROOOOR");
+    redirecc("http://localhost:3000/dailyRoom.html");
 });
+function redirecc(url) { 
+    window.location.href = url;
+};
 
 socket.on('unexpectedError', msg=>{
     alert(msg);

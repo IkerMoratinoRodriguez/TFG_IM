@@ -8,12 +8,19 @@
     <title>Scrum</title>
 </head>
 <body class="general-page">
+    <button style="cursor:pointer" class="btn-go-up" id="up">⇧</button>
+    <script>
+        btnUp = document.getElementById('up');
+        btnUp.onclick = function(){
+            window.scrollTo(top);
+        }
+    </script>
     <div class="cabecera">
         <a href="index.html" ><img src="resources/logo.png" class="logo-top"></a>
         <nav class="nav">
             <div class="centered">
                 <a href="index.html" class="nav-enlace">Inicio</a>
-                <a href="tools.html" class="nav-enlace">Herramientas AS-TOOLS</a>
+                <a href="tools.html" class="nav-enlace">Funcionalidades ASTools</a>
                 <a href="agile.html" class="nav-enlace">¿Qué son las Ágiles?</a>
                 <a href="scrum.html" class="nav-enlace">Scrum</a>
             </div>
@@ -33,7 +40,7 @@
             <div class="scrum-info">
                 <h2 id="scrum-definition">¿QUÉ ES SCRUM?</h2>
                 <p>Scrum es una Metodología Ágil (que sigue los 4 principios y 12 valores Ágiles) que define un conjunto de roles, eventos, artefactos y prácticas propios. La definición de esta metodología se halla descrita en la Guía Scrum, que define, apartado por apartado y de forma completa dicha metodología.</p>
-                <a href="https://scrumguides.org/scrum-guide.html" class="agile-link">Haz clic aquí para ver la Guía Scrum completa. </a>
+                <a target="_blank" href="https://scrumguides.org/scrum-guide.html" class="agile-link">Haz clic aquí para ver la Guía Scrum completa. </a>
                 <p>*TODA LA INFORMACIÓN QUE SE EXPONE A CONTINUACIÓN SE HA OBTENIDO DE LA GUÍA SCRUM*</p>
                 <h2 id="intro">INTRODUCCIOÓN</h2>
                 <h3>Definición de Scrum</h3>
@@ -163,12 +170,12 @@
             <h4>Información personal</h4>
             <div>
                 <p>Iker Moratino Rodríguez</p>
-                <p>Ingeniero Software</p>
+                <p>Estudiante de Ingeniería del Software</p>
                 <p>Contacto: ikermoratino@gmail.com</p>
             </div>
         </div>
         <div class="footer-project">
-            <h4>Información sobre AS-TOOLS</h4>
+            <h4>Información sobre ASTools</h4>
             <div>
                 <p>Proyecto final de carrera de ingeniería software</p>
                 <p>Todos los derechos de autor reservados</p>

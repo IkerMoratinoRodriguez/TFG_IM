@@ -8,12 +8,19 @@
     <title>Metodologías Ágiles</title>
 </head>
 <body class="general-page">
+    <button style="cursor:pointer" class="btn-go-up" id="up">⇧</button>
+    <script>
+        btnUp = document.getElementById('up');
+        btnUp.onclick = function(){
+            window.scrollTo(top);
+        }
+    </script>
     <div class="cabecera">
         <a href="index.html" ><img src="resources/logo.png" class="logo-top"></a>
         <nav class="nav">
             <div class="centered">
                 <a href="index.html" class="nav-enlace">Inicio</a>
-                <a href="tools.html" class="nav-enlace">Herramientas AS-TOOLS</a>
+                <a href="tools.html" class="nav-enlace">Funcionalidades ASTools</a>
                 <a href="agile.html" class="nav-enlace">¿Qué son las Ágiles?</a>
                 <a href="scrum.html" class="nav-enlace">Scrum</a>
             </div>
@@ -32,7 +39,7 @@
                 El manifesto ágil es un manifesto escrito en 2001 entre 17 autores que define la filosofía de trabajo de las prácticas ágiles. Dicho manfesto define los 4 valores y 12 principios que caracterizan esta filosofía de desarrollo software.
                 Cabe destacar también, que, pese a que los principios ágiles fueron desarrollados para la industria del software, poco a poco se han ido extendiendo a muchos otros sectores.
                 <br><br>
-                <a href="https://agilemanifesto.org/" class="agile-link">Haz clic aquí para ver el Manifesto Ágil completo. </a>
+                <a target="_blank" href="https://agilemanifesto.org/" class="agile-link">Haz clic aquí para ver el Manifesto Ágil completo. </a>
                 <br><br>*TODA LA INFORMACIÓN QUE SE EXPONE A CONTINUACIÓN SE HA OBTENIDO DEL MANIFESTO ÁGIL*
                 <h2 id="values">4 VALORES ÁGILES</h2>
                 <div class="agile-values">
@@ -78,12 +85,12 @@
             <h4>Información personal</h4>
             <div>
                 <p>Iker Moratino Rodríguez</p>
-                <p>Ingeniero Software</p>
+                <p>Estudiante de Ingeniería del Software</p>
                 <p>Contacto: ikermoratino@gmail.com</p>
             </div>
         </div>
         <div class="footer-project">
-            <h4>Información sobre AS-TOOLS</h4>
+            <h4>Información sobre ASTools</h4>
             <div>
                 <p>Proyecto final de carrera de ingeniería software</p>
                 <p>Todos los derechos de autor reservados</p>
