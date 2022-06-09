@@ -287,7 +287,7 @@ btnAskIceberg.onclick = function(){
     overlayInfo.style.display = 'block';
     popupInfo.style.display = 'block';
     let html = `<h3 class="pupup-title" id="title-popup-info">¿QUÉ ES EL ICEBERG EN LA RETROSPECTIVA?</h3>
-    <p class="help-text"> El iceberg es una metáfora referida a todo aquello que, si bien todavía no ha causado ningún problema, en el futuro podría agravarse y convertirse en algo que nos frene. En otras palabras, el ancla en la retrospectiva del barco de vela, es un problema existente que en un futuro podría agravarse y lastrar el progreso hacía los objetivos que el equipo queire conseguir.<br>El iceberg, son los problemas potenciales futuros.<br><br>La falta de rigurosidad en los tests, podría ser un ejemplo de esta categoría, ya que puede que en el momento no suponga un problema, pero que en el futuro, sí los cause.</p>`;
+    <p class="help-text"> El iceberg es una metáfora referida a todo aquello que, si bien todavía no ha causado ningún problema, en el futuro podría agravarse y convertirse en algo que nos frene. En otras palabras, el ancla en la retrospectiva del barco de vela, es un problema existente que en un futuro podría agravarse y lastrar el progreso hacía los objetivos que el equipo quiere conseguir.<br>El iceberg, son los problemas potenciales futuros.<br><br>La falta de rigurosidad en los tests, podría ser un ejemplo de esta categoría, ya que puede que en el momento no suponga un problema, pero que en el futuro, sí los cause.</p>`;
     popupContentInfo.innerHTML=html;
 }
 

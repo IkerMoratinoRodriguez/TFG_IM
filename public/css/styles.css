@@ -629,9 +629,9 @@ body{
 }
 
 .backlog-img{
-    padding-left: 60px;
-    margin-left: 10px;
-    width: 790px;
+    height: 400px;
+    margin-left: 25%;
+    width: 50%;
 }
 
 /*

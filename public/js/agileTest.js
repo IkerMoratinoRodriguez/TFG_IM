@@ -128,7 +128,7 @@ sendQ.onclick = function(){
             marcadas.push(opc.value);
         }
     }
-    let send = confirm("¿DESEA MANDAR EL CUESTIONARIO CON LAS RESPUESTAS ELEGIDAS?. REVISE BIEN SUS RESPUESTAS ANTES DE CONFIRMAR");
+    let send = confirm("¿DESEA FINALIZAR EL CUESTIONARIO CON LAS RESPUESTAS ELEGIDAS?. REVISE BIEN SUS RESPUESTAS ANTES DE CONFIRMAR");
     if(send){
         //OBTENER LAS CORRECTAS
         let correctas=0;
@@ -145,7 +145,7 @@ sendQ.onclick = function(){
         }
         socket.emit('nuevaNota',info);
     }else{
-        alert("REVISE SUS RESPUESTAS Y VUELVA A ENVIAR CUANDO ESTÉ SEGURO");
+        alert("REVISE SUS RESPUESTAS Y VUELVA A FINALIZAR CUANDO ESTÉ SEGURO");
     }
     
 }
