@@ -111,17 +111,17 @@ buttonP.onclick = function() {
 
 buttonO.onclick = function() {
 
-    popupContent.innerHTML=`<h1 class="popup-title">PIZARRA CON OTROS ELEMENTOS</h1>
+    popupContent.innerHTML=`<h1 class="popup-title">PIZARRA DEL SPRINT</h1>
     <p class="popup-text" >En esta pizarra se representan diferentes elementos también muy úiles en las metodologías ágiles, como por ejemplo los burndown o burnup charts. Estos gráficos relacionan el trabajo pendiente, representado en el eje Y que normalmente está relacionado en Puntos Historia (Story Points) con el tiempo consumido desde el principio del Sprint, en el eje X. En el caso de los burndown su función es conocer el trabajo pendiente y en el caso de los burnup, el trabajo realizado. En este tipo de gráficos se suele representar tanto la evolución real de los equipos como la evolución estimada o ideal
     A continuación, podemos observar un ejemplo de burndown chart:
     </p>
-    <div class="backlog-img">
+    <div class="burndown-img">
         <img src="/resources/burndown.png">
     </div> 
     <p class="popup-text" >Otro elemento que suele estar muy presente en este tipo de pizarras es la representación de flujos de trabajo Kanban. Pese a que Kanban es una metodología diferente a Scrum, ambas se pueden (y es muy común) mezclar, ya que ésta aporta una herramienta muy importante para controlar el trabajo que el equipo ágil puede gestionar en un momento determinado, el WIP (Work In Progress). Además, dichos tableros se dividen en diferentes apartados, representando cada uno de ellos una etapa del ciclo de vida del desarrollo, limitando mediante la señal visual del WIP, la cantidad de elementos de trabajo que puede haber en cada una de las fases
     A continuación, se puede observar un ejemplo de tablero Kanban:
     </p>
-    <div class="backlog-img">
+    <div class="kanban-img">
         <img class="img-popup" src="/resources/kanban.jpg">
     </div> 
     <p class="popup-text">A continuación, se encuentra un enlace a Azure DevOps que puede ser de ayuda, entre otras cosas, para representar un burndown chart a partir del trabajo realizado, así como para registrar un tablero kanban y de esta forma, complementar esta herramienta:</p>     
