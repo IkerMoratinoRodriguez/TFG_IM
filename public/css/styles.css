@@ -107,7 +107,20 @@ body{
 
 .principe{
     margin-left: 2%;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
+
+.principe2{
+    margin-left: 4%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.backlog{
+    margin-left: 2%;
+}
+
 
 .agile-link{
     text-decoration: none; /*quitar linea de enlace*/
