@@ -1179,6 +1179,15 @@ body{
     width: 90%;
 }
 
+.link{
+    margin-left: 5%;
+}
+
+.img-kanban{
+    width: 90%;
+    height: 300px;
+}
+
 .popup-subtitle{
     margin-left: 15px;
     float: left;

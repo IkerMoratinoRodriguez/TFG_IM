@@ -74,7 +74,8 @@ buttonRe.onclick = function() {
     <p class="popup-text">Aunque pueda resultar curioso, la mayoría de las salas de trabajo ágiles, tienen una zona de relajación formada normalmente por unos sofás y, en ocasiones, una máquina expendedora de alimentos, refrescos o café. Estas zonas de las salas de trabajo, los equipos las utilizan en los descansos para desconectar del trabajo y socializar más entre ellos, lo cual, aunque pueda parecer un detalle menor, refuerza la idea de equipo que proponen las metodologías ágiles. Las ágiles persiguen que el equipo sea algo más que un mero grupo de trabajo, sino que el equipo tenga buenas relaciones interpersonales, ya que esto se verá reflejado en el trabajo desempeñado.</p>
     <div class="backlog-img">
         <img class="img-popup" src="/resources/relax.jpg">
-    </div>`;
+    </div>
+    <p class="popup-text">Imagen obtenida de https://pixabay.com/</p>`;
 
     overlay.style.display = 'block';
     popup.style.display = 'block';
@@ -115,14 +116,16 @@ buttonO.onclick = function() {
     <p class="popup-text" >En la pizarra del sprint se representan los diferentes elementos que nos ayudan a monitorizar y hacer un seguimiento detallado de la evolución del sprint, elementos también muy útiles en las metodologías ágiles. Entre estos elementos se han de destacar el tablero Scrum o Kanban y los burndown o burnup charts. El tablero Scrum o kanban contiene las historias de usuario y tareas seleccionadas para el sprint. Estos muestran en todo momento lo que el equipo tiene pendiente por hacer, qué está haciendo y qué ha terminado. Hoy en día la utilización de tableros kanban está en auge, ya que tienen un valor añadido con respecto a los tableros Scrum, y es el hecho de que aporta una herramienta muy importante para controlar el trabajo que el equipo ágil puede gestionar en un momento determinado, el WIP (Work In Progress). Este WIP es una restricción del trabajo se puede realizar de forma simultánea, de forma que actúa como señal visual o baliza para identificar cuellos de botella en el trabajo. Además, los tableros se dividen en las etapas del ciclo de vida del desarrollo que son importantes para el equipo, limitando aquellas que el equipo considere oportuno con su correspondiente WIP. A continuación, se puede observar un ejemplo de tablero Kanban:
     </p>
     <div class="kanban-img">
-        <img class="img-popup" src="/resources/kanban.jpg">
-    </div>  
+        <img class="img-kanban" src="/resources/kanban.jpg">
+    </div>
+    <p class="popup-text">Imagen obtenida de https://commons.wikimedia.org/</p>  
     <p class="popup-text" >Por otro lado, los burndown o burnup charts relacionan el trabajo pendiente, representado en el eje Y, que normalmente está relacionado en Puntos Historia (Story Points) con el tiempo consumido desde el principio del Sprint, en el eje X. En el caso de los burndown su función es conocer el trabajo pendiente y en el caso de los burnup, el trabajo realizado. En este tipo de gráficos se suele representar tanto la evolución real de los equipos como la evolución estimada o ideal.
     A continuación, podemos observar un ejemplo de burndown chart:    
     </p>
     <div class="burndown-img">
         <img src="/resources/burndown.png">
     </div>
+    <p class="popup-text">Imagen obtenida de https://commons.wikimedia.org/</p>  
     <p class="popup-text">Si te apetece probar a construir un sprint y visualizar tablero Kanban y su burndown chart, como complemento a ASTools, a continuación se encuentra un enlace a Azure DevOps que te puede ser de ayuda:</p>     
     <div class="popup-links">
         <a class="popup-link-one" href="https://azure.microsoft.com/es-es/services/devops/">AZURE DEV OPS</a>    
