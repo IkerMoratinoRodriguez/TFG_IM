@@ -271,7 +271,8 @@ btnAskWind.onclick = function(){
     overlayInfo.style.display = 'block';
     popupInfo.style.display = 'block';
     let html = `<h3 class="pupup-title" id="title-popup-info">¿QUÉ ES EL VIENTO EN LA RETROSPECTIVA?</h3>
-    <p class="help-text"> El viento es una metáfora referida a todo aquello que ha ido bien en durante el sprint, y que ha ayudado a que el equipo ágil consiga de forma satisfactoria los objetivos marcados en el mismo.<br>El viento, es aquello que nos impulsa.<br><br>La buena comunicación entre los miembros del equipo o la soltura en el uso de la herramienta podrían ser ejemplos de esta categoría.</p>`;
+    <p class="help-text"> El viento es una metáfora referida a todo aquello que ha ido bien en durante el sprint, y que ha ayudado a que el equipo ágil consiga de forma satisfactoria los objetivos marcados en el mismo.<br>El viento, es aquello que nos impulsa.<br><br>La buena comunicación entre los miembros del equipo o la soltura en el uso de la herramienta podrían ser ejemplos de esta categoría.</p>
+    <p class="help-text">Icon made by smalllikeart from www.flaticon.com</p>`;
     popupContentInfo.innerHTML=html;
 }
 
@@ -279,7 +280,8 @@ btnAskAnchor.onclick = function(){
     overlayInfo.style.display = 'block';
     popupInfo.style.display = 'block';
     let html = `<h3 class="pupup-title" id="title-popup-info">¿QUÉ ES EL ANCLA EN LA RETROSPECTIVA?</h3>
-    <p class="help-text"> El ancla es una metáfora referida a todo aquello que ha frenado el progreso del equipo durante el sprint, y que por ello, ha hecho que no se consiguieran todos los objetivos que se habían fijado para el mismo, o no todo lo rápido como se hubiera podido, si estos problemas no existieran.<br>El ancla, es aquello que nos frena.<br><br>La mala comunicación entre los miembros del equipo o la poca experiencia en el uso de la herramienta podrían ser ejemplos de esta categoría.</p>`;
+    <p class="help-text"> El ancla es una metáfora referida a todo aquello que ha frenado el progreso del equipo durante el sprint, y que por ello, ha hecho que no se consiguieran todos los objetivos que se habían fijado para el mismo, o no todo lo rápido como se hubiera podido, si estos problemas no existieran.<br>El ancla, es aquello que nos frena.<br><br>La mala comunicación entre los miembros del equipo o la poca experiencia en el uso de la herramienta podrían ser ejemplos de esta categoría.</p>
+    <p class="help-text">Icon made by Freepik from www.flaticon.com</p>`;
     popupContentInfo.innerHTML=html;
 }
 
@@ -287,7 +289,8 @@ btnAskIceberg.onclick = function(){
     overlayInfo.style.display = 'block';
     popupInfo.style.display = 'block';
     let html = `<h3 class="pupup-title" id="title-popup-info">¿QUÉ ES EL ICEBERG EN LA RETROSPECTIVA?</h3>
-    <p class="help-text"> El iceberg es una metáfora referida a todo aquello que, si bien todavía no ha causado ningún problema, en el futuro podría agravarse y convertirse en algo que nos frene. En otras palabras, el ancla en la retrospectiva del barco de vela, es un problema existente que en un futuro podría agravarse y lastrar el progreso hacía los objetivos que el equipo quiere conseguir.<br>El iceberg, son los problemas potenciales futuros.<br><br>La falta de rigurosidad en los tests, podría ser un ejemplo de esta categoría, ya que puede que en el momento no suponga un problema, pero que en el futuro, sí los cause.</p>`;
+    <p class="help-text"> El iceberg es una metáfora referida a todo aquello que, si bien todavía no ha causado ningún problema, en el futuro podría agravarse y convertirse en algo que nos frene. En otras palabras, el ancla en la retrospectiva del barco de vela, es un problema existente que en un futuro podría agravarse y lastrar el progreso hacía los objetivos que el equipo quiere conseguir.<br>El iceberg, son los problemas potenciales futuros.<br><br>La falta de rigurosidad en los tests, podría ser un ejemplo de esta categoría, ya que puede que en el momento no suponga un problema, pero que en el futuro, sí los cause.</p>
+    <p class="help-text">Icon made by Freepik from www.flaticon.com</p>`;
     popupContentInfo.innerHTML=html;
 }
 
