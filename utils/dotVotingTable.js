@@ -25,7 +25,7 @@ function insertarVotingMode(connection, sala, votingMode, callback){
     connection.query(roomID,function(error,result){
         if(!error){
             let countUsers=`SELECT COUNT(*) as numero
-            FROM userstorie
+            FROM userstory
             WHERE IDSala='${result[0].result}';`;
             connection.query(countUsers,function(err,number){
                 if(!err){

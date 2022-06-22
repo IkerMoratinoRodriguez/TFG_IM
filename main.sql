@@ -559,9 +559,7 @@ RETURNS INT
 DETERMINISTIC 
 BEGIN
     DECLARE roomID INT;
-    
     SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
-    
     IF (roomID > 0) THEN
 		INSERT INTO userstory(Titulo,IDSala)
         VALUES (titleInput, roomID);

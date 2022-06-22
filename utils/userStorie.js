@@ -1,7 +1,7 @@
 const res = require("express/lib/response");
 
 function insertarUS(connection, titulo, sala,callback){
-    let insertQuery = `SELECT insertUserStorie('${titulo}','${sala}') as result;`;
+    let insertQuery = `SELECT insertUserStory('${titulo}','${sala}') as result;`;
 
     connection.query(insertQuery, function(err, result){
         callback(err);
@@ -17,7 +17,7 @@ function userStoriesRoom(connection,room,callback){
         if(err){
             callback(err);
         }else if(id != -1){
-            let consulta = `SELECT Titulo, Votos FROM userstorie WHERE IDSala='${id}'`;
+            let consulta = `SELECT Titulo, Votos FROM userstory WHERE IDSala='${id}'`;
             connection.query(consulta,function(err,result){
                 if(err){
                     console.log(err);
@@ -38,7 +38,7 @@ function deleteUSRoom(connection, room, title, callback){
         if(err){
             callback(err);
         }else if(id != -1){
-            let deleteQuery = `DELETE FROM userstorie 
+            let deleteQuery = `DELETE FROM userstory
                                WHERE IDSala=${id} AND Titulo='${title}';`;
             connection.query(deleteQuery,function(err,result){
                 callback(err);
@@ -50,7 +50,7 @@ function deleteUSRoom(connection, room, title, callback){
 function addPoints(connection,titles,callback){
     for(i=0;i<titles.length;i++){
         if(titles[i]!='-'){
-            let query = `UPDATE userstorie
+            let query = `UPDATE userstory
                      SET Votos=Votos+1
                      WHERE Titulo='${titles[i]}';`;
             connection.query(query, function(err,res){
@@ -71,7 +71,7 @@ function clearVotesRoom(connection,room,callback){
             callback(err);
         else{
             const id_room=res[0].result;
-            let query = `UPDATE userstorie
+            let query = `UPDATE userstory
                          SET Votos = 0
                          WHERE IDSala=${id_room};`;
             connection.query(query,function(e,r){
