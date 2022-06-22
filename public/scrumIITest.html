@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css" >
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/scrumIITest.js"></script> 
+    <title>Test Scrum II</title>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-enviar-resps" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 class="pupup-title">CALIFICACIÓN OBTENIDA</h3>
+            <p id="phrase-calif" class="phrase-calif"> ¡ENHORABUENA, HA SUPERADO SU MEJOR CALIFICACIÓN!</p>
+            <p id="nota-view" class="nota-view"></p>
+        </div>
+    </div>
+    <h1 class="titleP">CUESTIONARIOS DE AUTOEVALUACIÓN</h1>
+    <div>
+        <h2 id="titulo-cuestionario" class="titulo-cuestionario">TÍTULO DEL CUESTIONARIO</h2>
+        <div class="puntuacion-cuestionario">
+            <p id="marcador-puntuacion" class="text-puntuacion"></p>
+        </div>
+    </div>
+    <div id="pool-preguntas">
+        
+    </div>
+    <button class="enviar-cuestionario" id="button-send-test">FINALIZAR CUESTIONARIO</button>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script> 
+</body>
+</html>

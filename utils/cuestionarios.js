@@ -54,8 +54,13 @@ function getTituloCuestionario(connection,idCuestionario,callback){
 }
 
 function almacenarNota(connection,usuario,idCuestionario,nota,callback){
+    console.log("Nota: "+nota);
+    console.log("Cuestionario: "+idCuestionario);
+    console.log("Usuario: "+usuario);
     let insertQuery = `SELECT insert_grade('${usuario}',${idCuestionario},${nota}) as result;`;
     connection.query(insertQuery,function(e,r){
+        console.log(e);
+        console.log(r);
         if(e){
             console.log(e);
             callback(-1);
