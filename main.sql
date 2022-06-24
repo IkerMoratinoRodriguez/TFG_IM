@@ -38,7 +38,7 @@ CREATE TABLE DotVoting (
 
 CREATE TABLE UserStory (
 			IDSala INT NOT NULL,
-            Titulo VARCHAR(200) UNIQUE NOT NULL,
+            Titulo VARCHAR(200) NOT NULL,
             Votos INT DEFAULT 0,
             PRIMARY KEY(IDSala, Titulo),
             CONSTRAINT FKUSuserstory_room FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
