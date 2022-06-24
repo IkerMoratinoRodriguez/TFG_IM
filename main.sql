@@ -194,7 +194,7 @@ INSERT INTO Opcion(Enunciado, Validez, IDPregunta) VALUES
 ('12 valores y 4 principios ágiles.',0,1),
 ('Documentación extensiva sobre software funcional.',1,2),
 ('Individuos e iteraciones sobre procesos y herramientas.',0,2),
-('Individuos e interacciones sobre procesos y herramientas.',0,2),
+('Colaboración con el cliente sobre negociación contractual.',0,2),
 ('Respuesta ante el cambio sobre seguir un plan.',0,2),
 ('Integración y revisión de código solamente en el cierre del proyecto.',1,3),
 ('Entregas pequeñas y frecuentes de versiones de software funcional.',0,3),
