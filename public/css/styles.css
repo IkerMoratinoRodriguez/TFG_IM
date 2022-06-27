@@ -72,6 +72,7 @@ body{
 }
 
 .index-content{
+    font-size: larger;
     margin-top: 10px;
     margin-left: 7%;
     margin-right: 7%;
@@ -209,6 +210,7 @@ body{
 
 
 .tool{
+    font-size: medium;
     float: left;
     margin-left: 0.5%;
     margin-top: 10px;
@@ -1343,6 +1345,7 @@ body{
 }
 
 .tarjeta-cuestionario{
+    font-size: medium;
     border-style: inset;
     border-width: 0.5px;
     margin-left: 3%;
