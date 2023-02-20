@@ -1419,3 +1419,34 @@ body{
     margin-left: 5%;
     font-size: 23px;
 }
+
+/* RETRO CALIFICACIÓN */
+.positive{
+    float: left;
+    background-image: url("/resources/+5.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.negative{
+    float: left;
+    background-image: url("/resources/-5.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.improve{
+    float: left;
+    background-image: url("/resources/-2.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 33.3%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}

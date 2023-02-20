@@ -35,8 +35,9 @@ const {addUserRoomDaily, eliminarUsuarioSalaDaily} = require('./utils/dailyTable
 const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily, addPostitToDaily, loadDailyPostits} = require('./utils/postitDaily');
 const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
 const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, getIdRespuestasCorrectas} = require('./utils/cuestionarios');
-
-
+// NUEVA FUNCIONALIDAD TFG 22-23
+const {addUserRoomRetroCalif,eliminarUsuarioSalaRetroCalif} = require('./utils/retrospectiveCalifTable');
+const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif} = require('./utils/postitRetroCalif.js');
 
 io.on('connection', socket =>{
 
@@ -155,6 +156,33 @@ io.on('connection', socket =>{
                 loadRoomPostitsDaily(connection,room,(res)=>{
                     if(res!=-1){
                         socket.emit('loadPositsJoin',res);
+                    }else{
+                        msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }
+        });
+    });
+    socket.on('joinRetroCalifRoom',({username, room})=>{
+        addUserRoomRetroCalif(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                console.log(msg);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+                //CARGAR POSTITS DE ESA SALA
+                loadRoomPostitsRetroCalif(connection,room,(res)=>{
+                    if(res!=-1){
+                        socket.emit('loadPositsRetroCalifJoin',res);
                     }else{
                         msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
                         console.log(msg);
@@ -735,7 +763,7 @@ io.on('connection', socket =>{
 
         eliminarUsuarioSalaRetro(connection,socket.id,(err)=>{
             if(err){
-                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA";
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA DE BARCO DE VELA";
                 console.log(msg);
                 console.log(err);
                 socket.emit('unexpectedError',msg);
@@ -750,6 +778,15 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError',msg);
             }
         })
+
+        eliminarUsuarioSalaRetroCalif(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA CON CALIFICACIÓN";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        });
 
     });
 
@@ -830,6 +867,62 @@ io.on('connection', socket =>{
                 socket.emit('nuevaNotaReturn',info.n);
             }
         })
+    });
+
+    /*
+        NUEVAS FUNCIONALIDADES
+    */
+
+    socket.on('createPostitCalifRetro', info =>{
+        sala = info.sala;
+        addPostitRetroCalif(connection,info.sala, info.title, info.type, (err)=>{
+            if(err){
+                console.log("ERROR ALMACENANDO POSTIT EN BD:"+res);
+                msg =`HA OCURRIDO UN ERROR ALMACENANDO EL POSTIT EN LA BASE DE DATOS`;
+                socket.emit('unexpectedError',msg);
+            }
+        });
+        let tit = info.title;
+        let tip = info.type;
+        socket.broadcast.to(sala).emit('createPostitRetroCalifReturn',{tit,tip});
+    });
+
+    socket.on('showListPostitsRetroCalif',room=>{
+        loadRoomPostitsRetroCalif(connection,room,(res)=>{
+            if(res!=-1){
+                socket.emit('showListPositsRetroCalifReturn',res);
+            }else{
+                msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+
+    socket.on('titlesToDeleteRetroCalif',({titlesDelete,room})=>{
+        for(i=0;i<titlesDelete.length;i++){
+            //BORRO
+            deletePostitRetroCalif(connection,room,titlesDelete[i],(e)=>{
+                if(e){
+                    msg=`ERROR ELIMINANDO EL POSIT ${titlesDelete[i]} DE LA SALA:${room}`;
+                    console.log(msg);
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+            //MANDAR RESULTANTES A REPERESENTAR A TODOS
+            loadRoomPostitsRetroCalif(connection,room,(res)=>{
+                if(res!=-1){
+                    socket.emit('showListPositsRetroCalifReturn',res);
+                    socket.emit('loadPositsRetroCalifJoin',res);
+                    socket.broadcast.to(room).emit('loadPositsRetroCalifJoin',res);
+                }else{
+                    msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+        }
     });
     
 });

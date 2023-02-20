@@ -639,7 +639,7 @@ BEGIN
     SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
     
     IF (usrID > 0 AND roomID > 0) THEN
-        SET duplicados = (SELECT COUNT(*) FROM poker WHERE IDUsuario=usrID AND IDSala=roomID);
+        SET duplicados = (SELECT COUNT(*) FROM retrospectiva WHERE IDUsuario=usrID AND IDSala=roomID);
         IF (duplicados > 0) THEN
 			RETURN 2; -- Ya existe el par, nunca va a saltar porque da el fallo como error
         ELSE
@@ -786,4 +786,64 @@ BEGIN
 		RETURN 1;
     END IF;
 END $$
+
+
+/*
+	NUEVO
+*/
+
+CREATE TABLE retrospectiva_calif(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usRetroCalif FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomRetroCalif FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE historial_retro_calif(
+	ID int NOT NULL AUTO_INCREMENT,
+	Nombre VARCHAR(80) NOT NULL,
+    IDSala INT NOT NULL,
+	PRIMARY KEY(ID),
+    CONSTRAINT FKRetroCalif_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT UniqueRetroCalifNameInRoom UNIQUE(Nombre, IDSala) 
+);
+
+CREATE TABLE postit_retro_calif(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    IDSala INT NOT NULL,
+    Tipo TINYINT NOT NULL DEFAULT 0,
+    IDRetro INT,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_retroCalif FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT FKIDRetro_retroCalif FOREIGN KEY (IDRetro) REFERENCES historial_retro_calif(ID) ON DELETE CASCADE
+);
+
+-- INSERT RETROSPECTIVE CONNECTION
+DELIMITER $$
+CREATE FUNCTION insertRetroCalifConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+    DECLARE roomID INT;
+    DECLARE usrID INT;
+    DECLARE duplicados INT;
+    
+    SET usrID=(SELECT ID FROM usuario WHERE usuario.Nombre=usrInput);
+    SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
+    
+    IF (usrID > 0 AND roomID > 0) THEN
+        SET duplicados = (SELECT COUNT(*) FROM retrospectiva_calif WHERE IDUsuario=usrID AND IDSala=roomID);
+        IF (duplicados > 0) THEN
+			RETURN 2; -- Ya existe el par, nunca va a saltar porque da el fallo como error
+        ELSE
+			INSERT INTO retrospectiva_calif(IDUsuario, IDSala, SocketID) VALUES (usrID, roomID, socketInput);
+			RETURN 0;
+        END IF;
+	ELSE
+		RETURN 1; -- Si no ha encontrado alguno de los dos (usuario o sala). No debería saltar ya que se comprueba antes de entrar
+    END IF;
+END$$
 
