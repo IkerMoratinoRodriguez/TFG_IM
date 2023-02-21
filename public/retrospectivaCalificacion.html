@@ -44,6 +44,68 @@
             <button id="retro-history-btn" class="stote-new">HISTORIAL DE RETROSPECTIVAS DE LA SALA</button>
         </div>
     </div>
+    <!-- POP UP NAME FOR RETROSPECTIVE-->
+    <div class="overlay" id="overlay-history"></div>
+    <div class="popup-new-postit" id="popup-history">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-history">X</span>
+        </div>
+        <div id="popup-content-history" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup-info">GUARDAR RETROSPECTIVA</h3>
+            <p class="save-retro-tit">INTRODUZCA UN NOMBRE PARA LA RETROSPECTIVA</p>
+            <input id="save-input" class="save-input" type="text">
+            <button id="btn-save-save" class="save-save">GUARDAR</button>
+        </div>
+    </div>
+    <!-- POP UP HISTORIAL RETROSPECTIVAS-->
+    <div class="overlay" id="overlay-retros"></div>
+    <div class="popup" id="popup-retros">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-retros">X</span>
+        </div>
+        <div id="popup-content-retros" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup-info">SELECCIONE LA RETROSPECTIVA QUE DESEA CARGAR</h3>
+            <div class="retro-pool" id="retro-pool">
+
+            </div>
+            <button id="load-retro" class="save-save">CARGAR RETROSPECTIVA</button>
+        </div>
+    </div>
+    <!-- POP UP LOAD RETRO-->
+    <div class="overlay" id="overlay-show-retro"></div>
+    <div class="popup-reload" id="popup-show-retro">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-show-retro">X</span>
+        </div>
+        <div id="popup-show-retro" class="popupcontent" style="height: 100%;">
+            <h1 class="ret-title">RETROSPECTIVA DEL BARCO DE VELA</h1>
+            <div class="wind-load" style="height: 100%;">
+                <div class="upper-wind">
+                    <h3 class="title-load">VIENTO</h3>
+                </div>
+                <div id="positive-load-pool">
+        
+                </div>
+            </div>
+            <div class="anchor-load" style="height: 100%;">
+                <div class="upper-anchor">
+                    <h3 class="title-load">ANCLA</h3>
+                </div>
+                <div id="negative-load-pool">
+        
+                </div>
+            </div>
+            <div class="iceberg-load" style="height: 100%;">
+                <div class="upper-iceberg">
+                    <h3 class="title-load">ICEBERG</h3>
+                </div>
+                <div id="improve-load-pool">
+        
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <h1 class="ret-title">RETROSPECTIVA CON CALIFICACIÓN<button id="option-button" class="option-button">OPCIONES...</button></h1>
     <div id="positive" class="positive" style="height: 100%;">

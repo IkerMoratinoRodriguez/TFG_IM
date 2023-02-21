@@ -37,7 +37,8 @@ const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
 const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, getIdRespuestasCorrectas} = require('./utils/cuestionarios');
 // NUEVA FUNCIONALIDAD TFG 22-23
 const {addUserRoomRetroCalif,eliminarUsuarioSalaRetroCalif} = require('./utils/retrospectiveCalifTable');
-const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif} = require('./utils/postitRetroCalif.js');
+const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif,vinculatePostitRetroCalif, getPostitsRoomRetroCalif} = require('./utils/postitRetroCalif.js');
+const {addRetroCalif, listRetroCalif, idRetroRoomCalif} = require('./utils/historialRetroCalif');
 
 io.on('connection', socket =>{
 
@@ -924,7 +925,79 @@ io.on('connection', socket =>{
             });
         }
     });
+
+    socket.on('blockOptionsRetroCalif',room=>{
+        socket.broadcast.to(room).emit('blockOptionsRetroCalifReturn');
+    });
+
+    socket.on('allowOptionsRetroCalif',room=>{
+        socket.broadcast.to(room).emit('allowOptionsRetroCalifReturn');
+    });
+
+    socket.on('saveRetroCalif',({titulo,room})=>{ //CREAR LA RETROSPECTIVA
+        addRetroCalif(connection,titulo,room,(r)=>{
+            if(r>0){
+                console.log("TODO HA IDO CORRECTO AL AÑADIR UNA NUEVA RETRO Y DEVOLVER SU ID");
+                socket.emit('saveRetroCalifPostits',{room,r});
+            }   
+            else{
+                msg=`ERROR INESPERADO AL INSERTAR RETRO ${titulo} EN LA SALA ${room} Y OBTENER SU ID, `;
+                if(r==-1)
+                    msg +="DEBIDO A QUE YA EXISTÍA EL TÍTULO PARA ESA SALA";
+                else
+                    msg+="DEBIDO A QUE NO SE HA ENCONTRADO LA SALA";
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
     
+    socket.on('saveRetroCalifPostitsServer',({room,r})=>{ //VINCULAR LOS POSTITS A LA RETROSPECTIVA CREADA
+        vinculatePostitRetroCalif(connection,room,r,(error)=>{
+            if(error.length>0){
+                console.log(error);
+                msg=`ERROR INESPERADO AL INSERTAR EL ID DE LA RETROSPECTIVA EN LOS POSITS DE LA MISMA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                console.log("TODO HA IDO CORRECTAMENTE, RETROSPECTIVA GUARDADA CON ÉXITO");
+                socket.emit('retroCalifSavedReturn');
+                socket.broadcast.to(room).emit('retroCalifSavedReturn');
+            }
+        });
+    });
+
+    socket.on('loadRetroCalifHistoryList',room=>{
+        listRetroCalif(connection,room,(res)=>{
+            socket.emit('loadRetroCalifHistoryListReturn',res);
+        })
+    });
+
+    socket.on('loadRetroCalifInPopup',({room,tituloRetroLoad})=>{
+        idRetroRoomCalif(connection,room,tituloRetroLoad,(res)=>{
+            if(res!=-1){
+                console.log("ID DE LA RETROSPECTIVA A RECUPERAR"+res);
+                //TODOS LOS POSTITS DE LA SALA Y DE LA RETRO CON ID RES
+                getPostitsRoomRetroCalif(connection,room,res,(titulos)=>{
+                    if(titulos!=-1){
+                        socket.emit('loadRetroCalifInPopupReturn',titulos);
+                    }else{
+                        msg=`ERROR OBTENIENDO LOS TITULOS DE LA RETROSPECTIVA ${tituloRetroLoad} EN LA SALA ${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }else{
+                msg=`ERROR OBTENIENDO EL ID DE LA RETROSPECTIVA CON TÍTULO ${tituloRetroLoad} EN LA SALA ${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+
+        })
+    });
+
+
+
 });
 
 

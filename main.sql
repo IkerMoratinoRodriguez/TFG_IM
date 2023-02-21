@@ -847,3 +847,24 @@ BEGIN
     END IF;
 END$$
 
+DELIMITER $$
+CREATE FUNCTION saveRetroCalif(titleInput VARCHAR(80), roomInput VARCHAR(80)) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+	DECLARE roomID INT;
+    DECLARE retroIDOut INT;
+    SET roomID = (SELECT ID FROM sala WHERE Nombre=roomInput);
+    IF (roomID > 0) THEN
+		IF((SELECT COUNT(*) FROM historial_retro_calif WHERE Nombre=titleInput AND IDSala=roomID)>=1) THEN
+            RETURN -1; -- YA EXISTÍA ESE TITULO EN ESA SALA
+		ELSE
+			INSERT INTO historial_retro_calif(Nombre,IDSala) VALUES (titleInput,roomID);
+            SET retroIDOut = (SELECT ID FROM historial_retro_calif WHERE Nombre=titleInput AND IDSala=roomID);
+            RETURN retroIDOut;
+        END IF;	
+	ELSE 
+		RETURN -2; -- NO SE ENCUENTRA LA SALA
+    END IF;
+END$$
+
