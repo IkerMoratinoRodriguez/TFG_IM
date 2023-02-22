@@ -805,6 +805,7 @@ CREATE TABLE historial_retro_calif(
 	ID int NOT NULL AUTO_INCREMENT,
 	Nombre VARCHAR(80) NOT NULL,
     IDSala INT NOT NULL,
+    Puntuacion INT NOT NULL,
 	PRIMARY KEY(ID),
     CONSTRAINT FKRetroCalif_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
     CONSTRAINT UniqueRetroCalifNameInRoom UNIQUE(Nombre, IDSala) 

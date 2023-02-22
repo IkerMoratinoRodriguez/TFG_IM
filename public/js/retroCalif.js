@@ -104,7 +104,13 @@ socket.on('loadRetroCalifInPopupReturn',result=>{
         loadRoomPostitsHistory(result);
     }
 });
+socket.on('calculateCalifReturn',puntuaciones=>{
+    calcularPuntuacion(puntuaciones);
+});
+socket.on('showCalifOtherClientsReturn',total=>{
+    alert("LA PUNTUACIÓN DEL SPRINT HA SIDO DE:"+total+" PUNTOS. COMENZANDO NUEVA RETROSPECTIVA...");
 
+});
 
 /*
     MENSAJES RECIVIDOS DEL SERVIDOR
@@ -242,8 +248,10 @@ btnSaveRetro.onclick = function(){
 }
 btnSaveSave.onclick = function(){
     let titulo = saveInput.value;
-    if(titulo.length>0)
+    if(titulo.length>0){
         socket.emit('saveRetroCalif',{titulo,room});
+        socket.emit('calculateCalif',room);
+    }
     else
         alert("TÍTULO DE RETROSPECTIVA VACÍO.");
 }
@@ -378,4 +386,23 @@ function createPostitHistory(title,t){
         poolNegativeLoad.innerHTML+=html;
     else if(t==3)
         poolImproveLoad.innerHTML+=html;
+}
+
+function calcularPuntuacion(puntuaciones){
+    let puntuacionPostit,total=0;
+    alert("CALCULANDO PUNTUACIÓN...");
+    for(k=0;k<puntuaciones.length;k++){
+        puntuacionPostit=puntuaciones[k].Tipo
+        console.log(puntuacionPostit);
+        if(puntuacionPostit=='1'){
+            total+=5;
+        }else if(puntuacionPostit=='2'){
+            total-=5;
+        }else if (puntuacionPostit=='3'){
+            total-=2;
+        }
+        console.log("TOTAL:"+total);
+    }
+    socket.emit('showCalifOtherClients',{room,total});
+    alert("LA PUNTUACIÓN DEL SPRINT HA SIDO DE:"+total+" PUNTOS");
 }

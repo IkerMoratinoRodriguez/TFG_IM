@@ -37,7 +37,7 @@ const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
 const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, getIdRespuestasCorrectas} = require('./utils/cuestionarios');
 // NUEVA FUNCIONALIDAD TFG 22-23
 const {addUserRoomRetroCalif,eliminarUsuarioSalaRetroCalif} = require('./utils/retrospectiveCalifTable');
-const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif,vinculatePostitRetroCalif, getPostitsRoomRetroCalif} = require('./utils/postitRetroCalif.js');
+const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif,vinculatePostitRetroCalif, getPostitsRoomRetroCalif,getPuntuacionRetroCalif} = require('./utils/postitRetroCalif.js');
 const {addRetroCalif, listRetroCalif, idRetroRoomCalif} = require('./utils/historialRetroCalif');
 
 io.on('connection', socket =>{
@@ -967,6 +967,18 @@ io.on('connection', socket =>{
         });
     });
 
+    socket.on('calculateCalif',room=>{
+        getPuntuacionRetroCalif(connection,room,(puntuaciones)=>{
+            if(puntuaciones==-1){
+                msg=`ERROR INESPERADO AL OBTENER LA PUNTUACIÓN DE LA RETROSPECTIVA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('calculateCalifReturn',puntuaciones);
+            }
+        });
+    });
+
     socket.on('loadRetroCalifHistoryList',room=>{
         listRetroCalif(connection,room,(res)=>{
             socket.emit('loadRetroCalifHistoryListReturn',res);
@@ -996,6 +1008,16 @@ io.on('connection', socket =>{
         })
     });
 
+    //REVISAR
+    socket.on('showCalifOtherClients',(room,total)=>{
+        socket.broadcast.to(room).emit('showCalifOtherClientsReturn',total);
+    });
+
+
+    //ALMACENAR PUNTUACIÓN EN LA RETRO CREADA. CUIDADO SI DA ERROR ALMACENANDO O ALGO PORQUE EN SOCKETS SEPARADOS
+    socket.on('storeRetroCalif',total=>{
+
+    });
 
 
 });
