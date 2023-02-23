@@ -1450,3 +1450,85 @@ body{
     border-right-style:groove;
     border-right-width: 0.2px;
 }
+
+/*T-SHIRT*/
+.short{
+    float: left;
+    background-image: url("/resources/S.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.medium{
+    float: left;
+    background-image: url("/resources/M.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.large{
+    float: left;
+    background-image: url("/resources/L.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.xtralarge{
+    float: left;
+    background-image: url("/resources/XL.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+/*MOSCOW*/
+.must{
+    float: left;
+    background-image: url("/resources/must.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.should{
+    float: left;
+    background-image: url("/resources/should.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.could{
+    float: left;
+    background-image: url("/resources/could.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
+
+.wont{
+    float: left;
+    background-image: url("/resources/wont.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 25%;
+    border-right-style:groove;
+    border-right-width: 0.2px;
+}
