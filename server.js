@@ -36,9 +36,13 @@ const {addPostitDaily,loadRoomPostitsDaily, deletePostitDaily, addPostitToDaily,
 const {addDaily, loadDailyHistory} = require('./utils/historialDaily');
 const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, getIdRespuestasCorrectas} = require('./utils/cuestionarios');
 // NUEVA FUNCIONALIDAD TFG 22-23
+    //RETROSPECTIVA CON CALIFICACIÓN
 const {addUserRoomRetroCalif,eliminarUsuarioSalaRetroCalif} = require('./utils/retrospectiveCalifTable');
 const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif,vinculatePostitRetroCalif, getPostitsRoomRetroCalif,getPuntuacionRetroCalif} = require('./utils/postitRetroCalif.js');
 const {addRetroCalif, listRetroCalif, idRetroRoomCalif} = require('./utils/historialRetroCalif');
+    //T-SHIRT
+const{addUserRoomTshirt,eliminarUsuarioSalaTshirt} = require('./utils/tshirtTable');
+const{addPostitTshirt, loadRoomPostitsTshirt, deletePostitTshirt} = require('./utils/postitTshirt');
 
 io.on('connection', socket =>{
 
@@ -184,6 +188,34 @@ io.on('connection', socket =>{
                 loadRoomPostitsRetroCalif(connection,room,(res)=>{
                     if(res!=-1){
                         socket.emit('loadPositsRetroCalifJoin',res);
+                    }else{
+                        msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }
+        });
+    });
+
+    socket.on('joinTshirtRoom',({username, room})=>{
+        addUserRoomTshirt(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                console.log(msg);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+                // CARGAR POSTITS DE ESA SALA
+                loadRoomPostitsTshirt(connection,room,(res)=>{
+                    if(res!=-1){
+                        socket.emit('loadPositsTshirtJoin',res);
                     }else{
                         msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
                         console.log(msg);
@@ -789,6 +821,15 @@ io.on('connection', socket =>{
             }
         });
 
+        eliminarUsuarioSalaTshirt(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA CON CALIFICACIÓN";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        })
+
     });
 
     //DEL CUESTIONARIO
@@ -871,9 +912,18 @@ io.on('connection', socket =>{
     });
 
     /*
+    *
+    *
+    * 
         NUEVAS FUNCIONALIDADES
+    *
+    *
+    * 
     */
 
+    /*
+     RETROSPECTIVA CON CALIFICACIÓN
+     */
     socket.on('createPostitCalifRetro', info =>{
         sala = info.sala;
         addPostitRetroCalif(connection,info.sala, info.title, info.type, (err)=>{
@@ -1019,7 +1069,42 @@ io.on('connection', socket =>{
 
     });
 
-
+    /*
+     T-SHISRT
+     */
+     socket.on('createPostitTshirt',info=>{
+        let tit=info.title;
+        let tipo=info.type;
+        let room=info.sala;
+        console.log(`INSERTANDO POSTIT EN LA BD DE TSHIRT: TITULO:${tit}, TIPO:${tipo}, SALA:${room}`);
+        //ALMACENAR EN LA BD
+        addPostitTshirt(connection,room,tit,tipo,(res)=>{
+            if(res){
+                 console.log("ERROR ALMACENANDO POSTIT EN BD:"+res);
+                 msg =`HA OCURRIDO UN ERROR ALMACENANDO EL POSTIT EN LA BASE DE DATOS`;
+                 socket.emit('unexpectedError',msg);
+            }
+        });
+        socket.broadcast.to(room).emit('createPostitTshirtReturn',{tit,tipo});
+    });
+    socket.on('blockOptionsTshirt',room=>{
+        socket.broadcast.to(room).emit('blockOptionsTshirtReturn');
+    });
+    socket.on('allowOptionsTshirtCalif',room=>{
+        socket.broadcast.to(room).emit('allowOptionsTshirtReturn');
+    });
+    socket.on('showListPositsTshirt',room=>{
+        loadRoomPostitsTshirt(connection,room,(res)=>{
+            if(res!=-1){
+                socket.emit('showListTshirtPositsReturn',res);
+            }else{
+                msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+    
 });
 
 

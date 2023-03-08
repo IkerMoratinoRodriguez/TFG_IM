@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%;">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <script defer src="js/productbacklog.js"></script> 
+    <title>Document</title>
+</head>
+<body style="height: 100%;" class="general-page-poker">
+
+    <!-- POPUP PARA DETALLES DEL ELEMENTO DEL PRODUCT BACKLOG -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-modify-element" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup">Modificar elemento del product backlog:</h3>
+            <p class="text-input">Modificar título:</p>
+            <input type="text" class="input-title-backlog" id="title-input" value="">
+            <p class="text-input">Modificar descripción:</p>
+            <textarea class="input-desc-backlog" cols="30" rows="10"></textarea>
+            <div class="prio-est">
+                <div class="prio">
+                    <p class="text-input-prio">Modificar priorización:</p>
+                    <input type="number" class="input-esti-backlog" id="priorization-input" value="">
+                </div>
+                <div class="est">
+                    <p class="text-input-prio">Modificar estimación:</p>
+                    <input type="number" class="input-esti-backlog" id="estimation-input" value="">
+                </div>
+            </div>
+            <button class="btn-public" id="btn-modificar">MODIFICAR</button>
+        </div>
+    </div>
+
+    <!-- POPUP PARA MODIFICACIÓN DEL ELEMENTO DEL PRODUCT BACKLOG -->
+
+    <div>
+        <h1 class="titleP">PRODUCT BACKLOG</h1> 
+    </div>
+    <div>
+        <div class="contenedor-pb">
+            <table class="product-backlog">
+                <tr class="">      
+                  <th class="header-pb">Título <button class="btn-add-pb-elem">➕</button> </th>      
+                  <th class="header-pb">Priorización</th>      
+                  <th class="header-pb">Estimación</th>      
+                </tr>
+                <div>
+                    <tr>
+                        <td class="title-section-pb">Épicas</td>
+                        <td class="title-section-pb"></td><td class="title-section-pb"></td>
+                        <tr class="pb-element"> 
+                            <td>
+                                <div>
+                                    <p id="title-1" class="element-pb-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, dolore.</p>
+                                    <div>
+                                    </div>
+                                    <button ident="1" class="btn-delete-pb-elem">🗑️</button>
+                                    <button ident="1" class="btn-modify-pb-elem">🖊️</button>
+                                    <button ident="1" class="btn-details-pb-elem">🔎</button>
+                                </div>
+                            </td>      
+                            <td class="element-pb">1</td>      
+                            <td class="element-pb">3</td>      
+                        </tr>
+                    </tr>
+                </div>
+                <div>
+                    <tr>
+                        <td class="title-section-pb">Features</td>
+                        <td class="title-section-pb"></td><td class="title-section-pb"></td>
+                        <tr class="pb-element"> 
+                            <td>
+                                <div>
+                                    <p id="title-1" class="element-pb-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, dolore.</p>
+                                    <div>
+                                    </div>
+                                    <button ident="1" class="btn-delete-pb-elem">🗑️</button>
+                                    <button ident="1" class="btn-modify-pb-elem">🖊️</button>
+                                    <button ident="1" class="btn-details-pb-elem">🔎</button>
+                                </div>
+                            </td>      
+                            <td class="element-pb">1</td>      
+                            <td class="element-pb">3</td>      
+                        </tr>
+                    </tr>
+                </div>
+                <div>
+                    <tr>
+                        <td class="title-section-pb">Historias de usuario</td>
+                        <td class="title-section-pb"></td><td class="title-section-pb"></td>
+                        <tr class="pb-element"> 
+                            <td>
+                                <div>
+                                    <p id="title-1" class="element-pb-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, dolore.</p>
+                                    <div>
+                                    </div>
+                                    <button ident="1" class="btn-delete-pb-elem">🗑️</button>
+                                    <button ident="1" class="btn-modify-pb-elem">🖊️</button>
+                                    <button ident="1" class="btn-details-pb-elem">🔎</button>
+                                </div>
+                            </td>      
+                            <td class="element-pb">1</td>      
+                            <td class="element-pb">3</td>      
+                        </tr>
+                    </tr>
+                </div>
+                     
+                      
+            </table>
+        </div>
+        <div class="botones-pb">
+            <button class="button-pb">PRIORIZAR BACKLOG</button>
+            <br>
+            <button class="button-pb">ESTIMAR BACKLOG</button> 
+        </div>
+    </div>
+</body>
+</html>

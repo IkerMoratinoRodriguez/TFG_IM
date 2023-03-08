@@ -5,11 +5,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css" >
-
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/tshirt.js"></script> 
     <title>T-shirt</title>
 </head>
 <body style="height: 100%;">
-    <h1 class="ret-title">T-SHIRT ESTIMATION<button id="more-options" class="option-button">OPCIONES...</button></h1>
+    <h1 class="ret-title">T-SHIRT ESTIMATION<button id="options-button" class="option-button">OPCIONES...</button></h1>
+    <!-- POPUP ADD POSTIT -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-new-postit" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup"></h3>
+            <p class="text-input">Texto del postit:</p>
+            <input type="text" class="input-postit" id="input-postit">
+            <button class="btn-public" id="btn-public">PUBLICAR</button>
+        </div>
+    </div>
+    <!-- POPUP OPTIONS -->
+    <div class="overlay" id="overlay-options"></div>
+    <div class="popup-options" id="popup-options">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-options">X</span>
+        </div>
+        <div id="popup-content-options" class="popupcontent">
+            <h3 class="pupup-title">OTRAS OPCIONES...</h3>
+            <button id="btn-delete-selected" class="btn-delete-selected">BORRAR SELECCIONADAS</button>
+            <div class="delete">
+                <h4 class="title-delete">BORRAR POSTITS</h4>
+                <p class="text-delete">Seleccione los postit que quiere borrar:</p>
+                <div class="delete-pool" id="delete-pool">
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="short" style="height: 100%;">
         <div class="upper-wind">
             <h3 class="title-side-daily">SHORT</h3>
@@ -34,7 +66,7 @@
             <button class="button-more-daily" id="btn-more-l">+</button>
         </div>
         <div id="pool-l">
-
+ 
         </div>
     </div>
     <div class="xtralarge" style="height: 100%;">
@@ -46,5 +78,10 @@
 
         </div>
     </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script> 
 </body>
 </html>

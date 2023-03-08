@@ -1532,3 +1532,161 @@ body{
     border-right-style:groove;
     border-right-width: 0.2px;
 }
+
+/*
+    PRODUCT BACKLOG
+*/
+.contenedor-pb{
+    float: left;
+    width: 80%;
+}
+.botones-pb{
+    margin-left: 80%;
+    width: 19%;
+    position: fixed;
+    margin-top: 17%;
+}
+.button-pb{
+    color: lightseagreen;
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 20px;
+    margin-left: 20%;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    width: 40%;
+    border-radius: 10%;
+    background-color: transparent;
+}
+.button-pb:hover{
+    color: white;
+    background-color: lightseagreen;
+}
+.product-backlog{
+    width: 95%;
+    margin-left: 2%;
+    margin-top: 3%;
+    font-size: 20px;
+    border: 10px solid lightseagreen;
+    border-collapse: collapse;
+}
+
+.header-pb{
+    font-size: 30px;
+    padding-top: 10px;
+    text-align: center;
+    background-color: lightseagreen;
+    border: 3px solid lightseagreen;
+}
+.element-pb{
+    text-align: center;
+    min-width: 12%;
+    font-size: 20px;
+    padding-top: 10px;
+
+}
+.element-pb-title{
+    font-size: 20px;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 50px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.btn-modify-pb-elem{
+    float: right;
+    margin-bottom: 10px;
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 20%;
+}
+.btn-modify-pb-elem:hover{
+    background-color: lightseagreen;
+}
+
+.btn-details-pb-elem{
+    float: right;
+    margin-bottom: 10px;
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 20%;
+}
+.btn-details-pb-elem:hover{
+    background-color: lightseagreen;
+}
+
+.btn-delete-pb-elem{
+    float: right;
+    margin-bottom: 10px;
+    background-color: transparent;
+    border: 0px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 20%;
+}
+.btn-delete-pb-elem:hover{
+    background-color: lightseagreen;
+}
+.btn-add-pb-elem{
+    float: right;
+    margin-bottom: 10px;
+    background-color: white;
+    border: 0px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 20%;
+}
+.popup-modify-element{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: whitesmoke;
+    width: 1300px;
+    height: 900px;
+    margin-left: -650px; /*Half the value of width to center div*/
+    margin-top: -450px; /*Half the value of height to center div*/
+    z-index: 200;
+}
+.input-title-backlog{
+    margin-left: 10%;
+    width: 80%;
+    height: 30px;
+    font-size: 20px;
+}
+.input-desc-backlog{
+    margin-left: 10%;
+    width: 80%;
+    height: 160;
+    font-size: 20px;
+}
+.text-input-prio{
+    font-size: 30px;
+    text-align: center;
+}
+.input-esti-backlog{
+    font-size: 20px;
+    margin-left: 30%;
+    width: 40%;
+    height: 30px;
+}
+.prio{
+    float: left;
+}
+.est{
+    float: right;
+}
+.prio-est{
+    margin-top: 10px;
+    margin-left: 20%;
+    width: 60%;
+}
+.title-section-pb{
+    background-color:darksalmon;
+    text-align: center;
+}
