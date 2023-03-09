@@ -43,6 +43,10 @@ const {addRetroCalif, listRetroCalif, idRetroRoomCalif} = require('./utils/histo
     //T-SHIRT
 const{addUserRoomTshirt,eliminarUsuarioSalaTshirt} = require('./utils/tshirtTable');
 const{addPostitTshirt, loadRoomPostitsTshirt, deletePostitTshirt} = require('./utils/postitTshirt');
+    //MOSCOW
+const{addUserRoomMoscow,eliminarUsuarioSalaMoscow} = require('./utils/moscowTable');
+const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./utils/postitMoscow');
+
 
 io.on('connection', socket =>{
 
@@ -225,6 +229,35 @@ io.on('connection', socket =>{
             }
         });
     });
+
+    socket.on('joinMoSCoWRoom',({username, room})=>{
+        addUserRoomMoscow(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                console.log(msg);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+                // CARGAR POSTITS DE ESA SALA
+                loadRoomPostitsMoscow(connection,room,(res)=>{
+                    if(res!=-1){
+                        socket.emit('loadPositsMoscowJoin',res);
+                    }else{
+                        msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
+            }
+        });
+    });
+
     //POKER FUNCTIONALITIES
     socket.on('envioEstimacion',estimacion=>{
         estimationJoin(connection,estimacion.usrName,estimacion.room,estimacion.est,(res)=>{
@@ -828,7 +861,16 @@ io.on('connection', socket =>{
                 console.log(err);
                 socket.emit('unexpectedError',msg);
             }
-        })
+        });
+
+        eliminarUsuarioSalaMoscow(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA CON CALIFICACIÓN";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        });
 
     });
 
@@ -1072,7 +1114,7 @@ io.on('connection', socket =>{
     /*
      T-SHISRT
      */
-     socket.on('createPostitTshirt',info=>{
+    socket.on('createPostitTshirt',info=>{
         let tit=info.title;
         let tipo=info.type;
         let room=info.sala;
@@ -1104,7 +1146,24 @@ io.on('connection', socket =>{
             }
         });
     });
-    
+    /*
+     MoSCoW
+     */
+     socket.on('createPostitMoscow',info=>{
+        let tit=info.title;
+        let tipo=info.type;
+        let room=info.sala;
+        console.log(`INSERTANDO POSTIT EN LA BD DE MOSCOW: TITULO:${tit}, TIPO:${tipo}, SALA:${room}`);
+        //ALMACENAR EN LA BD
+        addPostitMoscow(connection,room,tit,tipo,(res)=>{
+            if(res){
+                 console.log("ERROR ALMACENANDO POSTIT EN BD:"+res);
+                 msg =`HA OCURRIDO UN ERROR ALMACENANDO EL POSTIT EN LA BASE DE DATOS`;
+                 socket.emit('unexpectedError',msg);
+            }
+        });
+        socket.broadcast.to(room).emit('createPostitMoscowReturn',{tit,tipo});
+    });
 });
 
 

@@ -869,3 +869,92 @@ BEGIN
     END IF;
 END$$
 
+-- TSHIRT
+CREATE TABLE tshirt(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usTshirt FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomTshirt FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE postitTshirt(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+	Tipo TINYINT NOT NULL DEFAULT 0,
+    IDSala INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_Tshirt FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+-- INSERTAR USUARIO EN LA TABLA DE T-SHIRT 
+DELIMITER $$
+CREATE FUNCTION insertTshirtConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+    DECLARE roomID INT;
+    DECLARE usrID INT;
+    DECLARE duplicados INT;
+    
+    SET usrID=(SELECT ID FROM usuario WHERE usuario.Nombre=usrInput);
+    SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
+    
+    IF (usrID > 0 AND roomID > 0) THEN
+        SET duplicados = (SELECT COUNT(*) FROM tshirt WHERE IDUsuario=usrID AND IDSala=roomID);
+        IF (duplicados > 0) THEN
+			RETURN 2; -- Ya existe el par, nunca va a saltar porque da el fallo como error
+        ELSE
+			INSERT INTO tshirt(IDUsuario, IDSala, SocketID) VALUES (usrID, roomID, socketInput);
+			RETURN 0;
+        END IF;
+	ELSE
+		RETURN 1; -- Si no ha encontrado alguno de los dos (usuario o sala). No debería saltar ya que se comprueba antes de entrar
+    END IF;
+END$$
+
+-- MOSCOW
+CREATE TABLE moscow(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usMoscow FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomMoscow FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE postitMoscow(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+	Tipo TINYINT NOT NULL DEFAULT 0,
+    IDSala INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_Moscow FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+-- INSERTAR USUARIO EN LA TABLA DE T-SHIRT 
+DELIMITER $$
+CREATE FUNCTION insertMoscowConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+    DECLARE roomID INT;
+    DECLARE usrID INT;
+    DECLARE duplicados INT;
+    
+    SET usrID=(SELECT ID FROM usuario WHERE usuario.Nombre=usrInput);
+    SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
+    
+    IF (usrID > 0 AND roomID > 0) THEN
+        SET duplicados = (SELECT COUNT(*) FROM moscow WHERE IDUsuario=usrID AND IDSala=roomID);
+        IF (duplicados > 0) THEN
+			RETURN 2; -- Ya existe el par, nunca va a saltar porque da el fallo como error
+        ELSE
+			INSERT INTO moscow(IDUsuario, IDSala, SocketID) VALUES (usrID, roomID, socketInput);
+			RETURN 0;
+        END IF;
+	ELSE
+		RETURN 1; -- Si no ha encontrado alguno de los dos (usuario o sala). No debería saltar ya que se comprueba antes de entrar
+    END IF;
+END$$

@@ -5,46 +5,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css" >
-
-    <title>T-shirt</title>
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script defer src="js/moscow.js"></script> 
+    <title>MoSCoW</title>
 </head>
 <body style="height: 100%;">
     <h1 class="ret-title">MOSCOW PRIORIORIZATION<button id="more-options" class="option-button">OPCIONES...</button></h1>
+    <!-- POPUP ADD POSTIT -->
+    <div class="overlay" id="overlay"></div>
+    <div class="popup-new-postit" id="popup">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose">X</span>
+        </div>
+        <div id="popup-content" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup"></h3>
+            <p class="text-input">Texto del postit:</p>
+            <input type="text" class="input-postit" id="input-postit">
+            <button class="btn-public" id="btn-public">PUBLICAR</button>
+        </div>
+    </div>
+
     <div class="must" style="height: 100%;">
         <div class="upper-wind">
             <h3 class="title-side-daily">MUST</h3>
-            <button class="button-more-daily" id="btn-more-s">+</button>
-        </div>
-        <div id="pool-s">
-
-        </div>
-    </div>
-    <div class="should" style="height: 100%;">
-        <div class="upper-anchor">
-            <h3 class="title-side-daily">SHOULD</h3>
             <button class="button-more-daily" id="btn-more-m">+</button>
         </div>
         <div id="pool-m">
 
         </div>
     </div>
+    <div class="should" style="height: 100%;">
+        <div class="upper-anchor">
+            <h3 class="title-side-daily">SHOULD</h3>
+            <button class="button-more-daily" id="btn-more-s">+</button>
+        </div>
+        <div id="pool-s">
+
+        </div>
+    </div>
     <div class="could" style="height: 100%;">
         <div class="upper-iceberg">
             <h3 class="title-side-daily">COULD</h3>
-            <button class="button-more-daily" id="btn-more-l">+</button>
+            <button class="button-more-daily" id="btn-more-c">+</button>
         </div>
-        <div id="pool-l">
+        <div id="pool-c">
 
         </div>
     </div>
     <div class="wont" style="height: 100%;">
         <div class="upper-iceberg">
             <h3 class="title-side-daily">WON'T</h3>
-            <button class="button-more-daily" id="btn-more-xl">+</button>
+            <button class="button-more-daily" id="btn-more-w">+</button>
         </div>
-        <div id="pool-xl">
+        <div id="pool-w">
 
         </div>
     </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script> 
 </body>
 </html>
