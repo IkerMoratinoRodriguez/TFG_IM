@@ -15,12 +15,12 @@ const btnMoreM = document.getElementById('btn-more-m');
 const btnMoreS = document.getElementById('btn-more-s');
 const btnMoreC = document.getElementById('btn-more-c');
 const btnMoreW = document.getElementById('btn-more-w');
+const btnOptions = document.getElementById('more-options');
 
 
 /*
     POPUP AÑADIR POSTIT
 */
-//POPUP MORE
 const closePopup = document.getElementById("popupclose");
 const overlay = document.getElementById("overlay");
 const popup = document.getElementById("popup");
@@ -29,6 +29,15 @@ const btnPublic = document.getElementById('btn-public');
 const inputPostit = document.getElementById('input-postit');
 const title = document.getElementById('title-popup');
 
+/*
+    POPUP OPCIONES
+*/
+const closePopupOptions = document.getElementById("popupclose-options");
+const overlayOptions = document.getElementById("overlay-options");
+const popupOptions = document.getElementById("popup-options");
+const popupContentOptions = document.getElementById("popup-content-options");
+const deletePool = document.getElementById('delete-pool');
+const btnDeleteSeleced = document.getElementById('btn-delete-selected');
 
 
 /*
@@ -53,6 +62,18 @@ socket.on('createPostitMoscowReturn',({tit,tipo})=>{
 socket.on('loadPositsMoscowJoin',posits=>{
     loadRoomPostits(posits);
 });
+socket.on('allowOptionsMoscowReturn',()=>{
+    btnOptions.disabled= false;
+});
+socket.on('blockOptionsMoscowReturn',()=>{
+    btnOptions.disabled= true;
+    alert('OTRO USUARIO DE LA SALA ESTÁ MODIFICANDO ELEMENTOS DE LA MISMA, MIENTRAS TANTO, USTED NO PODRÁ HACERLO');
+    console.log("Llegado al cliente");
+});
+socket.on('showListMoscowPositsReturn',postits=>{
+    showListToDelete(postits);
+});
+
 /*
     ON CLICK ELEMENTOS DEL DOM
 */
@@ -84,6 +105,12 @@ btnMoreW.onclick = function(){
     popup.style.display = 'block';
     title.innerHTML="TÍTULO DE POSTIT EN WON'T";
 }
+btnOptions.onclick = function(){
+    overlayOptions.style.display = 'block';
+    popupOptions.style.display = 'block';
+    socket.emit('blockOptionsMoscow',room);
+    socket.emit('showListPositsMoscow',room);
+}
 
 
 /*
@@ -113,6 +140,32 @@ btnPublic.onclick = function(){
     
 }
 
+
+/*
+    ON CLIC OPCIONES
+*/
+overlayOptions.onclick = function(){
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+    socket.emit('allowOptionsMoscow',room);
+}
+closePopupOptions.onclick = function() {
+    overlayOptions.style.display = 'none';
+    popupOptions.style.display = 'none';
+    socket.emit('allowOptionsMoscow',room);
+};
+btnDeleteSeleced.onclick = function(){
+    let titlesDelete= [];
+    var j=0;
+    for(i=0;i<psts;i++){
+        const check = document.getElementById(`p${i}`);
+        if(check.checked){
+            titlesDelete[j]=check.value;
+            j++;
+        }
+    }
+    socket.emit('titlesToDeleteMoscow',{titlesDelete,room});
+}
 
 /*
     FUNCIONES
@@ -146,5 +199,23 @@ function loadRoomPostits(postits){
     poolW.innerHTML="";
     for(i=0;i<postits.length;i++){
         createPostit(postits[i].Titulo, postits[i].Tipo);
+    }
+}
+function showListToDelete(postits){
+    psts=postits.length;
+    deletePool.innerHTML="";
+    for(i=0;i<postits.length;i++){
+        t = postits[i].Tipo;
+        let type;
+        if(t == 1)
+            type="must";
+        else if(t==2)
+            type="should";
+        else if(t==3)
+            type="could";
+        else if(t==4)
+            type="won't";
+        let html = `<input id="p${i}" class="selected-postit" type="checkbox" value="${postits[i].ID}"/>${postits[i].Titulo} (${type})<br>`;
+        deletePool.innerHTML+=html;
     }
 }

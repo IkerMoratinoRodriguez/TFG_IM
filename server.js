@@ -1146,6 +1146,33 @@ io.on('connection', socket =>{
             }
         });
     });
+    socket.on('titlesToDeleteTshirt',({titlesDelete, room})=>{
+        console.log(titlesDelete);
+        for(i=0;i<titlesDelete.length;i++){
+            //BORRO
+            deletePostitTshirt(connection,room,titlesDelete[i],(e)=>{
+                if(e){
+                    msg=`ERROR ELIMINANDO EL POSIT ${titlesDelete[i]} DE LA SALA:${room}`;
+                    console.log(msg);
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+            //MANDAR RESULTANTES A REPERESENTAR A TODOS
+            loadRoomPostitsTshirt(connection,room,(res)=>{
+                if(res!=-1){
+                    socket.emit('showListTshirtPositsReturn',res);
+                    socket.emit('loadPositsTshirtJoin',res);
+                    socket.broadcast.to(room).emit('loadPositsTshirtJoin',res);
+                }else{
+                    msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+        }
+        //ACTUALIZAR LISTA DEL QUE BORRA
+    });
     /*
      MoSCoW
      */
@@ -1163,6 +1190,51 @@ io.on('connection', socket =>{
             }
         });
         socket.broadcast.to(room).emit('createPostitMoscowReturn',{tit,tipo});
+    });
+    socket.on('blockOptionsMoscow',room=>{
+        socket.broadcast.to(room).emit('blockOptionsMoscowReturn');
+        console.log("Llegado al servidor");
+    });
+    socket.on('allowOptionsMoscow',room=>{
+        socket.broadcast.to(room).emit('allowOptionsMoscowReturn');
+    });
+    socket.on('showListPositsMoscow',room=>{
+        loadRoomPostitsMoscow(connection,room,(res)=>{
+            if(res!=-1){
+                socket.emit('showListMoscowPositsReturn',res);
+            }else{
+                msg=`ERROR MOSTRANDO LOS POSITS DE LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+    socket.on('titlesToDeleteMoscow',({titlesDelete, room})=>{
+        console.log(titlesDelete);
+        for(i=0;i<titlesDelete.length;i++){
+            //BORRO
+            deletePostitMoscow(connection,room,titlesDelete[i],(e)=>{
+                if(e){
+                    msg=`ERROR ELIMINANDO EL POSIT ${titlesDelete[i]} DE LA SALA:${room}`;
+                    console.log(msg);
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+            //MANDAR RESULTANTES A REPERESENTAR A TODOS
+            loadRoomPostitsMoscow(connection,room,(res)=>{
+                if(res!=-1){
+                    socket.emit('showListMoscowPositsReturn',res);
+                    socket.emit('loadPositsMoscowJoin',res);
+                    socket.broadcast.to(room).emit('loadPositsMoscowJoin',res);
+                }else{
+                    msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
+        }
+        //ACTUALIZAR LISTA DEL QUE BORRA
     });
 });
 

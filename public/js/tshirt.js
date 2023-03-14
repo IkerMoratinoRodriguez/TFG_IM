@@ -158,6 +158,18 @@ closePopupOptions.onclick = function() {
     popupOptions.style.display = 'none';
     socket.emit('allowOptionsTshirtCalif',room);
 };
+btnDeleteSeleced.onclick = function(){
+    let titlesDelete= [];
+    var j=0;
+    for(i=0;i<psts;i++){
+        const check = document.getElementById(`p${i}`);
+        if(check.checked){
+            titlesDelete[j]=check.value;
+            j++;
+        }
+    }
+    socket.emit('titlesToDeleteTshirt',{titlesDelete,room});
+}
 
 
 /*
