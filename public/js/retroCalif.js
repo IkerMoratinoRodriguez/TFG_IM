@@ -41,6 +41,7 @@ const positivePool = document.getElementById('positive-pool');
 const negativePool = document.getElementById('negative-pool');
 const improvePool = document.getElementById('improve-pool');
 const btnOptions = document.getElementById('option-button');
+const puntuacionHtml = document.getElementById('puntuacion-retro-calif');
 
 
 //POPUP HISTORIAL RETROS
@@ -63,7 +64,8 @@ const poolImproveLoad= document.getElementById('improve-load-pool');
 
 //GLOBAL VARIABLES
 var sec=0; //INDICA LA SECCIÓN EN LA QUE AÑADIR EL NUEVO POSTIT. 1->POSITIVE   2->NEGATIVE   3->IMPROVE
-var puntuacion=0;
+var puntuacion=0; //para enviar
+var puntuacionGlobal=0;
 var psts=0;
 var retros=0;
 
@@ -132,6 +134,9 @@ socket.on('blockOptionsRetroCalifReturn',()=>{
 socket.on('allowOptionsRetroCalifReturn',()=>{
     btnOptions.disabled= false;
 });
+socket.on('actualizarCalificacionRetroReturn',pg=>{
+    actualizarPuntuacionGlobalVisual(pg);
+});
 /*
     ON CLICK BOTONES AÑADIR POSTITS
 */
@@ -177,6 +182,7 @@ btnPublic.onclick = function(){
     titulo = inputPostit.value;
     if(titulo.length>0){
         createPostit(titulo,0); //CREAR EN MI CLIENTE
+        actualizarPuntuacionGlobal(sec);
         let info = {
             sala:room,
             title:titulo,
@@ -345,9 +351,21 @@ function loadRoomPostits(postits){
     positivePool.innerHTML="";
     negativePool.innerHTML="";
     improvePool.innerHTML="";
+    var ti;
     for(i=0;i<postits.length;i++){
-        createPostit(postits[i].Titulo, postits[i].Tipo);
+        ti = postits[i].Tipo;
+        createPostit(postits[i].Titulo, ti);
+        if(ti==1)
+            pts=5;
+        else if(ti==2)
+            pts=-5;
+        else if(ti==3)
+            pts=-2; 
+        puntuacionGlobal+=pts;  
     }
+    console.log(puntuacionGlobal);
+    html="CALIFICACIÓN:"+puntuacionGlobal.toString(); 
+    puntuacionHtml.innerHTML=html;
 }
 
 function showListToDelete(postits){
@@ -405,4 +423,24 @@ function calcularPuntuacion(puntuaciones){
     }
     socket.emit('showCalifOtherClients',{room,total});
     alert("LA PUNTUACIÓN DEL SPRINT HA SIDO DE:"+total+" PUNTOS");
+}
+
+function actualizarPuntuacionGlobal(seccion){
+    if(seccion==1)
+        pts=5;
+    else if(seccion==2)
+        pts=-5;
+    else if(seccion==3)
+        pts=-2;
+    puntuacionGlobal+=pts;
+    html="CALIFICACIÓN:"+puntuacionGlobal.toString();
+    puntuacionHtml.innerHTML=html;
+    pg=puntuacionGlobal;
+    socket.emit('actualizarCalificacionRetro',{room,pg});
+}
+
+function actualizarPuntuacionGlobalVisual(p){
+    puntuacionGlobal=p;
+    html="CALIFICACIÓN:"+p;
+    puntuacionHtml.innerHTML=html;
 }

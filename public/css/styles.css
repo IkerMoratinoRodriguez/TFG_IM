@@ -1451,6 +1451,18 @@ body{
     border-right-width: 0.2px;
 }
 
+.title-side-retro-calif{
+    float: left;
+    margin-left: 15%;
+    font-size: 30px;
+}
+.puntuacion-retro-calif{
+    background-color: lightseagreen;
+}
+.puntuacion-retro-calif-title{
+    text-align: center;
+    font-size: 30px;
+}
 /*T-SHIRT*/
 .short{
     float: left;

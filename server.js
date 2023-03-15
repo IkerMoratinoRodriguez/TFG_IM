@@ -1100,11 +1100,14 @@ io.on('connection', socket =>{
         })
     });
 
-    //REVISAR
-    socket.on('showCalifOtherClients',(room,total)=>{
-        socket.broadcast.to(room).emit('showCalifOtherClientsReturn',total);
+    socket.on('actualizarCalificacionRetro',({room,pg})=>{
+        socket.broadcast.to(room).emit('actualizarCalificacionRetroReturn',pg);
     });
 
+    //REVISAR
+    socket.on('showCalifOtherClients',({room,total})=>{
+        socket.broadcast.to(room).emit('showCalifOtherClientsReturn',total);
+    });
 
     //ALMACENAR PUNTUACIÓN EN LA RETRO CREADA. CUIDADO SI DA ERROR ALMACENANDO O ALGO PORQUE EN SOCKETS SEPARADOS
     socket.on('storeRetroCalif',total=>{
