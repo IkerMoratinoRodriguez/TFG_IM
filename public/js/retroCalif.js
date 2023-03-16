@@ -61,6 +61,7 @@ const popupContentShowRetro = document.getElementById("popup-show-retro");
 const poolPositiveLoad= document.getElementById('positive-load-pool');
 const poolNegativeLoad= document.getElementById('negative-load-pool');
 const poolImproveLoad= document.getElementById('improve-load-pool');
+const califLoad = document.getElementById('puntuacion-retro-calif-load');
 
 //GLOBAL VARIABLES
 var sec=0; //INDICA LA SECCIÓN EN LA QUE AÑADIR EL NUEVO POSTIT. 1->POSITIVE   2->NEGATIVE   3->IMPROVE
@@ -91,6 +92,9 @@ socket.on('retroCalifSavedReturn',()=>{
     negativePool.innerHTML="";
     improvePool.innerHTML="";
     btnOptions.disabled= false;
+    puntuacionGlobal=0;
+    html="CALIFICACIÓN:"+puntuacionGlobal;
+    puntuacionHtml.innerHTML=html;
 });
 socket.on('loadRetroCalifHistoryListReturn',titles=>{
     poolRetro.innerHTML="";
@@ -108,10 +112,6 @@ socket.on('loadRetroCalifInPopupReturn',result=>{
 });
 socket.on('calculateCalifReturn',puntuaciones=>{
     calcularPuntuacion(puntuaciones);
-});
-socket.on('showCalifOtherClientsReturn',total=>{
-    alert("LA PUNTUACIÓN DEL SPRINT HA SIDO DE:"+total+" PUNTOS. COMENZANDO NUEVA RETROSPECTIVA...");
-
 });
 
 /*
@@ -136,6 +136,10 @@ socket.on('allowOptionsRetroCalifReturn',()=>{
 });
 socket.on('actualizarCalificacionRetroReturn',pg=>{
     actualizarPuntuacionGlobalVisual(pg);
+});
+socket.on('loadCalif',c=>{
+    //CAMBIAR LA CALIFICACIÓN
+    califLoad.innerHTML="CALIFICACIÓN:"+c;
 });
 /*
     ON CLICK BOTONES AÑADIR POSTITS
@@ -255,8 +259,7 @@ btnSaveRetro.onclick = function(){
 btnSaveSave.onclick = function(){
     let titulo = saveInput.value;
     if(titulo.length>0){
-        socket.emit('saveRetroCalif',{titulo,room});
-        socket.emit('calculateCalif',room);
+        socket.emit('saveRetroCalif',{titulo,room,puntuacionGlobal});
     }
     else
         alert("TÍTULO DE RETROSPECTIVA VACÍO.");
@@ -351,7 +354,7 @@ function loadRoomPostits(postits){
     positivePool.innerHTML="";
     negativePool.innerHTML="";
     improvePool.innerHTML="";
-    var ti;
+    var ti,pts;
     for(i=0;i<postits.length;i++){
         ti = postits[i].Tipo;
         createPostit(postits[i].Titulo, ti);

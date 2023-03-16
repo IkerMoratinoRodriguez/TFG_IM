@@ -94,31 +94,11 @@ function getPostitsRoomRetroCalif(connection,room,retro,callback){
     });
 }
 
-function getPuntuacionRetroCalif(connection,room,callback){
-    let queryRoom = `SELECT ID FROM sala WHERE Nombre='${room}'`;
-    connection.query(queryRoom,function(e,result){
-        if(!e){
-            let query = `SELECT Tipo FROM postit_retro_calif WHERE IDSala=${result[0].ID} AND IDRetro IS NULL`;
-            connection.query(query,function(error,res){
-                if(!error){
-                    callback(res);
-                }else{
-                    console.log(error);
-                    callback(-1);
-                }
-            })
-        }else{
-            console.log(e);
-            callback(-1);
-        }
-    })
-}
 
 module.exports = {
     addPostitRetroCalif,
     loadRoomPostitsRetroCalif,
     deletePostitRetroCalif,
     vinculatePostitRetroCalif,
-    getPostitsRoomRetroCalif,
-    getPuntuacionRetroCalif
+    getPostitsRoomRetroCalif
 }

@@ -1,5 +1,5 @@
-function addRetroCalif(connection,titulo,sala,callback){
-    let query =`SELECT saveRetroCalif('${titulo}','${sala}') as result;`;
+function addRetroCalif(connection,titulo,sala,calificacion,callback){
+    let query =`SELECT saveRetroCalif('${titulo}','${sala}','${calificacion}') as result;`;
    
     connection.query(query,function(error,result){
         let res = result[0].result;
@@ -33,11 +33,11 @@ function idRetroRoomCalif(connection, sala, title, callback){
     let queryRoom = `SELECT ID FROM sala WHERE Nombre='${sala}'`;
     connection.query(queryRoom,function(e,result){
         if(!e){
-            let query = `SELECT ID FROM historial_retro_calif WHERE IDSala=${result[0].ID} AND Nombre='${title}'`;
+            let query = `SELECT ID, Puntuacion FROM historial_retro_calif WHERE IDSala=${result[0].ID} AND Nombre='${title}'`;
             connection.query(query,function(error,resultado){
                 if(!error)
                     if(resultado)
-                        callback(resultado[0].ID);
+                        callback(resultado[0]);
                     else
                         callback(-1);
                 else {

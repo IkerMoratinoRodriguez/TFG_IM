@@ -38,7 +38,7 @@ const {getCuestionario, getNotaUsrCues, getTituloCuestionario, almacenarNota, ge
 // NUEVA FUNCIONALIDAD TFG 22-23
     //RETROSPECTIVA CON CALIFICACIÓN
 const {addUserRoomRetroCalif,eliminarUsuarioSalaRetroCalif} = require('./utils/retrospectiveCalifTable');
-const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif,vinculatePostitRetroCalif, getPostitsRoomRetroCalif,getPuntuacionRetroCalif} = require('./utils/postitRetroCalif.js');
+const {addPostitRetroCalif, loadRoomPostitsRetroCalif,deletePostitRetroCalif,vinculatePostitRetroCalif, getPostitsRoomRetroCalif} = require('./utils/postitRetroCalif.js');
 const {addRetroCalif, listRetroCalif, idRetroRoomCalif} = require('./utils/historialRetroCalif');
     //T-SHIRT
 const{addUserRoomTshirt,eliminarUsuarioSalaTshirt} = require('./utils/tshirtTable');
@@ -1026,8 +1026,8 @@ io.on('connection', socket =>{
         socket.broadcast.to(room).emit('allowOptionsRetroCalifReturn');
     });
 
-    socket.on('saveRetroCalif',({titulo,room})=>{ //CREAR LA RETROSPECTIVA
-        addRetroCalif(connection,titulo,room,(r)=>{
+    socket.on('saveRetroCalif',({titulo,room,puntuacionGlobal})=>{ //CREAR LA RETROSPECTIVA
+        addRetroCalif(connection,titulo,room,puntuacionGlobal,(r)=>{
             if(r>0){
                 console.log("TODO HA IDO CORRECTO AL AÑADIR UNA NUEVA RETRO Y DEVOLVER SU ID");
                 socket.emit('saveRetroCalifPostits',{room,r});
@@ -1059,18 +1059,6 @@ io.on('connection', socket =>{
         });
     });
 
-    socket.on('calculateCalif',room=>{
-        getPuntuacionRetroCalif(connection,room,(puntuaciones)=>{
-            if(puntuaciones==-1){
-                msg=`ERROR INESPERADO AL OBTENER LA PUNTUACIÓN DE LA RETROSPECTIVA`;
-                console.log(msg);
-                socket.emit('unexpectedError',msg);
-            }else{
-                socket.emit('calculateCalifReturn',puntuaciones);
-            }
-        });
-    });
-
     socket.on('loadRetroCalifHistoryList',room=>{
         listRetroCalif(connection,room,(res)=>{
             socket.emit('loadRetroCalifHistoryListReturn',res);
@@ -1079,10 +1067,11 @@ io.on('connection', socket =>{
 
     socket.on('loadRetroCalifInPopup',({room,tituloRetroLoad})=>{
         idRetroRoomCalif(connection,room,tituloRetroLoad,(res)=>{
-            if(res!=-1){
-                console.log("ID DE LA RETROSPECTIVA A RECUPERAR"+res);
+            if(res.ID>0){
+                console.log("ID DE LA RETROSPECTIVA A RECUPERAR"+res.ID);
+                socket.emit('loadCalif',res.Puntuacion);
                 //TODOS LOS POSTITS DE LA SALA Y DE LA RETRO CON ID RES
-                getPostitsRoomRetroCalif(connection,room,res,(titulos)=>{
+                getPostitsRoomRetroCalif(connection,room,res.ID,(titulos)=>{
                     if(titulos!=-1){
                         socket.emit('loadRetroCalifInPopupReturn',titulos);
                     }else{
@@ -1104,15 +1093,6 @@ io.on('connection', socket =>{
         socket.broadcast.to(room).emit('actualizarCalificacionRetroReturn',pg);
     });
 
-    //REVISAR
-    socket.on('showCalifOtherClients',({room,total})=>{
-        socket.broadcast.to(room).emit('showCalifOtherClientsReturn',total);
-    });
-
-    //ALMACENAR PUNTUACIÓN EN LA RETRO CREADA. CUIDADO SI DA ERROR ALMACENANDO O ALGO PORQUE EN SOCKETS SEPARADOS
-    socket.on('storeRetroCalif',total=>{
-
-    });
 
     /*
      T-SHISRT
