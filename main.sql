@@ -806,6 +806,7 @@ CREATE TABLE historial_retro_calif(
 	Nombre VARCHAR(80) NOT NULL,
     IDSala INT NOT NULL,
     Puntuacion INT NOT NULL,
+    Fecha VARCHAR(11),
 	PRIMARY KEY(ID),
     CONSTRAINT FKRetroCalif_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
     CONSTRAINT UniqueRetroCalifNameInRoom UNIQUE(Nombre, IDSala) 
@@ -849,7 +850,7 @@ BEGIN
 END$$
 
 DELIMITER $$
-CREATE FUNCTION saveRetroCalif(titleInput VARCHAR(80), roomInput VARCHAR(80), puntuacionInput INT) 
+CREATE FUNCTION saveRetroCalif(titleInput VARCHAR(80), roomInput VARCHAR(80), puntuacionInput INT, fechaInput VARCHAR(11)) 
 RETURNS INT
 DETERMINISTIC 
 BEGIN
@@ -860,7 +861,7 @@ BEGIN
 		IF((SELECT COUNT(*) FROM historial_retro_calif WHERE Nombre=titleInput AND IDSala=roomID)>=1) THEN
             RETURN -1; -- YA EXISTÍA ESE TITULO EN ESA SALA
 		ELSE
-			INSERT INTO historial_retro_calif(Nombre,IDSala, Puntuacion) VALUES (titleInput,roomID, puntuacionInput);
+			INSERT INTO historial_retro_calif(Nombre,IDSala, Puntuacion, Fecha) VALUES (titleInput,roomID, puntuacionInput,fechaInput);
             SET retroIDOut = (SELECT ID FROM historial_retro_calif WHERE Nombre=titleInput AND IDSala=roomID);
             RETURN retroIDOut;
         END IF;	

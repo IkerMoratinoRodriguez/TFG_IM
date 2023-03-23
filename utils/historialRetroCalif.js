@@ -1,5 +1,5 @@
-function addRetroCalif(connection,titulo,sala,calificacion,callback){
-    let query =`SELECT saveRetroCalif('${titulo}','${sala}','${calificacion}') as result;`;
+function addRetroCalif(connection,titulo,sala,calificacion,fecha,callback){
+    let query =`SELECT saveRetroCalif('${titulo}','${sala}','${calificacion}','${fecha}') as result;`;
    
     connection.query(query,function(error,result){
         let res = result[0].result;

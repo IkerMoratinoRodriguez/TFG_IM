@@ -10,113 +10,144 @@
 </head>
 <body style="height: 100%;" class="general-page-poker">
 
-    <!-- POPUP PARA DETALLES DEL ELEMENTO DEL PRODUCT BACKLOG -->
-    <div class="overlay" id="overlay"></div>
-    <div class="popup-modify-element" id="popup">
+    <!-- POPUP PARA AÑADIR ÉPICA AL PRODUCT BACKLOG -->
+    <div class="overlay" id="overlay-add-e"></div>
+    <div class="popup-modify-element" id="popup-add-e">
         <div class="popupcontrols">
-            <span class="popupclose" id="popupclose">X</span>
+            <span class="popupclose" id="popupclose-add-e">X</span>
         </div>
-        <div id="popup-content" class="popupcontent">
-            <h3 class="pupup-title" id="title-popup">Modificar elemento del product backlog:</h3>
-            <p class="text-input">Modificar título:</p>
-            <input type="text" class="input-title-backlog" id="title-input" value="">
-            <p class="text-input">Modificar descripción:</p>
-            <textarea class="input-desc-backlog" cols="30" rows="10"></textarea>
+        <div id="popup-content-add-e" class="popupcontent">
+            <h3 class="pupup-title" id="title-popup-add-e">Añadir épica al product backlog</h3>
+            <p class="text-input">Título:</p>
+            <input type="text" class="input-title-backlog" id="title-input-add-e" value="">
+            <p class="text-input">Descripción:</p>
+            <textarea id="description-input-add-e" class="input-desc-backlog" cols="30" rows="10"></textarea>
             <div class="prio-est">
                 <div class="prio">
-                    <p class="text-input-prio">Modificar priorización:</p>
-                    <input type="number" class="input-esti-backlog" id="priorization-input" value="">
+                    <p class="text-input-prio">Priorización:</p>
+                    <input type="number" class="input-esti-backlog" id="priorization-input-add-e" value="">
                 </div>
                 <div class="est">
-                    <p class="text-input-prio">Modificar estimación:</p>
-                    <input type="number" class="input-esti-backlog" id="estimation-input" value="">
+                    <p class="text-input-prio">Estimación:</p>
+                    <input type="number" class="input-esti-backlog" id="estimation-input-add-e" value="">
                 </div>
             </div>
-            <button class="btn-public" id="btn-modificar">MODIFICAR</button>
+            <button class="btn-public" id="btn-modificar-add-e">AÑADIR</button>
         </div>
     </div>
 
-    <!-- POPUP PARA MODIFICACIÓN DEL ELEMENTO DEL PRODUCT BACKLOG -->
+    <!-- POPUP PARA ELIMINAR ELEMENTOS DEL PRODUCT BACKLOG -->
+    <div class="overlay" id="overlay-delete"></div>
+    <div class="popup-modify-element" id="popup-delete">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-delete">X</span>
+        </div>
+        <div id="popup-content-delete" class="popupcontent">
+            <h3 class="pupup-title">ELIMINAR ELEMENTOS</h3>
+            <div class="delete-epics">
+                <h3 class="title-delete-section">ÉPICAS</h3>
+                <div id="epic-delete-pool">
+                    <!-- TITULOS ÉPICAS -->
+                    <input id="" class="selected-delete-pb" type="checkbox" value=""/>Este es el título de una épica por<br> 
+                </div>
+            </div>
+            <div class="delete-epics">
+                <h3 class="title-delete-section">FEATURES</h3>
+                <div id="feature-delete-pool">
+                    <!-- TITULOS ÉPICAS -->
+                </div>
+            </div>
+            <div class="delete-epics">
+                <h3 class="title-delete-section">HISTORIAS DE USUARIO</h3>
+                <div id="us-delete-pool">
+                    <!-- TITULOS ÉPICAS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP PARA MOSTRAR DETALLES DE UN ELEMENTO DEL PRODUCT BACKLOG -->
+    <div class="overlay" id="overlay-details"></div>
+    <div class="popup-modify-element" id="popup-details">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-details">X</span>
+        </div>
+        <div id="popup-content-details" class="popupcontent">
+            <h3 class="pupup-title">DETALLES DE ELEMENTO</h3>
+            <div class="delete-epics">
+                <h3 class="title-delete-section">ÉPICAS</h3>
+                <div id="epic-details-pool">
+                    <!-- TITULOS ÉPICAS -->
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                </div>
+            </div>
+            <div class="delete-epics">
+                <h3 class="title-delete-section">FEATURES</h3>
+                <div id="feature-details-pool">
+                    <!-- TITULOS ÉPICAS -->
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+
+                </div>
+            </div>
+            <div class="delete-epics">
+                <h3 class="title-delete-section">HISTORIAS DE USUARIO</h3>
+                <div id="us-delete-pool">
+                    <!-- TITULOS ÉPICAS -->
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div>
         <h1 class="titleP">PRODUCT BACKLOG</h1> 
     </div>
-    <div>
-        <div class="contenedor-pb">
-            <table class="product-backlog">
-                <tr class="">      
-                  <th class="header-pb">Título <button class="btn-add-pb-elem">➕</button> </th>      
-                  <th class="header-pb">Priorización</th>      
-                  <th class="header-pb">Estimación</th>      
-                </tr>
-                <div>
-                    <tr>
-                        <td class="title-section-pb">Épicas</td>
-                        <td class="title-section-pb"></td><td class="title-section-pb"></td>
-                        <tr class="pb-element"> 
-                            <td>
-                                <div>
-                                    <p id="title-1" class="element-pb-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, dolore.</p>
-                                    <div>
-                                    </div>
-                                    <button ident="1" class="btn-delete-pb-elem">🗑️</button>
-                                    <button ident="1" class="btn-modify-pb-elem">🖊️</button>
-                                    <button ident="1" class="btn-details-pb-elem">🔎</button>
-                                </div>
-                            </td>      
-                            <td class="element-pb">1</td>      
-                            <td class="element-pb">3</td>      
-                        </tr>
-                    </tr>
-                </div>
-                <div>
-                    <tr>
-                        <td class="title-section-pb">Features</td>
-                        <td class="title-section-pb"></td><td class="title-section-pb"></td>
-                        <tr class="pb-element"> 
-                            <td>
-                                <div>
-                                    <p id="title-1" class="element-pb-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, dolore.</p>
-                                    <div>
-                                    </div>
-                                    <button ident="1" class="btn-delete-pb-elem">🗑️</button>
-                                    <button ident="1" class="btn-modify-pb-elem">🖊️</button>
-                                    <button ident="1" class="btn-details-pb-elem">🔎</button>
-                                </div>
-                            </td>      
-                            <td class="element-pb">1</td>      
-                            <td class="element-pb">3</td>      
-                        </tr>
-                    </tr>
-                </div>
-                <div>
-                    <tr>
-                        <td class="title-section-pb">Historias de usuario</td>
-                        <td class="title-section-pb"></td><td class="title-section-pb"></td>
-                        <tr class="pb-element"> 
-                            <td>
-                                <div>
-                                    <p id="title-1" class="element-pb-title">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Obcaecati, dolore.</p>
-                                    <div>
-                                    </div>
-                                    <button ident="1" class="btn-delete-pb-elem">🗑️</button>
-                                    <button ident="1" class="btn-modify-pb-elem">🖊️</button>
-                                    <button ident="1" class="btn-details-pb-elem">🔎</button>
-                                </div>
-                            </td>      
-                            <td class="element-pb">1</td>      
-                            <td class="element-pb">3</td>      
-                        </tr>
-                    </tr>
-                </div>
-                     
-                      
-            </table>
+
+    <div class="tabla-pb">
+        <div class="cabecera-tabla">
+            <p class="cab-pb-1">TÍTULO</p>
+            <p class="cab-pb-2">PRIORIZACIÓN</p>
+            <p class="cab-pb-3">ESTIMACIÓN</p>
         </div>
-        <div class="botones-pb">
-            <button class="button-pb">PRIORIZAR BACKLOG</button>
-            <br>
-            <button class="button-pb">ESTIMAR BACKLOG</button> 
+        <div class="cabecera-elem">
+            <p class="title-cabecera-pb">Épicas</p>
+            <button id="add-epic" class="btn-add-pb-elem">➕</button>
+        </div>
+        <div id="epic-pool" class="rows-pb">
+            <!-- ÉPICAS -->
+        </div>
+        <div class="cabecera-elem">
+            <p class="title-cabecera-pb">Features</p>
+            <button id="add-feature" class="btn-add-pb-elem">➕</button>
+        </div>
+        <div id="features-pool" class="rows-pb"> 
+            <!-- FEATURES -->
+        </div>
+        <div class="cabecera-elem">
+            <p class="title-cabecera-pb">Historias de usuario</p>
+            <button id="add-us" class="btn-add-pb-elem">➕</button>
+        </div>
+        <div id="us-pool" class="rows-pb">
+            <!-- HISTORIAS DE USUARIO -->
+        </div>
+    </div>
+
+    <div class="botones-pb">    
+        <div>
+            <p class="title-buttons">Modificar Product Backlog:</p>
+            <button id="delete-element" class="button-pb">ELIMINAR ELEMENTO</button>
+            <button id="element-details" class="button-pb2">DETALLES DE ELEMENTO</button>
+        </div>
+        <div>
+            <p class="title-buttons">Estimar o priorizar Product Backlog</p>
+            <button onclick="location.href='http://localhost:3000/priorizationtools.html'" class="button-pb">PRIORIZAR BACKLOG</button>
+            <button onclick="location.href='http://localhost:3000/estimationtools.html'" class="button-pb2">ESTIMAR BACKLOG</button> 
         </div>
     </div>
 </body>

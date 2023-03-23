@@ -1027,7 +1027,12 @@ io.on('connection', socket =>{
     });
 
     socket.on('saveRetroCalif',({titulo,room,puntuacionGlobal})=>{ //CREAR LA RETROSPECTIVA
-        addRetroCalif(connection,titulo,room,puntuacionGlobal,(r)=>{
+        var today = new Date();
+        var day = today.getDate();
+        var month = today.getMonth() + 1;
+        var year = today.getFullYear();
+        fecha=`${day}/${month}/${year}`
+        addRetroCalif(connection,titulo,room,puntuacionGlobal,fecha,(r)=>{
             if(r>0){
                 console.log("TODO HA IDO CORRECTO AL AÑADIR UNA NUEVA RETRO Y DEVOLVER SU ID");
                 socket.emit('saveRetroCalifPostits',{room,r});
