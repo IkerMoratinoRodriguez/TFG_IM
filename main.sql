@@ -959,3 +959,76 @@ BEGIN
 		RETURN 1; -- Si no ha encontrado alguno de los dos (usuario o sala). No debería saltar ya que se comprueba antes de entrar
     END IF;
 END$$
+
+-- Product Backlog
+CREATE TABLE productBacklog(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usPB FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomPB FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE pb_epica(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Descripcion VARCHAR(1000) NOT NULL,
+    Priorizacion INT  NOT NULL, 
+    Estimacion INT NOT NULL,
+    IDSala INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idSalaPB FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE pb_feature(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Descripcion VARCHAR(1000) NOT NULL,
+    Priorizacion INT  NOT NULL, 
+    Estimacion INT NOT NULL,
+    IDSala INT NOT NULL,
+    IDEpica INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idSalaPBFeat FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_idEpicaPB FOREIGN KEY(IDEpica) REFERENCES pb_epica(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE pb_user_story(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Descripcion VARCHAR(1000) NOT NULL,
+    Priorizacion INT  NOT NULL, 
+    Estimacion INT NOT NULL,
+    IDSala INT NOT NULL,
+	IDFeature INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idSalaPBUserStory FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_idFeaturePB FOREIGN KEY(IDFeature) REFERENCES pb_feature(ID) ON DELETE CASCADE
+);
+
+DELIMITER $$
+CREATE FUNCTION insertProductBacklogConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+    DECLARE roomID INT;
+    DECLARE usrID INT;
+    DECLARE duplicados INT;
+    
+    SET usrID=(SELECT ID FROM usuario WHERE usuario.Nombre=usrInput);
+    SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
+    
+    IF (usrID > 0 AND roomID > 0) THEN
+        SET duplicados = (SELECT COUNT(*) FROM productbacklog WHERE IDUsuario=usrID AND IDSala=roomID);
+        IF (duplicados > 0) THEN
+			RETURN 2; -- Ya existe el par, nunca va a saltar porque da el fallo como error
+        ELSE
+			INSERT INTO productbacklog(IDUsuario, IDSala, SocketID) VALUES (usrID, roomID, socketInput);
+			RETURN 0;
+        END IF;
+	ELSE
+		RETURN 1; -- Si no ha encontrado alguno de los dos (usuario o sala). No debería saltar ya que se comprueba antes de entrar
+    END IF;
+END$$
+

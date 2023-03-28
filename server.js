@@ -46,7 +46,9 @@ const{addPostitTshirt, loadRoomPostitsTshirt, deletePostitTshirt} = require('./u
     //MOSCOW
 const{addUserRoomMoscow,eliminarUsuarioSalaMoscow} = require('./utils/moscowTable');
 const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./utils/postitMoscow');
-
+    //PRODUCT BACKLOG
+const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('./utils/productBacklogTable');
+const {addEpicToProductBacklog} = require('./utils/productBacklogItems');
 
 io.on('connection', socket =>{
 
@@ -254,6 +256,34 @@ io.on('connection', socket =>{
                         socket.emit('unexpectedError',msg);
                     }
                 });
+            }
+        });
+    });
+
+    socket.on('productBacklogJoinRoom',({username, room})=>{
+        addUserRoomProductBacklog(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`ERROR SQL AÑADIENDO USUARIO A LA SALA:${room}`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room}`;
+                console.log(msg);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+                //CARGAR LOS POSTITS DE LA SALA QUE NO PERTENECEN A NINGUNA DAILY ALMACENADA
+                // loadRoomPostitsDaily(connection,room,(res)=>{
+                //     if(res!=-1){
+                //         socket.emit('loadPositsJoin',res);
+                //     }else{
+                //         msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
+                //         console.log(msg);
+                //         socket.emit('unexpectedError',msg);
+                //     }
+                // });
             }
         });
     });
@@ -856,7 +886,7 @@ io.on('connection', socket =>{
 
         eliminarUsuarioSalaTshirt(connection,socket.id,(err)=>{
             if(err){
-                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA CON CALIFICACIÓN";
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE T-SHIRT";
                 console.log(msg);
                 console.log(err);
                 socket.emit('unexpectedError',msg);
@@ -865,13 +895,21 @@ io.on('connection', socket =>{
 
         eliminarUsuarioSalaMoscow(connection,socket.id,(err)=>{
             if(err){
-                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE RETROSPECTIVA CON CALIFICACIÓN";
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE MOSCOW";
                 console.log(msg);
                 console.log(err);
                 socket.emit('unexpectedError',msg);
             }
         });
-
+        
+        eliminarUsuarioSalaProductBacklog(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE PRODUCT BACKLOG";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        });
     });
 
     //DEL CUESTIONARIO
@@ -1224,6 +1262,22 @@ io.on('connection', socket =>{
         }
         //ACTUALIZAR LISTA DEL QUE BORRA
     });
+    /*
+     PRODUCT BACKLOG
+    */
+   socket.on('createEpicPB',info=>{
+        addEpicToProductBacklog(connection,info.title, info.desc, info.prio, info.est, info.sala,(err)=>{
+            if(err){
+                msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.broadcast.to(info.sala).emit('createEpicPBReturn',info);
+            }
+        });
+   });
+
 });
 
 

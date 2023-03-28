@@ -5,12 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
+    <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> 
     <script defer src="js/productbacklog.js"></script> 
-    <title>Document</title>
+    <title>Product Backlog</title>
 </head>
 <body style="height: 100%;" class="general-page-poker">
 
-    <!-- POPUP PARA AÑADIR ÉPICA AL PRODUCT BACKLOG -->
+    <!-- POPUP PARA AÑADIR ELEMENTO AL PRODUCT BACKLOG -->
     <div class="overlay" id="overlay-add-e"></div>
     <div class="popup-modify-element" id="popup-add-e">
         <div class="popupcontrols">
@@ -44,27 +45,28 @@
         </div>
         <div id="popup-content-delete" class="popupcontent">
             <h3 class="pupup-title">ELIMINAR ELEMENTOS</h3>
+            <p class="save-retro-tit">Selecciona los elementos que desea eliminar:</p>
+            <h3 class="title-delete-section">ÉPICAS</h3>
             <div class="delete-epics">
-                <h3 class="title-delete-section">ÉPICAS</h3>
                 <div id="epic-delete-pool">
                     <!-- TITULOS ÉPICAS -->
                     <input id="" class="selected-delete-pb" type="checkbox" value=""/>Este es el título de una épica por<br> 
                 </div>
             </div>
-            <div class="delete-epics">
-                <h3 class="title-delete-section">FEATURES</h3>
+            <h3 class="title-delete-section">FEATURES</h3>
+            <div class="delete-features">
                 <div id="feature-delete-pool">
                     <!-- TITULOS ÉPICAS -->
                 </div>
             </div>
-            <div class="delete-epics">
-                <h3 class="title-delete-section">HISTORIAS DE USUARIO</h3>
+            <h3 class="title-delete-section">HISTORIAS DE USUARIO</h3>
+            <div class="delete-user-st">
                 <div id="us-delete-pool">
                     <!-- TITULOS ÉPICAS -->
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 
     <!-- POPUP PARA MOSTRAR DETALLES DE UN ELEMENTO DEL PRODUCT BACKLOG -->
     <div class="overlay" id="overlay-details"></div>
@@ -74,34 +76,72 @@
         </div>
         <div id="popup-content-details" class="popupcontent">
             <h3 class="pupup-title">DETALLES DE ELEMENTO</h3>
+            <p class="save-retro-tit">Selecciona el elemento que desea mostrar:</p>
+            <h3 class="title-delete-section">ÉPICAS</h3>
             <div class="delete-epics">
-                <h3 class="title-delete-section">ÉPICAS</h3>
                 <div id="epic-details-pool">
                     <!-- TITULOS ÉPICAS -->
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
-                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br>  
                 </div>
             </div>
-            <div class="delete-epics">
-                <h3 class="title-delete-section">FEATURES</h3>
+            <h3 class="title-delete-section">FEATURES</h3>
+            <div class="delete-features">
                 <div id="feature-details-pool">
-                    <!-- TITULOS ÉPICAS -->
+                    <!-- TITULOS FEATURES -->
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
-
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
+                    <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
                 </div>
             </div>
-            <div class="delete-epics">
-                <h3 class="title-delete-section">HISTORIAS DE USUARIO</h3>
+            <h3 class="title-delete-section">HISTORIAS DE USUARIO</h3>
+            <div class="delete-user-st">
                 <div id="us-delete-pool">
-                    <!-- TITULOS ÉPICAS -->
+                    <!-- TITULOS HISTORIAS DE USUARIO -->
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
                     <input id="" class="selected-delete-pb" type="radio" value="" name="detais"/>Este es el título de una épica por<br> 
-
                 </div>
             </div>
+            <button id="" class="ok-det-del">OK</button>
+        </div>
+    </div>
+
+    <!-- POPUP PARA SELECCIONAR LA ÉPICA -->
+    <div class="overlay" id="overlay-select-epic"></div>
+    <div class="popup-new-postit" id="popup-select-epic">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-select-epic">X</span>
+        </div>
+        <div class="popupcontent">
+            <h3 class="pupup-title">SELECCIONAR ÉPICA</h3>
+            <p class="save-retro-tit">Selecciona la épica a la que corresponde:</p>
+            <select class="desplegable-epics" id="epics-choose">
+                <option value="null" disabled selected> </option>
+            </select>
+            <button id="ok-select-ep" class="select-ep-fe">OK</button>
+        </div>
+    </div>
+
+
+    <!-- POPUP PARA SELECCIONAR LA FEATURE -->
+    <div class="overlay" id="overlay-select-feature"></div>
+    <div class="popup-new-postit" id="popup-select-feature">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-select-feature">X</span>
+        </div>
+        <div class="popupcontent">
+            <h3 class="pupup-title">SELECCIONAR FEATURE</h3>
+            <p class="save-retro-tit">Selecciona la feature a la que corresponde:</p>
+            <select class="desplegable-epics" id="features-choose">
+                <option value="null" disabled selected> </option>
+            </select>
+            <button id="ok-select-fe" class="select-ep-fe">OK</button>
         </div>
     </div>
 
@@ -145,10 +185,15 @@
             <button id="element-details" class="button-pb2">DETALLES DE ELEMENTO</button>
         </div>
         <div>
-            <p class="title-buttons">Estimar o priorizar Product Backlog</p>
+            <p class="title-buttons">Estimar o priorizar Product Backlog:</p>
             <button onclick="location.href='http://localhost:3000/priorizationtools.html'" class="button-pb">PRIORIZAR BACKLOG</button>
             <button onclick="location.href='http://localhost:3000/estimationtools.html'" class="button-pb2">ESTIMAR BACKLOG</button> 
         </div>
     </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script>
 </body>
 </html>

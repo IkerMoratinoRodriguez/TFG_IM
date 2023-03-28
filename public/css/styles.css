@@ -1749,7 +1749,13 @@ body{
     float: left;
 }
 .delete-epics{
-    height: 250px;
+    height: 70px;
+}
+.delete-features{
+    height: 200px;
+}
+.delete-user-st{
+    height: 270px;
 }
 .title-delete-section{
     margin-left: 2%;
@@ -1758,4 +1764,23 @@ body{
 }
 .selected-delete-pb{
     margin-left: 2%;
+}
+.desplegable-epics{
+    width: 50%;
+    margin-top: 30px;
+    margin-left: 25%;
+    height: 30px;
+    font-size: 25px;
+}
+.select-ep-fe{
+    margin-left: 40%;
+    width: 20%;
+    margin-top: 70px;
+    height: 40px;
+}
+.ok-det-del{
+    margin-left: 40%;
+    width: 20%;
+    margin-top: 10px;
+    height: 40px;
 }
