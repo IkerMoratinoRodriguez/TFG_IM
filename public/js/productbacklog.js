@@ -62,7 +62,8 @@ const btnElementDetails = document.getElementById('element-details');
 
 //VARIABLES GLOBALES
 var tipoElem=0; // 1->EPICA 2->FEATURE 3->US
-
+var idEpic;
+var idFeature;
 
 /*
   SOCKET ON
@@ -74,11 +75,23 @@ socket.on('unexpectedError1',msg=>{
 socket.on('unexpectedError',msg=>{
   alert(msg);
 });
-socket.on('createEpicPBReturn',info=>{
-  crearItemPB(info,1);
+socket.on('createEpicPBReturn',infoSend=>{
+  crearItemPB(infoSend,1);
 });
-
-
+socket.on('loadEpicsPB',epicas=>{
+    for(i=0;i<epicas.length;i++){
+      let info = {
+        id: epicas[i].ID,
+        title:epicas[i].Titulo,
+        prio:epicas[i].Priorizacion,
+        est:epicas[i].Estimacion,
+      }
+      crearItemPB(info,1);
+    }
+});
+socket.on('createFeaturePBReturn',infoSend=>{
+  crearItemPB(infoSend,2);
+});
 /*
   ON CLIC DOM
 */
@@ -136,29 +149,17 @@ añadirAddEpic.onclick = function(){
       title:titulo,
       desc:descripcion,
       prio:priorizacion,
-      est:estimacion
+      est:estimacion,
+      idE: idEpic,
+      idF: idFeature
     }
-    socket.emit('createEpicPB',info);
-    html = `<div>
-    <div class="titulo-elem-pb">
-        <p class="title-titulo">${titulo}</p>
-    </div>
-    <p class="estimation-pb">${estimacion}</p>
-    <p class="priorization-pb">${priorizacion}</p>
-    </div>`;
-    if(tipoElem ==1){
-      htmlOpcion = `<option value="${titulo}">${titulo}</option>`;
-      desplegableEpic.innerHTML += htmlOpcion;
-      epicPool.innerHTML+=html;
-    }
-    else if (tipoElem ==2){
-      htmlOpcion = `<option value="${titulo}">${titulo}</option>`;
-      desplegableFeature.innerHTML += htmlOpcion;
-      featuresPool.innerHTML+=html;
-    }
-    else if (tipoElem ==3)
-      userStoriesPool.innerHTML+=html;
-  
+    if(tipoElem == 1)
+      socket.emit('createEpicPB',info);  
+    else if (tipoElem == 2)
+      socket.emit('createFeaturePB',info);  
+    else if (tipoElem == 3)
+      socket.emit('createUserStoriePB',info);  
+
     overlayAddEpic.style.display = 'none';
     popupAddEpic.style.display = 'none';
   }
@@ -206,7 +207,8 @@ closePopupSelectEpic.onclick = function() {
 btnOkSelectEpic.onclick = function(){
 
   var despOpc = desplegableEpic.options[desplegableEpic.selectedIndex];
-  console.log(despOpc.value);
+
+  idEpic=despOpc.value;
 
   if(despOpc.value != "null"){
     overlaySelectEpic.style.display = 'none';
@@ -240,7 +242,8 @@ closePopupSelectFeature.onclick = function() {
 btnOkSelectFeature.onclick = function(){
 
   var despOpc = desplegableFeature.options[desplegableEpic.selectedIndex];
-  console.log(despOpc.value);
+
+  idFeature=despOpc.value;
 
   if(despOpc.value != "null"){
     overlaySelectFeature.style.display = 'none';
@@ -266,12 +269,12 @@ function crearItemPB(info, tipo){
     <p class="priorization-pb">${info.prio}</p>
     </div>`;
     if(tipo ==1){
-      htmlOpcion = `<option value="">${info.title}</option>`;
+      htmlOpcion = `<option value="${info.id}">${info.title}</option>`;
       desplegableEpic.innerHTML += htmlOpcion;
       epicPool.innerHTML+=html;
     }
     else if (tipo ==2){
-      htmlOpcion = `<option value="">${info.title}</option>`;
+      htmlOpcion = `<option value="${info.id}">${info.title}</option>`;
       desplegableFeature.innerHTML += htmlOpcion;
       featuresPool.innerHTML+=html;
     }

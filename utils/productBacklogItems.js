@@ -6,16 +6,62 @@ function addEpicToProductBacklog(connection,titulo, descripcion, priorizacion, e
         if(err){
             callback(err);
         }else if(id != -1){
-            let consulta = `INSERT INTO pb_epica(Titulo, Descripcion, Priorizacion, Estimacion, IDSala) VALUES('${titulo}','${descripcion}',${priorizacion},${estimacion},${id});`;
-            connection.query(consulta,function(err,result){
-                callback(err);
+            let consulta = `SELECT insertEpicPBandReturnID('${titulo}','${descripcion}',${priorizacion},${estimacion},${id}) as ID;`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result[0].ID);
             });
         }
     });
 }
 
+function loadEpicsProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_epica
+            WHERE IDSala = ${id}`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion, estimacion, sala, epica, callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT insertFeaturePBandReturnID('${titulo}','${descripcion}',${priorizacion},${estimacion},${id},${epica}) as ID;`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result[0].ID);
+            });
+        }
+    });
+}
+
+//CARGAS LAS ÉPICAS CUANDO SE ACCEDE A LA SALA
+
 module.exports={
     addEpicToProductBacklog,
+    loadEpicsProductBacklog,
+    addFeatureToProductBacklog
 }
  
 

@@ -48,7 +48,7 @@ const{addUserRoomMoscow,eliminarUsuarioSalaMoscow} = require('./utils/moscowTabl
 const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./utils/postitMoscow');
     //PRODUCT BACKLOG
 const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('./utils/productBacklogTable');
-const {addEpicToProductBacklog} = require('./utils/productBacklogItems');
+const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog} = require('./utils/productBacklogItems');
 
 io.on('connection', socket =>{
 
@@ -274,16 +274,16 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError1',msg);
             }else{
                 socket.join(room);
-                //CARGAR LOS POSTITS DE LA SALA QUE NO PERTENECEN A NINGUNA DAILY ALMACENADA
-                // loadRoomPostitsDaily(connection,room,(res)=>{
-                //     if(res!=-1){
-                //         socket.emit('loadPositsJoin',res);
-                //     }else{
-                //         msg=`ERROR MOSTRANDO LOS POSITS INICIALES DE LA SALA:${room}`;
-                //         console.log(msg);
-                //         socket.emit('unexpectedError',msg);
-                //     }
-                // });
+                //CARGAR LOS ÍTEMS DEL PRODUCT BACKLOG DE LA SALA
+                loadEpicsProductBacklog(connection,room,(res)=>{
+                    if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                        socket.emit('loadEpicsPB',res);
+                    else{
+                        msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                        console.log(msg);
+                        socket.emit('unexpectedError',msg);
+                    }
+                });
             }
         });
     });
@@ -1267,15 +1267,54 @@ io.on('connection', socket =>{
     */
    socket.on('createEpicPB',info=>{
         addEpicToProductBacklog(connection,info.title, info.desc, info.prio, info.est, info.sala,(err)=>{
-            if(err){
+            console.log(err); //ERR O DEVUELVE EL ERROR O EL ID (PODRÍA SER COMO MUCHO 999 Y NO CREO EN ESTE CASO)
+            if(err.length > 3){
                 msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
                 console.log(err);
                 console.log(msg);
                 socket.emit('unexpectedError',msg);
             }else{
-                socket.broadcast.to(info.sala).emit('createEpicPBReturn',info);
+                let infoSend = {
+                    sala:info.sala,
+                    title:info.title,
+                    desc:info.des,
+                    prio:info.prio,
+                    est:info.est,
+                    id: err
+                  }
+                socket.broadcast.to(info.sala).emit('createEpicPBReturn',infoSend);
+                socket.emit('createEpicPBReturn',infoSend);
             }
         });
+   });
+
+   socket.on('createFeaturePB',info=>{
+        console.log(info);
+        addFeatureToProductBacklog(connection,info.title, info.desc, info.prio, info.est, info.sala, info.idE,(err)=>{
+            console.log(err); //ERR O DEVUELVE EL ERROR O EL ID (PODRÍA SER COMO MUCHO 999 Y NO CREO EN ESTE CASO)
+            if(err.length > 3){
+                msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                let infoSend = {
+                    sala:info.sala,
+                    title:info.title,
+                    desc:info.des,
+                    prio:info.prio,
+                    est:info.est,
+                    id: err,
+                    idE: info.idE
+                  }
+                socket.broadcast.to(info.sala).emit('createFeaturePBReturn',infoSend);
+                socket.emit('createFeaturePBReturn',infoSend);
+            }
+        });
+   });
+
+   socket.on('createUserStoriePB',info=>{
+        console.log(info);
    });
 
 });

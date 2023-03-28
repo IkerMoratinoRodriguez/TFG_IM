@@ -1032,3 +1032,13 @@ BEGIN
     END IF;
 END$$
 
+DELIMITER $$
+CREATE FUNCTION insertEpicPBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+	DECLARE idOutput INT;
+	INSERT INTO pb_epica(Titulo, Descripcion, Priorizacion, Estimacion, IDSala) VALUES(titleInput, descInput, prioInput, estiInput, roomInput);
+    SET idOutput = (SELECT MAX(ID) as ID FROM pb_epica);
+    RETURN idOutput;
+END$$
