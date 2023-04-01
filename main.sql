@@ -1002,9 +1002,11 @@ CREATE TABLE pb_user_story(
     Estimacion INT NOT NULL,
     IDSala INT NOT NULL,
 	IDFeature INT NOT NULL,
+    IDEpic INT NOT NULL,
     PRIMARY KEY(ID),
     CONSTRAINT FK_idSalaPBUserStory FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_idFeaturePB FOREIGN KEY(IDFeature) REFERENCES pb_feature(ID) ON DELETE CASCADE
+	CONSTRAINT FK_idFeatureUSPB FOREIGN KEY(IDFeature) REFERENCES pb_feature(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_idEpicUSPB FOREIGN KEY(IDEpic) REFERENCES pb_epica(ID) ON DELETE CASCADE
 );
 
 DELIMITER $$
@@ -1040,5 +1042,28 @@ BEGIN
 	DECLARE idOutput INT;
 	INSERT INTO pb_epica(Titulo, Descripcion, Priorizacion, Estimacion, IDSala) VALUES(titleInput, descInput, prioInput, estiInput, roomInput);
     SET idOutput = (SELECT MAX(ID) as ID FROM pb_epica);
+    RETURN idOutput;
+END$$
+
+DELIMITER $$
+CREATE FUNCTION insertFeaturePBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT, epicInput INT) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+	DECLARE idOutput INT;
+	INSERT INTO pb_feature(Titulo, Descripcion, Priorizacion, Estimacion, IDSala, IDEpica) VALUES(titleInput, descInput, prioInput, estiInput, roomInput, epicInput);
+    SET idOutput = (SELECT MAX(ID) as ID FROM pb_feature);
+    RETURN idOutput;
+END$$
+
+
+DELIMITER $$
+CREATE FUNCTION insertUserStoryPBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT, epicInput INT, featureInput INT) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+	DECLARE idOutput INT;
+	INSERT INTO pb_user_story(Titulo, Descripcion, Priorizacion, Estimacion, IDSala, IDFeature, IDEpic) VALUES(titleInput, descInput, prioInput, estiInput, roomInput, featureInput, epicInput);
+    SET idOutput = (SELECT MAX(ID) as ID FROM pb_user_story);
     RETURN idOutput;
 END$$

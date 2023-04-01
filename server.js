@@ -48,7 +48,7 @@ const{addUserRoomMoscow,eliminarUsuarioSalaMoscow} = require('./utils/moscowTabl
 const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./utils/postitMoscow');
     //PRODUCT BACKLOG
 const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('./utils/productBacklogTable');
-const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog} = require('./utils/productBacklogItems');
+const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS} = require('./utils/productBacklogItems');
 
 io.on('connection', socket =>{
 
@@ -276,13 +276,41 @@ io.on('connection', socket =>{
                 socket.join(room);
                 //CARGAR LOS ÍTEMS DEL PRODUCT BACKLOG DE LA SALA
                 loadEpicsProductBacklog(connection,room,(res)=>{
-                    if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
-                        socket.emit('loadEpicsPB',res);
-                    else{
-                        msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
-                        console.log(msg);
-                        socket.emit('unexpectedError',msg);
+                    if(res.length != 0){
+                        if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                            socket.emit('loadEpicsPB',res);
+                        else{
+                            msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                            console.log(msg);
+                            socket.emit('unexpectedError',msg);
+                        }
                     }
+                    
+                });
+                loadFeaturesProductBacklog(connection,room,(res)=>{
+                    if(res.length != 0){
+                        if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                            socket.emit('loadFeaturesPB',res);
+                        else{
+                            msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                            console.log(msg);
+                            socket.emit('unexpectedError',msg);
+                        }
+                    }
+                    
+                });
+                loadUSProductBacklog(connection,room,(res)=>{
+                    console.log(res);
+                    if(res.length != 0){ //hay algo
+                        if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                            socket.emit('loadUSsPB',res);
+                        else{
+                            msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                            console.log(msg);
+                            socket.emit('unexpectedError',msg);
+                        }
+                    }
+                    
                 });
             }
         });
@@ -1315,6 +1343,86 @@ io.on('connection', socket =>{
 
    socket.on('createUserStoriePB',info=>{
         console.log(info);
+        addUSToProductBacklog(connection,info.title, info.desc, info.prio, info.est, info.sala, info.idF, info.idE,(err)=>{
+            console.log(err); //ERR O DEVUELVE EL ERROR O EL ID (PODRÍA SER COMO MUCHO 999 Y NO CREO EN ESTE CASO)
+            if(err.length > 3){
+                msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                let infoSend = {
+                    sala:info.sala,
+                    title:info.title,
+                    desc:info.des,
+                    prio:info.prio,
+                    est:info.est,
+                    id: err,
+                    idE: info.idE,
+                    idF: info.idF
+                  }
+                socket.broadcast.to(info.sala).emit('createUSPBReturn',infoSend);
+                socket.emit('createUSPBReturn',infoSend);
+            }
+        });
+   });
+
+   socket.on('deleteEpics',({epicasID,room})=>{
+        console.log("EPICASSSS"+epicasID);
+        for(i=0;i<epicasID.length;i++){
+            console.log("ÉPICA ID:"+epicasID[i]);
+            deleteEpic(connection,epicasID[i],e=>{
+                if(e){
+                    msg=`ERROR AL ELIMINAR LAS ÉPICAS`;
+                    console.log(e);
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg); 
+                }else{
+                    socket.broadcast.to(room).emit('loadEpicsPBDelete');
+                    socket.emit('loadEpicsPBDelete');
+                }
+            });
+        }
+   });
+
+   socket.on('loadPB',room=>{
+        loadEpicsProductBacklog(connection,room,(res)=>{
+            if(res.length != 0){
+                if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('loadEpicsPB',res);
+                else{
+                    msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        });
+        loadFeaturesProductBacklog(connection,room,(res)=>{
+            if(res.length != 0){
+                if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('loadFeaturesPB',res);
+                else{
+                    msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        });
+        loadUSProductBacklog(connection,room,(res)=>{
+            console.log(res);
+            if(res.length != 0){ //hay algo
+                if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('loadUSsPB',res);
+                else{
+                    msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        });
    });
 
 });

@@ -56,12 +56,100 @@ function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion
     });
 }
 
-//CARGAS LAS ÉPICAS CUANDO SE ACCEDE A LA SALA
+function loadFeaturesProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_feature
+            WHERE IDSala = ${id}`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+
+function addUSToProductBacklog(connection,titulo, descripcion, priorizacion, estimacion, sala, feature, epica, callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT insertUserStoryPBandReturnID('${titulo}','${descripcion}',${priorizacion},${estimacion},${id},${epica},${feature}) as ID;`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result[0].ID);
+            });
+        }
+    });
+}
+
+function loadUSProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_user_story
+            WHERE IDSala = ${id}`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+
+function deleteEpic(connection, id,callback){
+    let query = `DELETE FROM pb_epica
+                 WHERE ID=${id};`;
+    connection.query(query,function(e,r){
+        callback(e);
+    });
+}
+function deleteFeature(connection, id,callback){
+    let query = `DELETE FROM pb_feature
+                 WHERE ID=${id};`;
+    connection.query(query,function(e,r){
+        callback(e);
+    });
+}
+function deleteUS(connection, id,callback){
+    let query = `DELETE FROM pb_user_story
+                 WHERE ID=${id};`;
+    connection.query(query,function(e,r){
+        callback(e);
+    });
+}
+
 
 module.exports={
     addEpicToProductBacklog,
     loadEpicsProductBacklog,
-    addFeatureToProductBacklog
+    addFeatureToProductBacklog,
+    loadFeaturesProductBacklog,
+    addUSToProductBacklog,
+    loadUSProductBacklog,
+    deleteEpic,
+    deleteFeature,
+    deleteUS
 }
  
 

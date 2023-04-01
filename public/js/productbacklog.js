@@ -24,6 +24,7 @@ const popupDelete = document.getElementById("popup-delete");
 const epicDeletePool = document.getElementById('epic-delete-pool');
 const featureDeletePool = document.getElementById('feature-delete-pool');
 const usDeletePool = document.getElementById('us-delete-pool');
+const okDelete = document.getElementById('ok-delete');
 
 //POPUP DETALLES DE ELEMENTO
 const closePopupDetails = document.getElementById("popupclose-details");
@@ -32,6 +33,8 @@ const popupDetails = document.getElementById("popup-details");
 const epicDetailsPool = document.getElementById('epic-details-pool');
 const featureDetailsPool = document.getElementById('feature-details-pool');
 const usDetailsPool = document.getElementById('us-details-pool');
+const okDetails = document.getElementById('ok-details');
+
 
 //POPUP SELECCIONAR ÉPICA
 const closePopupSelectEpic = document.getElementById("popupclose-select-epic");
@@ -64,6 +67,7 @@ const btnElementDetails = document.getElementById('element-details');
 var tipoElem=0; // 1->EPICA 2->FEATURE 3->US
 var idEpic;
 var idFeature;
+var maxEpic=0, maxFeature=0, maxUS=0;
 
 /*
   SOCKET ON
@@ -77,8 +81,11 @@ socket.on('unexpectedError',msg=>{
 });
 socket.on('createEpicPBReturn',infoSend=>{
   crearItemPB(infoSend,1);
+  aniadirEpicLista(i,infoSend.title,infoSend.id);
+  maxEpic++;
 });
 socket.on('loadEpicsPB',epicas=>{
+    maxEpic=epicas.length;
     for(i=0;i<epicas.length;i++){
       let info = {
         id: epicas[i].ID,
@@ -87,11 +94,53 @@ socket.on('loadEpicsPB',epicas=>{
         est:epicas[i].Estimacion,
       }
       crearItemPB(info,1);
+      aniadirEpicLista(i,info.title,info.id);
     }
 });
 socket.on('createFeaturePBReturn',infoSend=>{
   crearItemPB(infoSend,2);
+  aniadirFeatiureLista(maxFeature,infoSend.title,infoSend.id);
+  maxFeature++;
 });
+socket.on('loadFeaturesPB',features=>{
+  maxFeature=features.length;
+  for(i=0;i<features.length;i++){
+    let info = {
+      id: features[i].ID,
+      title:features[i].Titulo,
+      prio:features[i].Priorizacion,
+      est:features[i].Estimacion,
+    }
+    crearItemPB(info,2);
+    aniadirFeatiureLista(i,info.title,info.id); //i actúa como índice en vez de el identificador para buscar cual es el seleccionado y que no de error si algun ID no existe
+  }
+});
+socket.on('createUSPBReturn',infoSend=>{
+  crearItemPB(infoSend,3);
+  aniadirUSLista(maxUS,infoSend.title,infoSend.id);
+  maxUS++;
+});
+socket.on('loadUSsPB',us=>{
+  maxUS=us.length;
+  for(i=0;i<us.length;i++){
+    let info = {
+      id: us[i].ID,
+      title:us[i].Titulo,
+      prio:us[i].Priorizacion,
+      est:us[i].Estimacion,
+    }
+    crearItemPB(info,3);
+    aniadirUSLista(i,info.title,info.id);
+  }
+});
+socket.on('loadEpicsPBDelete',()=>{
+    socket.emit('loadPB',room);
+    location.reload();
+});
+
+
+
+
 /*
   ON CLIC DOM
 */
@@ -178,7 +227,9 @@ closePopupDelete.onclick = function() {
     overlayDelete.style.display = 'none';
     popupDelete.style.display = 'none';
 };
-
+okDelete.onclick = function(){
+  mostrarIDDeleteSelected();
+}
 
 /*
   POPUP DETALLES ELEMENTOS BACKLOG
@@ -191,7 +242,9 @@ closePopupDetails.onclick = function() {
   overlayDetails.style.display = 'none';
   popupDetails.style.display = 'none';
 };
-
+okDetails.onclick = function(){
+  mostrarIDDetailsSelected();
+}
 
 /*
   POPUP SELECCIONAR ÉPICA
@@ -241,7 +294,7 @@ closePopupSelectFeature.onclick = function() {
 };
 btnOkSelectFeature.onclick = function(){
 
-  var despOpc = desplegableFeature.options[desplegableEpic.selectedIndex];
+  var despOpc = desplegableFeature.options[desplegableFeature.selectedIndex];
 
   idFeature=despOpc.value;
 
@@ -253,8 +306,8 @@ btnOkSelectFeature.onclick = function(){
   }else{
     alert("Debe seleccionar una feature para continuar");
   }
-
 }
+
 
 
 /*
@@ -277,7 +330,63 @@ function crearItemPB(info, tipo){
       htmlOpcion = `<option value="${info.id}">${info.title}</option>`;
       desplegableFeature.innerHTML += htmlOpcion;
       featuresPool.innerHTML+=html;
+      //guardar en algún sitio a qué epic pertenece para mostrarlo
     }
     else if (tipo ==3)
       userStoriesPool.innerHTML+=html;
+      //guardar en algún sitio a qué feature y epic pertenece para mostrarlo
+
+}
+function aniadirEpicLista(indice,titulo, id){
+  html = `<input id="epic${indice}" class="selected-delete-pb" type="checkbox" value="${id}"/>${titulo}<br> `;
+  console.log(html);
+  epicDeletePool.innerHTML += html; 
+  htmlDetails = `<input id="epicDetails${indice}" class="selected-delete-pb" type="radio" value="${id}" name="detais"/>${titulo}<br> `;
+  epicDetailsPool.innerHTML += htmlDetails;
+}
+function aniadirFeatiureLista(indice,titulo, id){
+  html = `<input id="feature${indice}" class="selected-delete-pb" type="checkbox" value="${id}"/>${titulo}<br> `;
+  featureDeletePool.innerHTML += html; 
+  htmlDetails = `<input id="featureDetails${indice}" class="selected-delete-pb" type="radio" value="${id}" name="detais"/>${titulo}<br> `;
+  featureDetailsPool.innerHTML += htmlDetails;
+}
+function aniadirUSLista(indice,titulo, id){
+  html = `<input id="us${indice}" class="selected-delete-pb" type="checkbox" value="${id}"/>${titulo}<br> `;
+  usDeletePool.innerHTML += html; 
+  htmlDetails = `<input id="usDetails${indice}" class="selected-delete-pb" type="radio" value="${id}" name="detais"/>${titulo}<br> `;
+  usDetailsPool.innerHTML += htmlDetails;
+}
+function mostrarIDDeleteSelected(){
+  var epicasID = new Array();
+  var featuresID = new Array();
+  var usID = new Array();
+  for(i=0;i<maxEpic;i++){
+    var elem = document.getElementById(`epic${i}`);
+    if(elem.checked){ // SI MARCADO PARA BORRAR
+        console.log("Seleccionada la épica con ID:"+elem.value);
+        epicasID.push(elem.value);
+    }
+  }
+  for(i=0;i<maxFeature;i++){
+    var elem = document.getElementById(`feature${i}`);
+    if(elem.checked){ // SI MARCADO PARA BORRAR
+        console.log("Seleccionada la feature con ID:"+elem.value);
+        featuresID.push(elem.value);
+    }
+  }
+  for(i=0;i<maxUS;i++){
+    var elem = document.getElementById(`us${i}`);
+    if(elem.checked){ // SI MARCADO PARA BORRAR
+        console.log("Seleccionada la us con ID:"+elem.value);
+        usID.push(elem.value)
+    }
+  }
+  console.log("ÉPICAS ID:"+epicasID);
+  socket.emit('deleteEpics',{epicasID,room});
+  //ELIMINAR FEATURES Y USER STORIES Y ADEMÁS LOS DETALLES
+  console.log(featuresID);
+  console.log(usID);
+}
+function mostrarIDDetailsSelected(){
+
 }
