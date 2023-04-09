@@ -48,7 +48,7 @@ const{addUserRoomMoscow,eliminarUsuarioSalaMoscow} = require('./utils/moscowTabl
 const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./utils/postitMoscow');
     //PRODUCT BACKLOG
 const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('./utils/productBacklogTable');
-const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS} = require('./utils/productBacklogItems');
+const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS} = require('./utils/productBacklogItems');
 
 io.on('connection', socket =>{
 
@@ -388,7 +388,7 @@ io.on('connection', socket =>{
     socket.on('newUserStorie', ({room,title}) =>{
         insertarUS(connection,title,room,res =>{
             if(res){
-                msg="ERROR AL INSERTAR USER STORIE EN UNA SALA DOT VOTING";
+                msg="ERROR AL INSERTAR USER STORY EN UNA SALA DOT VOTING";
                 console.log(msg);
                 console.log(res);
                 socket.emit('unexpectedError',msg);
@@ -1367,6 +1367,62 @@ io.on('connection', socket =>{
         });
    });
 
+   socket.on('updateEpicPB',({info,idSelected})=>{
+        console.log("ACTUALIZANDO ÉPICA");
+        updateEpic(connection,idSelected,info.title,info.desc,info.prio,info.est,(err)=>{
+            if(err!=0){
+                msg=`ERROR ACUALIZANDO LA ÉPICA`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                console.log("Actualizacion OK");
+                socket.emit('reloadPB');
+                socket.broadcast.to(info.sala).emit('reloadPB');
+            }
+        });
+   });
+   socket.on('updateFeaturePB',({info,idSelected})=>{
+        updateFeature(connection,idSelected,info.title,info.desc,info.prio,info.est,(err)=>{
+            if(err!=0){
+                msg=`ERROR ACUALIZANDO LA FEATURE`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('reloadPB');
+                socket.broadcast.to(info.sala).emit('reloadPB');
+            }
+        });
+   });
+   socket.on('updateUSPB',({info,idSelected})=>{
+        updateUS(connection,idSelected,info.title,info.desc,info.prio,info.est,(err)=>{
+            if(err!=0){
+                msg=`ERROR ACUALIZANDO LA USER STORY`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('reloadPB');
+                socket.broadcast.to(info.sala).emit('reloadPB');
+            }
+        });
+   });
+
+   socket.on('loadFeaturesOfEpic',({idEpic,room})=>{
+        featuresOfEpic(connection,room,idEpic,res=>{
+            if(res.length > 40){
+                msg=`ERROR CARGANDO LAS FEATURES DE LA ÉPIC SELECCIONADA`;
+                console.log(res);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                console.log(res);
+                socket.emit('loadFeaturesOfEpicReturn',res);
+            }
+        });
+   });
+
    socket.on('deleteEpics',({epicasID,room})=>{
         console.log("EPICASSSS"+epicasID);
         for(i=0;i<epicasID.length;i++){
@@ -1384,7 +1440,41 @@ io.on('connection', socket =>{
             });
         }
    });
-
+   
+   socket.on('deleteFeatures',({featuresID,room})=>{
+        console.log("FEATURESSS"+featuresID);
+        for(i=0;i<featuresID.length;i++){
+            console.log("FEATURE ID:"+featuresID[i]);
+            deleteFeature(connection,featuresID[i],e=>{
+                if(e){
+                    msg=`ERROR AL ELIMINAR LAS FEATURES`;
+                    console.log(e);
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg); 
+                }else{
+                    socket.broadcast.to(room).emit('loadEpicsPBDelete');
+                    socket.emit('loadEpicsPBDelete');
+                }
+            });
+        }
+   });
+   socket.on('deleteUSs',({usID,room})=>{
+        console.log("USSSS"+usID);
+        for(i=0;i<usID.length;i++){
+            console.log("USER STORY ID:"+usID[i]);
+            deleteUS(connection,usID[i],e=>{
+                if(e){
+                    msg=`ERROR AL ELIMINAR LAS USER STORIES`;
+                    console.log(e);
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg); 
+                }else{
+                    socket.broadcast.to(room).emit('loadEpicsPBDelete');
+                    socket.emit('loadEpicsPBDelete');
+                }
+            });
+        }
+   });
    socket.on('loadPB',room=>{
         loadEpicsProductBacklog(connection,room,(res)=>{
             if(res.length != 0){
@@ -1424,6 +1514,48 @@ io.on('connection', socket =>{
             
         });
    });
+   socket.on('loadDetailsOfElement',({room,tipoElem,idSelected})=>{
+        if(tipoElem==1){
+            propertiesOfEpic(connection,room,idSelected,(res)=>{
+                if(res.length>1){
+                    msg=`ERROR CARGANDO LA ÉPICA SELECCIONADA`;
+                    console.log(msg);
+                    console.log(res);
+                    socket.emit('unexpectedError',msg);
+                }else{
+                    socket.emit('loadDetailsOfElementReturn',res);
+                }
+            });
+        }else if(tipoElem==2){
+            propertiesOfFeature(connection,room,idSelected,(res)=>{
+                if(res.length>1){
+                    msg=`ERROR CARGANDO LA FEATURE SELECCIONADA`;
+                    console.log(msg);
+                    console.log(res);
+                    socket.emit('unexpectedError',msg);
+                }else{
+                    socket.emit('loadDetailsOfElementReturn',res);
+                }
+            });
+        }else if(tipoElem==3){
+            propertiesOfUS(connection,room,idSelected,(res)=>{
+                if(res.length>1){
+                    msg=`ERROR CARGANDO LA USER STORY SELECCIONADA`;
+                    console.log(msg);
+                    console.log(res);
+                    socket.emit('unexpectedError',msg);
+                }else{
+                    socket.emit('loadDetailsOfElementReturn',res);
+                }
+            });
+        }else{
+            msg=`ERROR CARGANDO LOS DETALLES DEL ELEMENTO SELECCIONADO DEL PRODUCT BACKLOG`;
+            console.log(msg);
+            socket.emit('unexpectedError',msg);
+        }
+   });
+
+
 
 });
 

@@ -139,6 +139,126 @@ function deleteUS(connection, id,callback){
     });
 }
 
+function featuresOfEpic(connection, room, epic, callback){
+    let sala = `SELECT roomID('${room}') as result;`;
+    connection.query(sala,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let query = `SELECT ID, Titulo
+                FROM pb_feature
+                WHERE IDEpica= ${epic}
+                AND IDSala = ${id};`;
+            connection.query(query,function(e,r){
+                if(e)
+                    callback(e);
+                else
+                    callback(r);
+            });
+        }    
+    });
+    
+}
+
+function propertiesOfEpic(connection, room, epic, callback){
+    let sala = `SELECT roomID('${room}') as result;`;
+    connection.query(sala,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let query=`SELECT *
+                        FROM pb_epica
+                        WHERE IDSala=${id}
+                        AND ID=${epic}`;
+            connection.query(query,function(e,r){
+                if(e){
+                    callback (e);
+                }else{
+                    callback(r);
+                }
+            });
+        }    
+    });
+}
+function propertiesOfFeature(connection, room, feature, callback){
+    let sala = `SELECT roomID('${room}') as result;`;
+    connection.query(sala,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let query=`SELECT *
+                        FROM pb_feature
+                        WHERE IDSala=${id}
+                        AND ID=${feature}`;
+            connection.query(query,function(e,r){
+                if(e){
+                    callback (e);
+                }else{
+                    callback(r);
+                }
+            });
+        }    
+    });
+}
+function propertiesOfUS(connection, room, us, callback){
+    let sala = `SELECT roomID('${room}') as result;`;
+    connection.query(sala,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let query=`SELECT *
+                        FROM pb_user_story
+                        WHERE IDSala=${id}
+                        AND ID=${us}`;
+            connection.query(query,function(e,r){
+                if(e){
+                    callback (e);
+                }else{
+                    callback(r);
+                }
+            });
+        }    
+    });
+}
+
+function updateEpic(connection, id, titulo, descripcion, prio, esti, callback){
+    let query = `UPDATE pb_epica
+    SET Titulo='${titulo}', Descripcion='${descripcion}', Priorizacion=${prio}, Estimacion=${esti}
+    WHERE ID=${id};`;
+    connection.query(query, function(e,r){
+        if(e)
+            callback(e);
+        else
+            callback(0);
+    });
+}
+function updateFeature(connection, id, titulo, descripcion, prio, esti, callback){
+    let query = `UPDATE pb_feature
+    SET Titulo='${titulo}', Descripcion='${descripcion}', Priorizacion=${prio}, Estimacion=${esti}
+    WHERE ID=${id};`;
+    connection.query(query, function(e,r){
+        if(e)
+            callback(e);
+        else
+            callback(0);
+    });
+}
+function updateUS(connection, id, titulo, descripcion, prio, esti, callback){
+    let query = `UPDATE pb_user_story
+    SET Titulo='${titulo}', Descripcion='${descripcion}', Priorizacion=${prio}, Estimacion=${esti}
+    WHERE ID=${id};`;
+    connection.query(query, function(e,r){
+        if(e)
+            callback(e);
+        else
+            callback(0);
+    });
+}
+
 
 module.exports={
     addEpicToProductBacklog,
@@ -149,7 +269,14 @@ module.exports={
     loadUSProductBacklog,
     deleteEpic,
     deleteFeature,
-    deleteUS
+    deleteUS,
+    featuresOfEpic,
+    propertiesOfEpic,
+    propertiesOfFeature,
+    propertiesOfUS,
+    updateEpic,
+    updateFeature,
+    updateUS
 }
  
 

@@ -1784,3 +1784,81 @@ body{
     margin-top: 10px;
     height: 40px;
 }
+
+/*
+    KANBAN
+*/
+.kanban{
+    width: 90%;
+    margin-left: 5%;
+}
+.title-section-kn{
+    float: left;
+    width: 33%;
+    text-align: center;
+    border-width: 5px 0px 0px 5px;
+    border-style: solid;
+    border-color:rgb(8, 101, 101);
+    font-size: 30px;
+    padding-top: 10px;
+    height: 60px;
+    margin-bottom: 0px;
+    background-color: lightseagreen;
+}
+.title-section-kn-ult{
+    float: left;
+    width: 33%;
+    text-align: center;
+    border-width: 5px 5px 0px 5px;
+    border-style: solid;
+    border-color:rgb(8, 101, 101);
+    font-size: 30px;
+    padding-top: 10px;
+    height: 60px;
+    margin-bottom: 0px;
+    background-color: lightseagreen;
+}
+.section-kn{
+    float: left;
+    width: 33%;
+    border-width: 10px 0px 10px 10px;
+    border-style: groove;
+    border-color: lightseagreen;
+    margin-top: 0px;
+    height: 800px;
+}
+.section-kn-ult{
+    float: left;
+    width: 33%;
+    border-width: 10px;
+    border-style: groove;
+    border-color: lightseagreen;
+    margin-top: 0px;
+    height: 800px;
+}
+.cabecera-kn{
+    margin-top: 0px;
+    padding-bottom: 0px;
+}
+.add-kn{
+    float: left;
+    height: 30px;
+    margin-left: 20px;
+    border: none;
+    cursor: pointer;
+}
+.move-kn{
+    float: right;
+    height: 30px;
+    width: 30px;
+    margin-right: 20px;
+    border: none;
+    cursor: pointer;
+}
+.delete-kn{
+    float: right;
+    height: 30px;
+    margin-right: 20px;
+    border: none;
+    cursor: pointer;
+}
