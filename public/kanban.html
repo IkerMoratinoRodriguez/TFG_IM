@@ -6,31 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/styles.css">
     <script defer src="http://localhost:3000/socket.io/socket.io.js"></script> 
-    <title>Document</title>
+    <script defer src="js/kanban.js"></script> 
+    <title>Kanban</title>
 </head>
 <body style="height: 100%;" class="general-page-poker">
+
+    <div class="overlay" id="overlay-addkn"></div>
+    <div class="popup-add-elem-kn" id="popup-addkn">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-addkn">X</span>
+        </div>
+        <div class="popupcontent">
+            <h3 class="pupup-title">AÑADIR USER STORIES AL KANBAN</h3>
+            <p class="save-retro-tit">Selecciona las que desea añadir:</p>
+            <div id="add-us-kn" class="kn-titles">
+                <!-- TÍTULOS DE LAS US -->
+            </div>
+            <button id="ok-addkn" class="stote-new">AÑADIR</button>
+        </div>
+    </div>
+
     <div>
         <h1 class="titleP">KANBAN</h1> 
     </div>
     <div class="kanban">
         <div class="cabecera-kn">
-            <p class="title-section-kn"><button class="add-kn">➕</button>TO DO<button class="move-kn">→</button></p> 
+            <p class="title-section-kn"><button id="add-elem-kn" class="add-kn">➕</button>TO DO<button class="move-kn">→</button></p> 
             <p class="title-section-kn">DOING (X/Z)<button class="move-kn">→</button></p>
             <p class="title-section-kn-ult">DONE<button class="delete-kn">QUITAR</button></p>
         </div>
         <div class="sections-kn">
-            <div class="section-kn">
+            <div id="todo-pool" class="section-kn">
                 <div class="postit">
                     <p class="postit-title">${titulo}</p>
                 </div>
             </div>
-            <div class="section-kn">
+            <div id="doing-pool" class="section-kn">
 
             </div>
-            <div class="section-kn-ult">
+            <div id="done-pool" class="section-kn-ult">
 
             </div>
         </div>
     </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+    ></script>
 </body>
 </html>

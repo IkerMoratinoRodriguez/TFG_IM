@@ -172,6 +172,7 @@ btnAddEpic.onclick = function(){
   titlePopupAdd.textContent = "Añadir épica al product backlog";
   tipoElem=1;
   nuevoElem=true;
+  añadirAddEpic.innerHTML='AÑADIR';
 }
 btnAddFeature.onclick = function(){
   overlaySelectEpic.style.display = 'block';
@@ -179,6 +180,7 @@ btnAddFeature.onclick = function(){
   titlePopupAdd.textContent = "Añadir feature al product backlog";
   tipoElem=2;
   nuevoElem=true;
+  añadirAddEpic.innerHTML='AÑADIR';
 }
 btnAddUserStorie.onclick = function(){
   overlaySelectEpic.style.display = 'block';
@@ -186,6 +188,7 @@ btnAddUserStorie.onclick = function(){
   titlePopupAdd.textContent = "Añadir historia de usuario al product backlog";
   tipoElem=3;
   nuevoElem=true;
+  añadirAddEpic.innerHTML='AÑADIR';
 }
 btnDeleteElement.onclick = function(){
   overlayDelete.style.display = 'block';
@@ -195,6 +198,8 @@ btnElementDetails.onclick = function(){
   overlayDetails.style.display = 'block';
   popupDetails.style.display = 'block';
   nuevoElem=false;
+  añadirAddEpic.innerHTML='MODIFICAR';
+
 }
 
 

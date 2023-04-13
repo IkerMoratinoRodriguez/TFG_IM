@@ -1862,3 +1862,23 @@ body{
     border: none;
     cursor: pointer;
 }
+
+.popup-add-elem-kn{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: whitesmoke;
+    width: 1000px;
+    height: 750px;
+    margin-left: -500px; /*Half the value of width to center div*/
+    margin-top: -320px; /*Half the value of height to center div*/
+    z-index: 200;
+}
+
+.kn-titles{
+    margin-left: 2%;
+    width: 96%;
+    height: 500px;
+    border-style: inset;
+}

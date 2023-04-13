@@ -1003,6 +1003,7 @@ CREATE TABLE pb_user_story(
     IDSala INT NOT NULL,
 	IDFeature INT NOT NULL,
     IDEpic INT NOT NULL,
+    EstadoKanban INT DEFAULT 0, 
     PRIMARY KEY(ID),
     CONSTRAINT FK_idSalaPBUserStory FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
 	CONSTRAINT FK_idFeatureUSPB FOREIGN KEY(IDFeature) REFERENCES pb_feature(ID) ON DELETE CASCADE,
@@ -1066,4 +1067,39 @@ BEGIN
 	INSERT INTO pb_user_story(Titulo, Descripcion, Priorizacion, Estimacion, IDSala, IDFeature, IDEpic) VALUES(titleInput, descInput, prioInput, estiInput, roomInput, featureInput, epicInput);
     SET idOutput = (SELECT MAX(ID) as ID FROM pb_user_story);
     RETURN idOutput;
+END$$
+
+-- Kanban
+CREATE TABLE kanban(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usKanban FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomKanban FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+DELIMITER $$
+CREATE FUNCTION insertKanbanConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
+RETURNS INT
+DETERMINISTIC 
+BEGIN
+    DECLARE roomID INT;
+    DECLARE usrID INT;
+    DECLARE duplicados INT;
+    
+    SET usrID=(SELECT ID FROM usuario WHERE usuario.Nombre=usrInput);
+    SET roomID=(SELECT ID FROM sala WHERE sala.Nombre=roomInput);
+    
+    IF (usrID > 0 AND roomID > 0) THEN
+        SET duplicados = (SELECT COUNT(*) FROM kanban WHERE IDUsuario=usrID AND IDSala=roomID);
+        IF (duplicados > 0) THEN
+			RETURN 2; -- Ya existe el par, nunca va a saltar porque da el fallo como error
+        ELSE
+			INSERT INTO kanban(IDUsuario, IDSala, SocketID) VALUES (usrID, roomID, socketInput);
+			RETURN 0;
+        END IF;
+	ELSE
+		RETURN 1; -- Si no ha encontrado alguno de los dos (usuario o sala). No debería saltar ya que se comprueba antes de entrar
+    END IF;
 END$$

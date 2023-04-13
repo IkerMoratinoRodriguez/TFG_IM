@@ -49,6 +49,9 @@ const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./u
     //PRODUCT BACKLOG
 const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('./utils/productBacklogTable');
 const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS} = require('./utils/productBacklogItems');
+    //KANBAN
+const {addUserRoomKanban, eliminarUsuarioSalaKanban} = require('./utils/kanbanTable');
+const {loadUserStories,changeUSKanbanState, actualizarKanban} = require('./utils/kanbanUtilities');
 
 io.on('connection', socket =>{
 
@@ -209,11 +212,11 @@ io.on('connection', socket =>{
             let codigo = result.res;
             let e = result.error;
             if(e){
-                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE T-SHIRT`;
                 console.log(e);
                 socket.emit('unexpectedError1',msg);
             }else if(codigo[0].result!=0){
-                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE T-SHIRT`;
                 console.log(msg);
                 socket.emit('unexpectedError1',msg);
             }else{
@@ -237,11 +240,11 @@ io.on('connection', socket =>{
             let codigo = result.res;
             let e = result.error;
             if(e){
-                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE MOSCOW`;
                 console.log(e);
                 socket.emit('unexpectedError1',msg);
             }else if(codigo[0].result!=0){
-                msg=`USUARIO REPETIDO EN LA SALA:${room} DE RETROSPECTIVA CON CALIFICACIÓN`;
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE MOSCOW`;
                 console.log(msg);
                 socket.emit('unexpectedError1',msg);
             }else{
@@ -312,6 +315,25 @@ io.on('connection', socket =>{
                     }
                     
                 });
+            }
+        });
+    });
+
+    socket.on('kanbanJoinRoom',({username, room})=>{
+        addUserRoomKanban(connection,room,username,socket.id,(result)=>{
+            let codigo = result.res;
+            let e = result.error;
+            if(e){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE KANBAN`;
+                console.log(e);
+                socket.emit('unexpectedError1',msg);
+            }else if(codigo[0].result!=0){
+                msg=`USUARIO REPETIDO EN LA SALA:${room} DE KANBAN`;
+                console.log(msg);
+                socket.emit('unexpectedError1',msg);
+            }else{
+                socket.join(room);
+                socket.emit('addToDoKanbanReturn');
             }
         });
     });
@@ -938,8 +960,17 @@ io.on('connection', socket =>{
                 socket.emit('unexpectedError',msg);
             }
         });
-    });
 
+        eliminarUsuarioSalaKanban(connection,socket.id,(err)=>{
+            if(err){
+                msg="ERROR INESPERADO AL ELIMINAR USUARIO DE LA SALA DE KANBAN";
+                console.log(msg);
+                console.log(err);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+    });
+    
     //DEL CUESTIONARIO
     socket.on('verifyUserTest',info=>{
         comprobarContraUsr(connection,info,(res)=>{
@@ -1554,7 +1585,53 @@ io.on('connection', socket =>{
             socket.emit('unexpectedError',msg);
         }
    });
+/*
+    KANBAN
+*/
+   socket.on('showElemsKanban',room=>{
+        loadUserStories(connection,room,(res)=>{
+            console.log(res);
+            if(res.length != 0){ //hay algo
+                if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('showElemsKanbanReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        });
+   });
 
+   socket.on('addToDoKanban',({usKanban,room})=>{
+        for(j=0;j<usKanban.length;j++){
+            changeUSKanbanState(connection,usKanban[j],1,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('addToDoKanbanReturn');
+        socket.broadcast.to(room).emit('addToDoKanbanReturn');
+   });
+
+   socket.on('actualizarKanban',room=>{
+        actualizarKanban(connection,room, (res)=>{
+            if(res.length != 0){ //hay algo
+                if(res[0].Titulo) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('actualizarKanbanReturn',res);
+                else{
+                    msg=`ERROR ACTUALIZANDO EL KANBAN`;
+                    console.log(res);
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+        })
+   });
 
 
 });
