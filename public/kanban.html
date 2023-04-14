@@ -11,6 +11,7 @@
 </head>
 <body style="height: 100%;" class="general-page-poker">
 
+    <!-- POPUP AÑADIR ELEMENTO AL KANBAN -->
     <div class="overlay" id="overlay-addkn"></div>
     <div class="popup-add-elem-kn" id="popup-addkn">
         <div class="popupcontrols">
@@ -25,21 +26,35 @@
             <button id="ok-addkn" class="stote-new">AÑADIR</button>
         </div>
     </div>
+    
+    <!-- POPUP MOVER DE SECCIÓN -->
+    <div class="overlay" id="overlay-move"></div>
+    <div class="popup-add-elem-kn" id="popup-move">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-move">X</span>
+        </div>
+        <div class="popupcontent">
+            <h3 id="title-popup-move" class="pupup-title">TO DO -> DOING</h3>
+            <p class="save-retro-tit">Selecciona las que desea mover:</p>
+            <div id="move-us-kn" class="kn-titles">
+                <!-- TÍTULOS DE LAS US -->
+            </div>
+            <button id="ok-move" class="stote-new">MOVER</button>
+        </div>
+    </div>
+
 
     <div>
         <h1 class="titleP">KANBAN</h1> 
     </div>
     <div class="kanban">
         <div class="cabecera-kn">
-            <p class="title-section-kn"><button id="add-elem-kn" class="add-kn">➕</button>TO DO<button class="move-kn">→</button></p> 
-            <p class="title-section-kn">DOING (X/Z)<button class="move-kn">→</button></p>
+            <p class="title-section-kn"><button id="add-elem-kn" class="add-kn">➕</button>TO DO<button id="move-do-doing" class="move-kn">→</button></p> 
+            <p class="title-section-kn">DOING (X/Z)<button id="move-doing-done" class="move-kn">→</button></p>
             <p class="title-section-kn-ult">DONE<button class="delete-kn">QUITAR</button></p>
         </div>
         <div class="sections-kn">
             <div id="todo-pool" class="section-kn">
-                <div class="postit">
-                    <p class="postit-title">${titulo}</p>
-                </div>
             </div>
             <div id="doing-pool" class="section-kn">
 

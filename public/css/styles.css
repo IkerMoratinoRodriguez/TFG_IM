@@ -1882,3 +1882,32 @@ body{
     height: 500px;
     border-style: inset;
 }
+
+
+.postit-kn{
+    float: left;
+    background-color: rgb(255, 255, 85);
+    width: 40%;
+    margin-left: 5%;
+    margin-top: 20px;
+    height: 150px;
+}
+
+.postit-title-kn{
+    width: 90%;
+    height: 85px;
+    margin-left: 5%;
+    margin-right: 5%;
+}
+.postit-esti{
+    float: left;
+    margin-left: 5%;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.postit-prio{
+    float: right;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 5%;
+}

@@ -51,7 +51,7 @@ const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('
 const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS} = require('./utils/productBacklogItems');
     //KANBAN
 const {addUserRoomKanban, eliminarUsuarioSalaKanban} = require('./utils/kanbanTable');
-const {loadUserStories,changeUSKanbanState, actualizarKanban} = require('./utils/kanbanUtilities');
+const {loadUserStories,changeUSKanbanState, actualizarKanban, loadUserStoriesMove, loadUserStoriesMoveDoingDone} = require('./utils/kanbanUtilities');
 
 io.on('connection', socket =>{
 
@@ -1633,8 +1633,72 @@ io.on('connection', socket =>{
         })
    });
 
+   socket.on('showElemsKanbanMove',room=>{
+        loadUserStoriesMove(connection,room,(res)=>{
+            console.log(res);
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                    socket.emit('showElemsKanbanMoveReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA MOVER DE TO DO A DOING:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        })
+    });
+
+    socket.on('moveToDoDoingKanban',({usKanbanMove,room})=>{
+        for(j=0;j<usKanbanMove.length;j++){
+            changeUSKanbanState(connection,usKanbanMove[j],2,(e)=>{
+                if(e!=0){
+                    msg=`ERROR MOVIENDO EL ELEMENTO A LA COLUMNA DOING DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('moveToDoDoingKanbanReturn');
+        socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');
+    });
+    
+    socket.on('showElemsKanbanMoveDoingDone',room=>{
+        loadUserStoriesMoveDoingDone(connection,room,(res)=>{
+            console.log(res);
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                socket.emit('showElemsKanbanMoveDoingDoneReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA MOVER DE DOING A DONE:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        })
+    });
+    
+    socket.on('moveDoingDoneKanban',({usKanbanMove,room})=>{
+        for(j=0;j<usKanbanMove.length;j++){
+            changeUSKanbanState(connection,usKanbanMove[j],3,(e)=>{
+                if(e!=0){
+                    msg=`ERROR MOVIENDO EL ELEMENTO A LA COLUMNA DONE DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('moveToDoDoingKanbanReturn');
+        socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');
+    });
+   
+
+
 
 });
+
+
 
 
 

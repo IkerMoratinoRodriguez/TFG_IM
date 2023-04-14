@@ -57,9 +57,55 @@ function actualizarKanban(connection,sala,callback){
     
 }
 
+function loadUserStoriesMove(connection, sala, callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_user_story
+            WHERE IDSala = ${id}
+            AND EstadoKanban=1`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+
+function loadUserStoriesMoveDoingDone(connection, sala, callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_user_story
+            WHERE IDSala = ${id}
+            AND EstadoKanban=2`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+
 
 module.exports={
     loadUserStories,
     changeUSKanbanState,
-    actualizarKanban
+    actualizarKanban,
+    loadUserStoriesMove,
+    loadUserStoriesMoveDoingDone
 }
