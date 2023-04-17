@@ -1911,3 +1911,28 @@ body{
     margin-bottom: 2px;
     margin-right: 5%;
 }
+
+.wip-title{
+    cursor: pointer;
+}
+
+.input-wip{
+    width: 20%;
+    margin-left: 40%;
+    height: 50px;
+    font-size: 35px;
+    text-align: center;
+}
+
+.popup-modify-wip{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: whitesmoke;
+    width: 600px;
+    height: 300px;
+    margin-left: -300px; /*Half the value of width to center div*/
+    margin-top: -150px; /*Half the value of height to center div*/
+    z-index: 200;
+}

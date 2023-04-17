@@ -1,149 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS bdASTools ;
 USE bdASTools;
-
-CREATE TABLE Usuario (
-        ID int NOT NULL AUTO_INCREMENT,
-        Nombre varchar(80) UNIQUE NOT NULL,
-        Password varchar(40) NOT NULL,
-        PRIMARY KEY (ID)
-        );
-        
-CREATE TABLE Sala (
-			ID int NOT NULL AUTO_INCREMENT,
-            Nombre varchar(80) UNIQUE NOT NULL,
-            Password varchar(40) NOT NULL, 
-            EstadoDotVoting TINYINT NOT NULL default 0, 
-            WIP INT NOT NULL DEFAULT 3,
-            PRIMARY KEY (ID)
-            );
-
-CREATE TABLE poker (
-            IDUsuario INT NOT NULL,
-            IDSala INT NOT NULL,
-            SocketID VARCHAR(22),
-            Estimacion VARCHAR(4) DEFAULT '-1',
-            PRIMARY KEY (IDUsuario, IDSala),
-            CONSTRAINT FK_usr_poker_table FOREIGN KEY (IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-            CONSTRAINT FK_room_poker_table FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-            );
-            
-CREATE TABLE DotVoting (
-			IDUsuario INT NOT NULL,
-            IDSala INT NOT NULL,
-            SocketID VARCHAR(22),
-            Votos INT DEFAULT -1,
-            PRIMARY KEY (IDUsuario, IDSala),
-            CONSTRAINT FK_usr_dot_table FOREIGN KEY (IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-            CONSTRAINT FK_room_dot_table FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-            );
-
-CREATE TABLE UserStory (
-			IDSala INT NOT NULL,
-            Titulo VARCHAR(200) NOT NULL,
-            Votos INT DEFAULT 0,
-            PRIMARY KEY(IDSala, Titulo),
-            CONSTRAINT FKUSuserstory_room FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE retrospectiva(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usRetro FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomRetro FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE historial_retro(
-	ID int NOT NULL AUTO_INCREMENT,
-	Nombre VARCHAR(80) NOT NULL,
-    IDSala INT NOT NULL,
-	PRIMARY KEY(ID),
-    CONSTRAINT FKRetro_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT UniqueRetroNameInRoom UNIQUE(Nombre, IDSala) 
-);
-
-CREATE TABLE postit_retro(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-    IDSala INT NOT NULL,
-    Tipo TINYINT NOT NULL DEFAULT 0,
-    IDRetro INT,
-    PRIMARY KEY(ID),
-    CONSTRAINT FKPostit_retro FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT FKIDRetro_retro FOREIGN KEY (IDRetro) REFERENCES historial_retro(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE daily(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usDaily FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomDaily FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE historial_daily(
-	ID int NOT NULL AUTO_INCREMENT,
-	Nombre VARCHAR(80) NOT NULL,
-    IDSala INT NOT NULL,
-	PRIMARY KEY(ID),
-    CONSTRAINT FKDaily_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT UniqueRetroNameInRoom UNIQUE(Nombre, IDSala)
-);
-
-CREATE TABLE postit_daily(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-    Tipo TINYINT NOT NULL DEFAULT 0,
-    IDDaily INT,
-    PRIMARY KEY(ID),
-    CONSTRAINT FKIDDaily_daily FOREIGN KEY (IDDaily) REFERENCES historial_daily(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE coloca_postit_daily(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    IDPostitDaily INT NOT NULL,
-    PRIMARY KEY(IDUsuario, IDSala, IDPostitDaily),
-    CONSTRAINT FK_usPostitDaily FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_postPostitDaily FOREIGN KEY(IDPostitDaily) REFERENCES postit_daily(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomPostitDaily FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE Cuestionario(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(60),
-    PRIMARY KEY(ID)
-);
-
-CREATE TABLE autoevaluacion(
-	IDUsuario INT,
-    IDCuestionario INT,
-    Puntuacion FLOAT,
-    PRIMARY KEY(IDUsuario, IDCuestionario),
-    CONSTRAINT FK_usautoev FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_cuestautoev FOREIGN KEY(IDCuestionario) REFERENCES Cuestionario(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE Pregunta(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Enunciado VARCHAR(300),
-    IDCuestionario INT,
-    PRIMARY KEY(ID),
-    CONSTRAINT FK_idcuestionario FOREIGN KEY(IDCuestionario) REFERENCES Cuestionario(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE Opcion(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Enunciado VARCHAR(300),
-    Validez TINYINT NOT NULL, -- 0 falsa 1 correcta 
-    IDPregunta INT, 
-    PRIMARY KEY(ID),
-    CONSTRAINT FK_idpreguntaopcion FOREIGN KEY(IDPregunta) REFERENCES Pregunta(ID) ON DELETE CASCADE
-);
-
--- CUESTIONARIOS 
+-- CUESTIONARIOS
 INSERT INTO Cuestionario(Titulo) VALUES
 ('Metodologías Ágiles'),('Scrum 1'),('Scrum 2'),('Herramientas');
 
@@ -188,6 +44,7 @@ INSERT INTO Pregunta(Enunciado, IDCuestionario) VALUES
 ('En el Dot Voting…',4),
 ('En el Poker Game…',4);
 
+-- OPCIONES DE PREGUNTAS EN CUESTIONARIOS
 INSERT INTO Opcion(Enunciado, Validez, IDPregunta) VALUES
 ('4 valores y 12 principios ágiles.',1,1),
 ('4 valores y 4 principios ágiles.',0,1),
@@ -341,6 +198,7 @@ INSERT INTO Opcion(Enunciado, Validez, IDPregunta) VALUES
 ('Para obtener la estimación definitiva se hace una media entre los votos de todos los participantes.',0,38),
 ('Los participantes que seleccionan la carta de la taza de café no participan más en la priorización ya que están cansados.',0,38),
 ('Cuando un participante selecciona la carta de la pregunta se establece un turno de preguntas al resto de los participantes, para intentar aclarar sus dudas.',0,38);
+
 -- FUNCIÓN PARA ALMACENAR O INTRODUCIR NOTA EN UN CUESTIONARIO DE UN USUARIO
 DELIMITER $$
 CREATE FUNCTION insert_grade(usr VARCHAR(80), idCuestionario INT, nota FLOAT) 
@@ -368,7 +226,7 @@ BEGIN
     RETURN(0);
 END$$
 
-
+-- FUNCIÓN PARA PROBAR UNA CONTRASEÑA
 DELIMITER $$
 CREATE FUNCTION try_passwd(passwd VARCHAR(40), nombreComprobar VARCHAR(80), usuariosala INT) 
 RETURNS INT
@@ -506,6 +364,7 @@ BEGIN
     END IF;
 END $$
           
+-- JOIN DOT VOTING
 DELIMITER $$
 CREATE FUNCTION insertDotVotingConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
 RETURNS INT
@@ -588,6 +447,7 @@ BEGIN
     END IF;
 END$$
 
+-- OBTENER ID DE USUARIO POR NOMBRE
 DELIMITER $$
 CREATE FUNCTION userID(userInput VARCHAR(80)) 
 RETURNS INT
@@ -604,6 +464,7 @@ BEGIN
     END IF;
 END$$
 
+-- ELIMINAR PUNTOS DE USUARIO EN SALA DOR VOTING
 DELIMITER $$
 CREATE FUNCTION eliminarPuntosUsrSala(userInput VARCHAR(80), roomInput VARCHAR(80), puntos INT) 
 RETURNS INT
@@ -652,6 +513,7 @@ BEGIN
     END IF;
 END$$
 
+-- ALMACENAR RETROSPECTIVA
 DELIMITER $$
 CREATE FUNCTION saveRetro(titleInput VARCHAR(80), roomInput VARCHAR(80)) 
 RETURNS INT
@@ -701,6 +563,7 @@ BEGIN
     END IF;
 END$$
 
+-- INSERTAR POSTIT EN DAILY
 DELIMITER $$
 CREATE FUNCTION insertPostitDaily(usrInput VARCHAR(80), roomInput VARCHAR(80), tipoInput TINYINT, tituloInput VARCHAR(300)) 
 RETURNS INT
@@ -726,6 +589,7 @@ BEGIN
     END IF;
 END $$
 
+-- ALMACENAR DAILY
 DELIMITER $$
 CREATE FUNCTION saveDaily(titleInput VARCHAR(80), roomInput VARCHAR(80)) 
 RETURNS INT
@@ -749,7 +613,7 @@ BEGIN
     END IF;
 END$$
 
-
+-- CAMBIAR CONTRASEÑA DE USUARIO
 DELIMITER $$
 CREATE FUNCTION usrPasswdChange(userInput VARCHAR(80), oldPswd VARCHAR(40), newPswd VARCHAR(40)) 
 RETURNS INT
@@ -769,6 +633,7 @@ BEGIN
     END IF;
 END $$
 
+-- CAMBIAR CONTRASEÑA DE SALA
 DELIMITER $$
 CREATE FUNCTION roomPasswdChange(roomInput VARCHAR(80), oldPswd VARCHAR(40), newPswd VARCHAR(40)) 
 RETURNS INT
@@ -788,41 +653,6 @@ BEGIN
     END IF;
 END $$
 
-
-/*
-	NUEVO
-*/
-
-CREATE TABLE retrospectiva_calif(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usRetroCalif FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomRetroCalif FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE historial_retro_calif(
-	ID int NOT NULL AUTO_INCREMENT,
-	Nombre VARCHAR(80) NOT NULL,
-    IDSala INT NOT NULL,
-    Puntuacion INT NOT NULL,
-    Fecha VARCHAR(11),
-	PRIMARY KEY(ID),
-    CONSTRAINT FKRetroCalif_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT UniqueRetroCalifNameInRoom UNIQUE(Nombre, IDSala) 
-);
-
-CREATE TABLE postit_retro_calif(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-    IDSala INT NOT NULL,
-    Tipo TINYINT NOT NULL DEFAULT 0,
-    IDRetro INT,
-    PRIMARY KEY(ID),
-    CONSTRAINT FKPostit_retroCalif FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT FKIDRetro_retroCalif FOREIGN KEY (IDRetro) REFERENCES historial_retro_calif(ID) ON DELETE CASCADE
-);
 
 -- INSERT RETROSPECTIVE CONNECTION
 DELIMITER $$
@@ -850,6 +680,7 @@ BEGIN
     END IF;
 END$$
 
+-- ALMACENAR RETROSPECTIVA CON CALIFICACIÓN
 DELIMITER $$
 CREATE FUNCTION saveRetroCalif(titleInput VARCHAR(80), roomInput VARCHAR(80), puntuacionInput INT, fechaInput VARCHAR(11)) 
 RETURNS INT
@@ -870,25 +701,6 @@ BEGIN
 		RETURN -2; -- NO SE ENCUENTRA LA SALA
     END IF;
 END$$
-
--- TSHIRT
-CREATE TABLE tshirt(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usTshirt FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomTshirt FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE postitTshirt(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-	Tipo TINYINT NOT NULL DEFAULT 0,
-    IDSala INT NOT NULL,
-    PRIMARY KEY(ID),
-    CONSTRAINT FKPostit_Tshirt FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
 
 -- INSERTAR USUARIO EN LA TABLA DE T-SHIRT 
 DELIMITER $$
@@ -916,25 +728,6 @@ BEGIN
     END IF;
 END$$
 
--- MOSCOW
-CREATE TABLE moscow(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usMoscow FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomMoscow FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE postitMoscow(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-	Tipo TINYINT NOT NULL DEFAULT 0,
-    IDSala INT NOT NULL,
-    PRIMARY KEY(ID),
-    CONSTRAINT FKPostit_Moscow FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
 -- INSERTAR USUARIO EN LA TABLA DE T-SHIRT 
 DELIMITER $$
 CREATE FUNCTION insertMoscowConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
@@ -961,56 +754,7 @@ BEGIN
     END IF;
 END$$
 
--- Product Backlog
-CREATE TABLE productBacklog(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usPB FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomPB FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE pb_epica(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-    Descripcion VARCHAR(1000) NOT NULL,
-    Priorizacion INT  NOT NULL, 
-    Estimacion INT NOT NULL,
-    IDSala INT NOT NULL,
-    PRIMARY KEY(ID),
-    CONSTRAINT FK_idSalaPB FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE pb_feature(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-    Descripcion VARCHAR(1000) NOT NULL,
-    Priorizacion INT  NOT NULL, 
-    Estimacion INT NOT NULL,
-    IDSala INT NOT NULL,
-    IDEpica INT NOT NULL,
-    PRIMARY KEY(ID),
-    CONSTRAINT FK_idSalaPBFeat FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_idEpicaPB FOREIGN KEY(IDEpica) REFERENCES pb_epica(ID) ON DELETE CASCADE
-);
-
-CREATE TABLE pb_user_story(
-	ID INT NOT NULL AUTO_INCREMENT,
-    Titulo VARCHAR(200) NOT NULL,
-    Descripcion VARCHAR(1000) NOT NULL,
-    Priorizacion INT  NOT NULL, 
-    Estimacion INT NOT NULL,
-    IDSala INT NOT NULL,
-	IDFeature INT NOT NULL,
-    IDEpic INT NOT NULL,
-    EstadoKanban INT DEFAULT 0, 
-    PRIMARY KEY(ID),
-    CONSTRAINT FK_idSalaPBUserStory FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
-	CONSTRAINT FK_idFeatureUSPB FOREIGN KEY(IDFeature) REFERENCES pb_feature(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_idEpicUSPB FOREIGN KEY(IDEpic) REFERENCES pb_epica(ID) ON DELETE CASCADE
-);
-
+-- INSERTAR CONEXIÓN EN PRODUCT BACKLOG
 DELIMITER $$
 CREATE FUNCTION insertProductBacklogConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
 RETURNS INT
@@ -1036,6 +780,7 @@ BEGIN
     END IF;
 END$$
 
+-- INSERTAR EPICA EN EL PRODUCT BACKLOG Y DEVOLVER EL ID
 DELIMITER $$
 CREATE FUNCTION insertEpicPBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT) 
 RETURNS INT
@@ -1047,6 +792,7 @@ BEGIN
     RETURN idOutput;
 END$$
 
+-- INSERTAR FEATURE EN EL PRODUCT BACKLOG Y DEVOLVER EL ID
 DELIMITER $$
 CREATE FUNCTION insertFeaturePBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT, epicInput INT) 
 RETURNS INT
@@ -1058,7 +804,7 @@ BEGIN
     RETURN idOutput;
 END$$
 
-
+-- INSERTAR USER STORY EN EL PRODUCT BACKLOG Y DEVOLVER EL ID
 DELIMITER $$
 CREATE FUNCTION insertUserStoryPBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT, epicInput INT, featureInput INT) 
 RETURNS INT
@@ -1070,16 +816,7 @@ BEGIN
     RETURN idOutput;
 END$$
 
--- Kanban
-CREATE TABLE kanban(
-	IDUsuario INT NOT NULL,
-    IDSala INT NOT NULL,
-    SocketID VARCHAR(22),
-    PRIMARY KEY(IDUsuario, IDSala),
-    CONSTRAINT FK_usKanban FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
-    CONSTRAINT FK_roomKanban FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
-);
-
+-- INSERTAR CONEXIÓN DE KANBAN
 DELIMITER $$
 CREATE FUNCTION insertKanbanConnection(usrInput VARCHAR(80), roomInput VARCHAR(80), socketInput varchar(22)) 
 RETURNS INT

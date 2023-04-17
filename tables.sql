@@ -1,0 +1,280 @@
+CREATE SCHEMA IF NOT EXISTS bdASTools ;
+USE bdASTools;
+
+CREATE TABLE Usuario (
+        ID int NOT NULL AUTO_INCREMENT,
+        Nombre varchar(80) UNIQUE NOT NULL,
+        Password varchar(40) NOT NULL,
+        PRIMARY KEY (ID)
+        );
+        
+CREATE TABLE Sala (
+			ID int NOT NULL AUTO_INCREMENT,
+            Nombre varchar(80) UNIQUE NOT NULL,
+            Password varchar(40) NOT NULL, 
+            EstadoDotVoting TINYINT NOT NULL default 0, 
+            UsedWIP INT NOT NULL DEFAULT 0,
+            WIP INT NOT NULL DEFAULT 3,
+            PRIMARY KEY (ID)
+            );
+
+CREATE TABLE poker (
+            IDUsuario INT NOT NULL,
+            IDSala INT NOT NULL,
+            SocketID VARCHAR(22),
+            Estimacion VARCHAR(4) DEFAULT '-1',
+            PRIMARY KEY (IDUsuario, IDSala),
+            CONSTRAINT FK_usr_poker_table FOREIGN KEY (IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+            CONSTRAINT FK_room_poker_table FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+            );
+            
+CREATE TABLE DotVoting (
+			IDUsuario INT NOT NULL,
+            IDSala INT NOT NULL,
+            SocketID VARCHAR(22),
+            Votos INT DEFAULT -1,
+            PRIMARY KEY (IDUsuario, IDSala),
+            CONSTRAINT FK_usr_dot_table FOREIGN KEY (IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+            CONSTRAINT FK_room_dot_table FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+            );
+
+CREATE TABLE UserStory (
+			IDSala INT NOT NULL,
+            Titulo VARCHAR(200) NOT NULL,
+            Votos INT DEFAULT 0,
+            PRIMARY KEY(IDSala, Titulo),
+            CONSTRAINT FKUSuserstory_room FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE retrospectiva(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usRetro FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomRetro FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE historial_retro(
+	ID int NOT NULL AUTO_INCREMENT,
+	Nombre VARCHAR(80) NOT NULL,
+    IDSala INT NOT NULL,
+	PRIMARY KEY(ID),
+    CONSTRAINT FKRetro_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT UniqueRetroNameInRoom UNIQUE(Nombre, IDSala) 
+);
+
+CREATE TABLE postit_retro(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    IDSala INT NOT NULL,
+    Tipo TINYINT NOT NULL DEFAULT 0,
+    IDRetro INT,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_retro FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT FKIDRetro_retro FOREIGN KEY (IDRetro) REFERENCES historial_retro(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE daily(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usDaily FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomDaily FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE historial_daily(
+	ID int NOT NULL AUTO_INCREMENT,
+	Nombre VARCHAR(80) NOT NULL,
+    IDSala INT NOT NULL,
+	PRIMARY KEY(ID),
+    CONSTRAINT FKDaily_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT UniqueRetroNameInRoom UNIQUE(Nombre, IDSala)
+);
+
+CREATE TABLE postit_daily(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Tipo TINYINT NOT NULL DEFAULT 0,
+    IDDaily INT,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKIDDaily_daily FOREIGN KEY (IDDaily) REFERENCES historial_daily(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE coloca_postit_daily(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    IDPostitDaily INT NOT NULL,
+    PRIMARY KEY(IDUsuario, IDSala, IDPostitDaily),
+    CONSTRAINT FK_usPostitDaily FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_postPostitDaily FOREIGN KEY(IDPostitDaily) REFERENCES postit_daily(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomPostitDaily FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Cuestionario(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(60),
+    PRIMARY KEY(ID)
+);
+
+CREATE TABLE autoevaluacion(
+	IDUsuario INT,
+    IDCuestionario INT,
+    Puntuacion FLOAT,
+    PRIMARY KEY(IDUsuario, IDCuestionario),
+    CONSTRAINT FK_usautoev FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_cuestautoev FOREIGN KEY(IDCuestionario) REFERENCES Cuestionario(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Pregunta(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Enunciado VARCHAR(300),
+    IDCuestionario INT,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idcuestionario FOREIGN KEY(IDCuestionario) REFERENCES Cuestionario(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE Opcion(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Enunciado VARCHAR(300),
+    Validez TINYINT NOT NULL, -- 0 falsa 1 correcta 
+    IDPregunta INT, 
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idpreguntaopcion FOREIGN KEY(IDPregunta) REFERENCES Pregunta(ID) ON DELETE CASCADE
+);
+
+-- Retrospectiva con calificación
+
+CREATE TABLE retrospectiva_calif(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usRetroCalif FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomRetroCalif FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE historial_retro_calif(
+	ID int NOT NULL AUTO_INCREMENT,
+	Nombre VARCHAR(80) NOT NULL,
+    IDSala INT NOT NULL,
+    Puntuacion INT NOT NULL,
+    Fecha VARCHAR(11),
+	PRIMARY KEY(ID),
+    CONSTRAINT FKRetroCalif_history FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT UniqueRetroCalifNameInRoom UNIQUE(Nombre, IDSala) 
+);
+
+CREATE TABLE postit_retro_calif(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    IDSala INT NOT NULL,
+    Tipo TINYINT NOT NULL DEFAULT 0,
+    IDRetro INT,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_retroCalif FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT FKIDRetro_retroCalif FOREIGN KEY (IDRetro) REFERENCES historial_retro_calif(ID) ON DELETE CASCADE
+);
+
+-- T-shirt
+
+CREATE TABLE tshirt(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usTshirt FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomTshirt FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE postitTshirt(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+	Tipo TINYINT NOT NULL DEFAULT 0,
+    IDSala INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_Tshirt FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+-- MoSCoW
+
+CREATE TABLE moscow(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usMoscow FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomMoscow FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE postitMoscow(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+	Tipo TINYINT NOT NULL DEFAULT 0,
+    IDSala INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FKPostit_Moscow FOREIGN KEY (IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+-- Product Backlog
+
+CREATE TABLE productBacklog(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usPB FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomPB FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE pb_epica(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Descripcion VARCHAR(1000) NOT NULL,
+    Priorizacion INT  NOT NULL, 
+    Estimacion INT NOT NULL,
+    IDSala INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idSalaPB FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE pb_feature(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Descripcion VARCHAR(1000) NOT NULL,
+    Priorizacion INT  NOT NULL, 
+    Estimacion INT NOT NULL,
+    IDSala INT NOT NULL,
+    IDEpica INT NOT NULL,
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idSalaPBFeat FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_idEpicaPB FOREIGN KEY(IDEpica) REFERENCES pb_epica(ID) ON DELETE CASCADE
+);
+
+CREATE TABLE pb_user_story(
+	ID INT NOT NULL AUTO_INCREMENT,
+    Titulo VARCHAR(200) NOT NULL,
+    Descripcion VARCHAR(1000) NOT NULL,
+    Priorizacion INT  NOT NULL, 
+    Estimacion INT NOT NULL,
+    IDSala INT NOT NULL,
+	IDFeature INT NOT NULL,
+    IDEpic INT NOT NULL,
+    EstadoKanban INT DEFAULT 0, 
+    PRIMARY KEY(ID),
+    CONSTRAINT FK_idSalaPBUserStory FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE,
+	CONSTRAINT FK_idFeatureUSPB FOREIGN KEY(IDFeature) REFERENCES pb_feature(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_idEpicUSPB FOREIGN KEY(IDEpic) REFERENCES pb_epica(ID) ON DELETE CASCADE
+);
+
+-- Kanban
+
+CREATE TABLE kanban(
+	IDUsuario INT NOT NULL,
+    IDSala INT NOT NULL,
+    SocketID VARCHAR(22),
+    PRIMARY KEY(IDUsuario, IDSala),
+    CONSTRAINT FK_usKanban FOREIGN KEY(IDUsuario) REFERENCES Usuario(ID) ON DELETE CASCADE,
+    CONSTRAINT FK_roomKanban FOREIGN KEY(IDSala) REFERENCES Sala(ID) ON DELETE CASCADE
+);

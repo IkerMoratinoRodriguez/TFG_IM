@@ -61,6 +61,7 @@ const featuresPool = document.getElementById('features-pool');
 const userStoriesPool = document.getElementById('us-pool');
 const btnDeleteElement = document.getElementById('delete-element');
 const btnElementDetails = document.getElementById('element-details');
+const btnOrderPriority = document.getElementById('order-priority');
 
 //VARIABLES GLOBALES
 var tipoElem=0; // 1->EPICA 2->FEATURE 3->US
@@ -86,6 +87,7 @@ socket.on('createEpicPBReturn',infoSend=>{
   maxEpic++;
 });
 socket.on('loadEpicsPB',epicas=>{
+    console.log(epicas);
     maxEpic=epicas.length;
     for(i=0;i<epicas.length;i++){
       let info = {
@@ -199,7 +201,12 @@ btnElementDetails.onclick = function(){
   popupDetails.style.display = 'block';
   nuevoElem=false;
   añadirAddEpic.innerHTML='MODIFICAR';
-
+}
+btnOrderPriority.onclick = function(){
+  epicPool.innerHTML='';
+  featuresPool.innerHTML='';
+  userStoriesPool.innerHTML='';
+  socket.emit('orderPrioriry',room);
 }
 
 

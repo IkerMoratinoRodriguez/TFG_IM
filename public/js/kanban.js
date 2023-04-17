@@ -19,6 +19,22 @@ const btnMove = document.getElementById("ok-move");
 const knTitlesPoolMove = document.getElementById("move-us-kn");
 const titlePopupMove = document.getElementById("title-popup-move");
 
+//POPUP MODIFICAR WIP
+const closePopupWip = document.getElementById("popupclose-wip");
+const overlayWip = document.getElementById("overlay-wip");
+const popupWip = document.getElementById("popup-wip");
+const btnOkWip = document.getElementById("ok-wip");
+const inputWip = document.getElementById("new-wip");
+
+//POPUP ELIMINAR ELEMENTO AL KANBAN
+const closePopupDeleteKn = document.getElementById("popupclose-deletekn");
+const overlayDeleteKn = document.getElementById("overlay-deletekn");
+const popupDeleteKn = document.getElementById("popup-deletekn");
+const btnDeleteKn = document.getElementById("ok-deletekn");
+const deleteKnTitlesPool = document.getElementById("deletekn-titles");
+
+
+
 //ELEMENTOS DEL DOM
 const btnAddElem = document.getElementById('add-elem-kn');
 const todoPool = document.getElementById('todo-pool');
@@ -26,21 +42,32 @@ const doingPool = document.getElementById('doing-pool');
 const donePool = document.getElementById('done-pool');
 const btnMoveDoDoing = document.getElementById('move-do-doing');
 const btnMoveDoingDone = document.getElementById('move-doing-done');
+const wipTitle = document.getElementById('wip-title');
+const btnRemoveDone = document.getElementById('btn-remove-done');
+
 
 //VARIABLES
-var usPB=0, usPBMove=0, moveOp=0/* 1:TO DO->DOING 2:DOING->DONE */;
-
+var usPB=0, usPBMove=0, moveOp=0, usDelete=0/* 1:TO DO->DOING 2:DOING->DONE */;
+var wipUsado, wipTotal;
 
 
 /*
   SOCKET ON 
 */
+socket.on('joinUsedWip',res=>{
+    wipUsado=res;
+});
 socket.on('unexpectedError1',msg=>{
     alert(msg);
     location.href="http://localhost:3000/kanbanroom.html";
 });
 socket.on('unexpectedError',msg=>{
     alert(msg);
+});
+socket.on('loadWip',wip=>{
+    wipTotal=wip;
+    socket.emit('loadWipRet',{wipUsado, room});
+    cargarWip(wipUsado,wip);
 });
 socket.on('showElemsKanbanReturn',res=>{
     aniadirTitulosKnTitlesPool(res);
@@ -54,14 +81,21 @@ socket.on('actualizarKanbanReturn',res=>{
 socket.on('showElemsKanbanMoveReturn',res=>{
     aniadirTitulosKnTitlesPoolMove(res);
 });
-socket.on('moveToDoDoingKanbanReturn',()=>{
+socket.on('moveToDoDoingKanbanReturn',(wipAct)=>{
+    wipUsado=wipAct;
+    console.log(wipUsado);
     socket.emit('actualizarKanban',room);
 });
 socket.on('showElemsKanbanMoveDoingDoneReturn',res=>{
     aniadirTitulosKnTitlesPoolMoveDoingDone(res);
 });
-
-
+socket.on('newWipReturn',wipActualizado=>{
+    wipTotal=wipActualizado;
+    cargarWip(wipUsado,wipActualizado);
+});
+socket.on('showElemsDeleteKnReturn',res=>{
+    listarUSToDelete(res); 
+});
 /*
     ON CLICK DOM
 */
@@ -84,6 +118,16 @@ btnMoveDoingDone.onclick = function(){
     overlayMove.style.display = 'block';
     popupMove.style.display = 'block';
 }
+wipTitle.onclick = function(){
+    overlayWip.style.display = 'block';
+    popupWip.style.display = 'block';
+}
+btnRemoveDone.onclick = function(){
+    overlayDeleteKn.style.display = 'block';
+    popupDeleteKn.style.display = 'block';
+    socket.emit('showElemsDeleteKn',room);
+}
+
 
 /*
     POPUP AÑADIR US
@@ -130,18 +174,80 @@ btnMove.onclick = function(){
             usKanbanMove.push(elem.value);
         }
     }
-    if(moveOp == 1)
-        socket.emit('moveToDoDoingKanban',{usKanbanMove,room}); 
-    else if(moveOp == 2)
+    elemsCambio = usKanbanMove.length;
+    console.log(`${elemsCambio}+${wipUsado}:${wipTotal}`);
+    if(moveOp == 1){
+        if(elemsCambio+wipUsado > wipTotal){
+            alert("ERROR. NO SE PUEDE SUPERAR EL WIP.")
+        }
+        else{
+            wipUsado+=elemsCambio;
+            socket.emit('moveToDoDoingKanban',{usKanbanMove,room,wipUsado}); 
+            overlayMove.style.display = 'none';
+            popupMove.style.display = 'none';
+        }
+    }
+    else if(moveOp == 2){
         socket.emit('moveDoingDoneKanban',{usKanbanMove,room});
-
-    
-    //COMPROBAR SI EL WIP CUADRA O ACTUALIZAR EL WIP, DEPENDE DE MOVEOP
-
-
-    overlayMove.style.display = 'none';
-    popupMove.style.display = 'none';
+        overlayMove.style.display = 'none';
+        popupMove.style.display = 'none';
+    }
+        
 }
+
+/*
+    POPUP CAMBIAR WIP
+*/
+overlayWip.onclick = function(){
+    overlayWip.style.display = 'none';
+    popupWip.style.display = 'none';
+}
+closePopupWip.onclick = function(){
+    overlayWip.style.display = 'none';
+    popupWip.style.display = 'none';
+};
+btnOkWip.onclick = function (){
+    wipActualizado=inputWip.value;
+    if(wipActualizado > 0 && wipActualizado >= wipUsado){ 
+        wipTotal = wipActualizado;
+        socket.emit('newWip',{wipActualizado,room});
+        overlayWip.style.display = 'none';
+        popupWip.style.display = 'none';
+    }else if(wipActualizado <= 0){ 
+        alert("EL WIP DEBE SER MAYOR QUE 0");
+    }else if(wipActualizado < wipUsado){
+        alert("EL NUEVO WIP DEBE SER MAYOR O IGUAL AL NÚMERO DE TAREAS EN TO DO");
+    }
+    
+
+}
+
+
+
+/*
+    POPUP ELIMINAR US
+*/
+overlayDeleteKn.onclick = function(){
+    overlayDeleteKn.style.display = 'none';
+    popupDeleteKn.style.display = 'none';
+}
+closePopupDeleteKn.onclick = function() {
+    overlayDeleteKn.style.display = 'none';
+    popupDeleteKn.style.display = 'none';
+};
+btnDeleteKn.onclick = function() {
+    let deleteKnbn= [];
+    for(i=0;i<usDelete;i++){
+        var elem = document.getElementById(`usDelete${i}`);
+        if(elem.checked){
+            deleteKnbn.push(elem.value);
+        }
+    }
+    socket.emit('deleteKNSelected',{deleteKnbn,room}); 
+    overlayDeleteKn.style.display = 'none';
+    popupDeleteKn.style.display = 'none';
+}
+
 
 
 /*
@@ -174,6 +280,15 @@ function aniadirTitulosKnTitlesPoolMoveDoingDone(titulos){
     }
 }
 
+function listarUSToDelete(titulos){
+    deleteKnTitlesPool.innerHTML='';
+    usDelete=titulos.length;
+    for(i=0;i<titulos.length;i++){
+        html=`<input id="usDelete${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        deleteKnTitlesPool.innerHTML+=html;
+    }
+}
+
 function mostrarKanban(userStories){
     let todo = [];
     let doing = [];
@@ -197,17 +312,17 @@ function mostrarKanban(userStories){
     console.log(todo);
     for(i=0;i<todo.length;i++){
         html=`<div class="postit-kn">
-                    <p class="postit-title-kn">${todo[i].title}${todo[i].est}${todo[i].prio}</p>
-                    <p class="postit-esti">E:${done[i].est}</p>
-                    <p class="postit-prio">P:${done[i].prio}</p>
+                    <p class="postit-title-kn">${todo[i].title}</p>
+                    <p class="postit-esti">E:${todo[i].est}</p>
+                    <p class="postit-prio">P:${todo[i].prio}</p>
                 </div>`;
         todoPool.innerHTML+=html;
     }
     for(i=0;i<doing.length;i++){
         html=`<div class="postit-kn">
-                    <p class="postit-title-kn">${doing[i].title}${doing[i].est}${doing[i].prio}</p>
-                    <p class="postit-esti">E:${done[i].est}</p>
-                    <p class="postit-prio">P:${done[i].prio}</p>
+                    <p class="postit-title-kn">${doing[i].title}</p>
+                    <p class="postit-esti">E:${doing[i].est}</p>
+                    <p class="postit-prio">P:${doing[i].prio}</p>
                 </div>`;
         doingPool.innerHTML+=html;
     }
@@ -220,4 +335,9 @@ function mostrarKanban(userStories){
         donePool.innerHTML+=html;
     }
     
+}
+
+function cargarWip(usedWip,wip){
+    let html = `(${usedWip}/${wip})`;
+    wipTitle.innerHTML= html;
 }

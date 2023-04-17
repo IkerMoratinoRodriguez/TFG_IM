@@ -37,6 +37,27 @@ function loadEpicsProductBacklog(connection,sala,callback){
     });
 }
 
+function loadEpicsOrderedProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_epica
+            WHERE IDSala = ${id}
+            ORDER BY Priorizacion DESC`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
 function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion, estimacion, sala, epica, callback){
     let room = `SELECT roomID('${sala}') as result;`;
 
@@ -66,6 +87,27 @@ function loadFeaturesProductBacklog(connection,sala,callback){
             let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
             FROM pb_feature
             WHERE IDSala = ${id}`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+function loadFeaturesOrderedProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_feature
+            WHERE IDSala = ${id}
+            ORDER BY Priorizacion DESC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -106,6 +148,27 @@ function loadUSProductBacklog(connection,sala,callback){
             let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
             FROM pb_user_story
             WHERE IDSala = ${id}`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+function loadUSOrderedProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_user_story
+            WHERE IDSala = ${id}
+            ORDER BY Priorizacion DESC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -276,7 +339,10 @@ module.exports={
     propertiesOfUS,
     updateEpic,
     updateFeature,
-    updateUS
+    updateUS,
+    loadEpicsOrderedProductBacklog,
+    loadFeaturesOrderedProductBacklog,
+    loadUSOrderedProductBacklog
 }
  
 

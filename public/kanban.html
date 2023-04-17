@@ -43,6 +43,36 @@
         </div>
     </div>
 
+    <!-- POPUP CAMBIAR WIP -->
+    <div class="overlay" id="overlay-wip"></div>
+    <div class="popup-modify-wip" id="popup-wip">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-wip">X</span>
+        </div>
+        <div class="popupcontent">
+            <h3 class="pupup-title">MODIFICAR WIP</h3>
+            <p class="save-retro-tit">Inserte el nuevo WIP:</p>
+            <input class="input-wip" type="number" id="new-wip">
+            <button id="ok-wip" class="stote-new">CAMBIAR</button>
+        </div>
+    </div>
+
+    <!-- POPUP AÑADIR ELEMENTO AL KANBAN -->
+    <div class="overlay" id="overlay-deletekn"></div>
+    <div class="popup-add-elem-kn" id="popup-deletekn">
+        <div class="popupcontrols">
+            <span class="popupclose" id="popupclose-deletekn">X</span>
+        </div>
+        <div class="popupcontent">
+            <h3 class="pupup-title">ELIMINAR USER STORY DE DONE</h3>
+            <p class="save-retro-tit">Selecciona las que desea eliminar del Kanban:</p>
+            <div id="deletekn-titles" class="kn-titles">
+                <!-- TÍTULOS DE LAS US -->
+            </div>
+            <button id="ok-deletekn" class="stote-new">ELIMINAR</button>
+        </div>
+    </div>
+
 
     <div>
         <h1 class="titleP">KANBAN</h1> 
@@ -50,8 +80,8 @@
     <div class="kanban">
         <div class="cabecera-kn">
             <p class="title-section-kn"><button id="add-elem-kn" class="add-kn">➕</button>TO DO<button id="move-do-doing" class="move-kn">→</button></p> 
-            <p class="title-section-kn">DOING (X/Z)<button id="move-doing-done" class="move-kn">→</button></p>
-            <p class="title-section-kn-ult">DONE<button class="delete-kn">QUITAR</button></p>
+            <p class="title-section-kn">DOING<a class="wip-title" id="wip-title">(X/Z)</a><button id="move-doing-done" class="move-kn">→</button></p>
+            <p class="title-section-kn-ult">DONE<button id="btn-remove-done" class="delete-kn">QUITAR</button></p>
         </div>
         <div class="sections-kn">
             <div id="todo-pool" class="section-kn">
