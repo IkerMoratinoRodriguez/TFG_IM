@@ -48,26 +48,17 @@ const btnRemoveDone = document.getElementById('btn-remove-done');
 
 //VARIABLES
 var usPB=0, usPBMove=0, moveOp=0, usDelete=0/* 1:TO DO->DOING 2:DOING->DONE */;
-var wipUsado, wipTotal;
 
 
 /*
   SOCKET ON 
 */
-socket.on('joinUsedWip',res=>{
-    wipUsado=res;
-});
 socket.on('unexpectedError1',msg=>{
     alert(msg);
     location.href="http://localhost:3000/kanbanroom.html";
 });
 socket.on('unexpectedError',msg=>{
     alert(msg);
-});
-socket.on('loadWip',wip=>{
-    wipTotal=wip;
-    socket.emit('loadWipRet',{wipUsado, room});
-    cargarWip(wipUsado,wip);
 });
 socket.on('showElemsKanbanReturn',res=>{
     aniadirTitulosKnTitlesPool(res);
@@ -81,17 +72,11 @@ socket.on('actualizarKanbanReturn',res=>{
 socket.on('showElemsKanbanMoveReturn',res=>{
     aniadirTitulosKnTitlesPoolMove(res);
 });
-socket.on('moveToDoDoingKanbanReturn',(wipAct)=>{
-    wipUsado=wipAct;
-    console.log(wipUsado);
+socket.on('moveToDoDoingKanbanReturn',()=>{
     socket.emit('actualizarKanban',room);
 });
 socket.on('showElemsKanbanMoveDoingDoneReturn',res=>{
     aniadirTitulosKnTitlesPoolMoveDoingDone(res);
-});
-socket.on('newWipReturn',wipActualizado=>{
-    wipTotal=wipActualizado;
-    cargarWip(wipUsado,wipActualizado);
 });
 socket.on('showElemsDeleteKnReturn',res=>{
     listarUSToDelete(res); 
@@ -175,17 +160,10 @@ btnMove.onclick = function(){
         }
     }
     elemsCambio = usKanbanMove.length;
-    console.log(`${elemsCambio}+${wipUsado}:${wipTotal}`);
     if(moveOp == 1){
-        if(elemsCambio+wipUsado > wipTotal){
-            alert("ERROR. NO SE PUEDE SUPERAR EL WIP.")
-        }
-        else{
-            wipUsado+=elemsCambio;
-            socket.emit('moveToDoDoingKanban',{usKanbanMove,room,wipUsado}); 
-            overlayMove.style.display = 'none';
-            popupMove.style.display = 'none';
-        }
+        socket.emit('moveToDoDoingKanban',{usKanbanMove,room}); 
+        overlayMove.style.display = 'none';
+        popupMove.style.display = 'none';
     }
     else if(moveOp == 2){
         socket.emit('moveDoingDoneKanban',{usKanbanMove,room});
@@ -206,21 +184,6 @@ closePopupWip.onclick = function(){
     overlayWip.style.display = 'none';
     popupWip.style.display = 'none';
 };
-btnOkWip.onclick = function (){
-    wipActualizado=inputWip.value;
-    if(wipActualizado > 0 && wipActualizado >= wipUsado){ 
-        wipTotal = wipActualizado;
-        socket.emit('newWip',{wipActualizado,room});
-        overlayWip.style.display = 'none';
-        popupWip.style.display = 'none';
-    }else if(wipActualizado <= 0){ 
-        alert("EL WIP DEBE SER MAYOR QUE 0");
-    }else if(wipActualizado < wipUsado){
-        alert("EL NUEVO WIP DEBE SER MAYOR O IGUAL AL NÚMERO DE TAREAS EN TO DO");
-    }
-    
-
-}
 
 
 
@@ -335,9 +298,4 @@ function mostrarKanban(userStories){
         donePool.innerHTML+=html;
     }
     
-}
-
-function cargarWip(usedWip,wip){
-    let html = `(${usedWip}/${wip})`;
-    wipTitle.innerHTML= html;
 }

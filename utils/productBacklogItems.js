@@ -58,6 +58,27 @@ function loadEpicsOrderedProductBacklog(connection,sala,callback){
     });
 }
 
+function loadEpicsOrderedEProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_epica
+            WHERE IDSala = ${id}
+            ORDER BY Estimacion ASC`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
 function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion, estimacion, sala, epica, callback){
     let room = `SELECT roomID('${sala}') as result;`;
 
@@ -108,6 +129,26 @@ function loadFeaturesOrderedProductBacklog(connection,sala,callback){
             FROM pb_feature
             WHERE IDSala = ${id}
             ORDER BY Priorizacion DESC`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+function loadFeaturesEOrderedProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_feature
+            WHERE IDSala = ${id}
+            ORDER BY Estimacion ASC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -169,6 +210,27 @@ function loadUSOrderedProductBacklog(connection,sala,callback){
             FROM pb_user_story
             WHERE IDSala = ${id}
             ORDER BY Priorizacion DESC`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+function loadUSOrderedEProductBacklog(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
+            FROM pb_user_story
+            WHERE IDSala = ${id}
+            ORDER BY Estimacion ASC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -342,20 +404,9 @@ module.exports={
     updateUS,
     loadEpicsOrderedProductBacklog,
     loadFeaturesOrderedProductBacklog,
-    loadUSOrderedProductBacklog
+    loadUSOrderedProductBacklog,
+    loadEpicsOrderedEProductBacklog,
+    loadFeaturesEOrderedProductBacklog,
+    loadUSOrderedEProductBacklog
 }
  
-
-/*
-    TAREAS PENDIENTES
-
-    1- Para añadir features y user stories tengo que saber a qué padres (épicas y features) pertenecen. Para ello cuando
-    las inserto, tengo que poner su ID en el value de las options. Luego tengo que pasar este ID como parámetro a la función
-    js de creación.
-    
-    2- Cargar inicialmente las épicas, features e historias de usuario que existen en la base de datos
-    
-    3- Cuando se añade una épica, feature o user storie, hacer que se muestre también en los otros clientes.
-
-
-*/

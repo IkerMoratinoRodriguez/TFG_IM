@@ -62,6 +62,7 @@ const userStoriesPool = document.getElementById('us-pool');
 const btnDeleteElement = document.getElementById('delete-element');
 const btnElementDetails = document.getElementById('element-details');
 const btnOrderPriority = document.getElementById('order-priority');
+const btnOrderEstimation = document.getElementById('order-estimation');
 
 //VARIABLES GLOBALES
 var tipoElem=0; // 1->EPICA 2->FEATURE 3->US
@@ -207,6 +208,12 @@ btnOrderPriority.onclick = function(){
   featuresPool.innerHTML='';
   userStoriesPool.innerHTML='';
   socket.emit('orderPrioriry',room);
+}
+btnOrderEstimation.onclick = function(){
+  epicPool.innerHTML='';
+  featuresPool.innerHTML='';
+  userStoriesPool.innerHTML='';
+  socket.emit('orderEstimation',room);
 }
 
 
