@@ -51,7 +51,7 @@ const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('
 const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS, loadEpicsOrderedProductBacklog, loadFeaturesOrderedProductBacklog,loadUSOrderedProductBacklog, loadEpicsOrderedEProductBacklog, loadFeaturesEOrderedProductBacklog, loadUSOrderedEProductBacklog} = require('./utils/productBacklogItems');
     //KANBAN
 const {addUserRoomKanban, eliminarUsuarioSalaKanban} = require('./utils/kanbanTable');
-const {loadUserStories,changeUSKanbanState, actualizarKanban, loadUserStoriesMove, loadUserStoriesMoveDoingDone, deleteFromkanban, listUSToDeleteKN} = require('./utils/kanbanUtilities');
+const {loadUserStories,changeUSKanbanState, actualizarKanban, loadUserStoriesMove, loadUserStoriesMoveDoingDone, deleteFromkanban, listUSToDeleteKN, loadWip,loadUsedWip, updateWip} = require('./utils/kanbanUtilities');
 
 io.on('connection', socket =>{
 
@@ -334,6 +334,32 @@ io.on('connection', socket =>{
             }else{
                 socket.join(room);
                 socket.emit('addToDoKanbanReturn');
+            }
+        });
+        loadWip(connection,room,(res)=>{
+            if(res.length>0){
+                if(res[0].WIP != null){
+                    socket.emit('loadWipReturn',res[0].WIP);
+                }else{
+                    msg=`NO SE HA DEFINIDO WIP PARA LA SALA`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }else{
+                msg=`NO EXISTE LA SALA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
+        loadUsedWip(connection,room,(res)=>{
+            console.log(res[0].Total);
+            if(res[0].Total>=0){
+                socket.emit('loadWipUsadoReturn',res[0].Total);
+            }else{
+                console.log(res);
+                msg=`HA OCURRIDO UN ERROR OBTENIENDO EL WIP USADO DE LA SALA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
             }
         });
     });
@@ -1742,8 +1768,22 @@ io.on('connection', socket =>{
                     }
                 })
             }
-            socket.emit('moveToDoDoingKanbanReturn');
-            socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');  
+            loadUsedWip(connection,room,(res)=>{
+                console.log(res[0].Total);
+                if(res[0].Total>=0){
+                    //Actualizar WIPS
+                    socket.emit('loadWipUsadoReturn',res[0].Total);
+                    socket.broadcast.to(room).emit('loadWipUsadoReturn',res[0].Total);
+                    //Actualizar tableros
+                    socket.emit('moveToDoDoingKanbanReturn');
+                    socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');
+                }else{
+                    console.log(res);
+                    msg=`HA OCURRIDO UN ERROR OBTENIENDO EL WIP USADO DE LA SALA`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            });
     });
     
     socket.on('showElemsKanbanMoveDoingDone',room=>{
@@ -1772,8 +1812,22 @@ io.on('connection', socket =>{
                 }
             })
         }
-        socket.emit('moveToDoDoingKanbanReturn');
-        socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');
+        loadUsedWip(connection,room,(res)=>{
+            console.log(res[0].Total);
+            if(res[0].Total>=0){
+                //Actualizar WIPS
+                socket.emit('loadWipUsadoReturn',res[0].Total);
+                socket.broadcast.to(room).emit('loadWipUsadoReturn',res[0].Total);
+                //Actualizar tableros
+                socket.emit('moveToDoDoingKanbanReturn');
+                socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');
+            }else{
+                console.log(res);
+                msg=`HA OCURRIDO UN ERROR OBTENIENDO EL WIP USADO DE LA SALA`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }
+        });
     });
     
     socket.on('showElemsDeleteKn',room=>{
@@ -1803,7 +1857,21 @@ io.on('connection', socket =>{
         }
         socket.emit('addToDoKanbanReturn');
         socket.broadcast.to(room).emit('addToDoKanbanReturn');
-    })
+    });
+
+    socket.on('updateWip',({newWip,room})=>{
+        updateWip(connection,room,newWip,(res)=>{
+            if(res != 0){
+                msg=`ERROR ACTUALIZANDO EL WIP DE LA SALA`;
+                console.log(res);
+                console.log(e);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('updateWipReturn',newWip);
+                socket.broadcast.to(room).emit('updateWipReturn',newWip);
+            }
+        });
+    });
 
 
 

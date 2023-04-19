@@ -48,7 +48,7 @@ const btnRemoveDone = document.getElementById('btn-remove-done');
 
 //VARIABLES
 var usPB=0, usPBMove=0, moveOp=0, usDelete=0/* 1:TO DO->DOING 2:DOING->DONE */;
-
+var wipUsado, wipTotal;
 
 /*
   SOCKET ON 
@@ -80,6 +80,18 @@ socket.on('showElemsKanbanMoveDoingDoneReturn',res=>{
 });
 socket.on('showElemsDeleteKnReturn',res=>{
     listarUSToDelete(res); 
+});
+//WIP
+socket.on('loadWipReturn',wip=>{
+    wipTotal=wip;
+});
+socket.on('loadWipUsadoReturn',wip=>{
+    wipUsado=wip;
+    cargarWip(wipUsado,wipTotal);
+});
+socket.on('updateWipReturn',newWip=>{
+    wipTotal=newWip;
+    cargarWip(wipUsado,wipTotal);
 });
 /*
     ON CLICK DOM
@@ -161,9 +173,13 @@ btnMove.onclick = function(){
     }
     elemsCambio = usKanbanMove.length;
     if(moveOp == 1){
-        socket.emit('moveToDoDoingKanban',{usKanbanMove,room}); 
-        overlayMove.style.display = 'none';
-        popupMove.style.display = 'none';
+        if(elemsCambio+wipUsado<=wipTotal){
+            socket.emit('moveToDoDoingKanban',{usKanbanMove,room}); 
+            overlayMove.style.display = 'none';
+            popupMove.style.display = 'none';
+        }else{
+            alert("NO HAY SUFICIENTE CAPACIDAD PARA TENER TANTAS TAREAS EN DOING. POR FAVOR, SELECCIONE MENOS.");
+        }
     }
     else if(moveOp == 2){
         socket.emit('moveDoingDoneKanban',{usKanbanMove,room});
@@ -184,7 +200,18 @@ closePopupWip.onclick = function(){
     overlayWip.style.display = 'none';
     popupWip.style.display = 'none';
 };
-
+btnOkWip.onclick = function (){
+    let newWip = inputWip.value;
+    if(newWip<1){
+        alert("SE DEBE FIJAR UN NÚMERO MAYOR QUE 0 PARA EL WIP");
+    }else if(newWip<wipUsado){
+        alert("SE DEBE FIJAR UN WIP MAYOR O IGUAL AL UTILIZADO POR EL EQUIPO");
+    }else{
+        overlayWip.style.display = 'none';
+        popupWip.style.display = 'none';
+        socket.emit('updateWip',{newWip,room});
+    }
+}
 
 
 /*
@@ -298,4 +325,7 @@ function mostrarKanban(userStories){
         donePool.innerHTML+=html;
     }
     
+}
+function cargarWip(wipUsado,wip){
+    wipTitle.innerHTML=`(${wipUsado}/${wip})`;
 }

@@ -137,6 +137,67 @@ function listUSToDeleteKN(connection,sala,callback){
     });
 }
 
+function loadWip(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT WIP 
+            FROM sala
+            WHERE ID = ${id};`;
+            connection.query(consulta,function(e,result){
+                if(e)
+                    callback(e);
+                else
+                    callback(result);
+            });
+        }
+    });
+}
+
+function loadUsedWip(connection,sala,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `SELECT COUNT(*) as Total
+            FROM pb_user_story
+            WHERE EstadoKanban=2
+            AND IDSala = ${id};`;
+            connection.query(consulta,function(e,re){
+                if(e)
+                    callback(e);
+                else
+                    callback(re);
+            });
+        }
+    });
+}
+
+function updateWip(connection,sala,newWip,callback){
+    let room = `SELECT roomID('${sala}') as result;`;
+    connection.query(room,function(err,result){
+        const id=result[0].result;
+        if(err){
+            callback(err);
+        }else if(id != -1){
+            let consulta = `UPDATE sala
+            SET WIP=${newWip}
+            WHERE ID=${id}`;
+            connection.query(consulta,function(e,re){
+                if(e)
+                    callback(e);
+                else
+                    callback(0);
+            });
+        }
+    });
+}
+
 
 
 
@@ -147,5 +208,8 @@ module.exports={
     loadUserStoriesMove,
     loadUserStoriesMoveDoingDone,
     deleteFromkanban,
-    listUSToDeleteKN
+    listUSToDeleteKN,
+    loadWip,
+    loadUsedWip,
+    updateWip
 }
