@@ -48,7 +48,7 @@ const btnRemoveDone = document.getElementById('btn-remove-done');
 
 //VARIABLES
 var usPB=0, usPBMove=0, moveOp=0, usDelete=0/* 1:TO DO->DOING 2:DOING->DONE */;
-var wipUsado, wipTotal;
+var wipUsado, wipTotal, disabledWip;
 
 /*
   SOCKET ON 
@@ -93,6 +93,32 @@ socket.on('updateWipReturn',newWip=>{
     wipTotal=newWip;
     cargarWip(wipUsado,wipTotal);
 });
+socket.on('blockButton',btnBlock=>{
+    if(btnBlock==1){
+        btnMoveDoDoing.disabled=true;
+    }else if(btnBlock==2){
+        btnMoveDoingDone.disabled=true;
+    }else if(btnBlock==3){
+        btnRemoveDone.disabled=true;
+    }else if(btnBlock==4){
+        disabledWip=true;
+        wipTitle.style.color='red';
+        wipTitle.style.cursor='default';
+    }
+});
+socket.on('releaseButtonReturn',btnBlock=>{
+    if(btnBlock==1){
+        btnMoveDoDoing.disabled=false;
+    }else if(btnBlock==2){
+        btnMoveDoingDone.disabled=false;
+    }else if(btnBlock==3){
+        btnRemoveDone.disabled=false;
+    }else if(btnBlock==4){
+        disabledWip=false;
+        wipTitle.style.color='black';
+        wipTitle.style.cursor='pointer';
+    }
+});
 /*
     ON CLICK DOM
 */
@@ -116,8 +142,13 @@ btnMoveDoingDone.onclick = function(){
     popupMove.style.display = 'block';
 }
 wipTitle.onclick = function(){
-    overlayWip.style.display = 'block';
-    popupWip.style.display = 'block';
+    if(!disabledWip){
+        socket.emit('blockWipButton',room); 
+        overlayWip.style.display = 'block';
+        popupWip.style.display = 'block';
+    }else{
+        alert("WIP bloqueado por otro usuario");
+    }
 }
 btnRemoveDone.onclick = function(){
     overlayDeleteKn.style.display = 'block';
@@ -157,10 +188,24 @@ btnAddKn.onclick = function(){
 overlayMove.onclick = function(){
     overlayMove.style.display = 'none';
     popupMove.style.display = 'none';
+    if(moveOp == 1){
+        let btnBlock = 1;
+        socket.emit('releaseButton',({room,btnBlock}));
+    }else if(moveOp == 2){
+        let btnBlock = 2;
+        socket.emit('releaseButton',({room,btnBlock}));
+    }
 }
 closePopupMove.onclick = function() {
     overlayMove.style.display = 'none';
     popupMove.style.display = 'none';
+    if(moveOp == 1){
+        let btnBlock = 1;
+        socket.emit('releaseButton',({room,btnBlock}));
+    }else if(moveOp == 2){
+        let btnBlock = 2;
+        socket.emit('releaseButton',({room,btnBlock}));
+    }
 };
 btnMove.onclick = function(){
     //MANDAR LOS ID DE LAS QUE SE QUIEREN MOVER
@@ -177,11 +222,15 @@ btnMove.onclick = function(){
             socket.emit('moveToDoDoingKanban',{usKanbanMove,room}); 
             overlayMove.style.display = 'none';
             popupMove.style.display = 'none';
+            let btnBlock = 1;
+            socket.emit('releaseButton',({room,btnBlock}));
         }else{
             alert("NO HAY SUFICIENTE CAPACIDAD PARA TENER TANTAS TAREAS EN DOING. POR FAVOR, SELECCIONE MENOS.");
         }
     }
     else if(moveOp == 2){
+        let btnBlock = 2;
+        socket.emit('releaseButton',({room,btnBlock}));
         socket.emit('moveDoingDoneKanban',{usKanbanMove,room});
         overlayMove.style.display = 'none';
         popupMove.style.display = 'none';
@@ -195,10 +244,14 @@ btnMove.onclick = function(){
 overlayWip.onclick = function(){
     overlayWip.style.display = 'none';
     popupWip.style.display = 'none';
+    let btnBlock=4;
+    socket.emit('releaseButton',({room,btnBlock}));
 }
 closePopupWip.onclick = function(){
     overlayWip.style.display = 'none';
     popupWip.style.display = 'none';
+    let btnBlock=4;
+    socket.emit('releaseButton',({room,btnBlock}));
 };
 btnOkWip.onclick = function (){
     let newWip = inputWip.value;
@@ -207,6 +260,8 @@ btnOkWip.onclick = function (){
     }else if(newWip<wipUsado){
         alert("SE DEBE FIJAR UN WIP MAYOR O IGUAL AL UTILIZADO POR EL EQUIPO");
     }else{
+        let btnBlock = 4;
+        socket.emit('releaseButton',({room,btnBlock}));
         overlayWip.style.display = 'none';
         popupWip.style.display = 'none';
         socket.emit('updateWip',{newWip,room});
@@ -220,12 +275,18 @@ btnOkWip.onclick = function (){
 overlayDeleteKn.onclick = function(){
     overlayDeleteKn.style.display = 'none';
     popupDeleteKn.style.display = 'none';
+    let btnBlock=3;
+    socket.emit('releaseButton',({room,btnBlock}));
 }
 closePopupDeleteKn.onclick = function() {
     overlayDeleteKn.style.display = 'none';
     popupDeleteKn.style.display = 'none';
+    let btnBlock = 3;
+    socket.emit('releaseButton',({room,btnBlock}));
 };
 btnDeleteKn.onclick = function() {
+    let btnBlock = 3;
+    socket.emit('releaseButton',({room,btnBlock}));
     let deleteKnbn= [];
     for(i=0;i<usDelete;i++){
         var elem = document.getElementById(`usDelete${i}`);

@@ -140,6 +140,10 @@ socket.on('loadUSsPB',us=>{
 socket.on('loadEpicsPBDelete',()=>{
     socket.emit('loadPB',room);
     location.reload();
+    let disblock=1;
+    socket.emit('allowBtn',({room,disblock}));
+    disblock=2;
+    socket.emit('allowBtn',({room,disblock}));
 });
 socket.on('loadFeaturesOfEpicReturn',features=>{
     desplegableFeature.innerHTML='';
@@ -160,10 +164,30 @@ socket.on('loadDetailsOfElementReturn',elemLoad=>{
   inputDescriptionAddEpic.value=elemLoad[0].Descripcion;
   inputEstimationAddEpic.value=elemLoad[0].Estimacion;
   inputPriorizationAddEpic.value=elemLoad[0].Priorizacion;
+  disblock=2;
+  socket.emit('allowBtn',({room,disblock}));
 });
 socket.on('reloadPB',()=>{
   location.reload();
-})
+  let disblock=1;
+  socket.emit('allowBtn',({room,disblock}));
+  disblock=2;
+  socket.emit('allowBtn',({room,disblock}));
+});
+socket.on('blockButtonReturn',block=>{
+  if(block == 1){
+    btnDeleteElement.disabled=true;
+  }else if(block == 2){
+    btnElementDetails.disabled=true;
+  }
+});
+socket.on('allowBtnReturn',disblock=>{
+  if(disblock == 1){
+    btnDeleteElement.disabled=false;
+  }else if(disblock == 2){
+    btnElementDetails.disabled=false;
+  }
+});
 
 
 /*
@@ -194,10 +218,14 @@ btnAddUserStorie.onclick = function(){
   añadirAddEpic.innerHTML='AÑADIR';
 }
 btnDeleteElement.onclick = function(){
+  let block=1;
+  socket.emit('blockButton',({room,block}))
   overlayDelete.style.display = 'block';
   popupDelete.style.display = 'block';
 }
 btnElementDetails.onclick = function(){
+  let block=2;
+  socket.emit('blockButton',({room,block}))
   overlayDetails.style.display = 'block';
   popupDetails.style.display = 'block';
   nuevoElem=false;
@@ -282,10 +310,14 @@ añadirAddEpic.onclick = function(){
 overlayDelete.onclick = function(){
     overlayDelete.style.display = 'none';
     popupDelete.style.display = 'none';
+    let disblock=1;
+    socket.emit('allowBtn',({room,disblock}));
 }
 closePopupDelete.onclick = function() {
     overlayDelete.style.display = 'none';
     popupDelete.style.display = 'none';
+    let disblock=1;
+    socket.emit('allowBtn',({room,disblock}));
 };
 okDelete.onclick = function(){
   mostrarIDDeleteSelected();
@@ -297,10 +329,14 @@ okDelete.onclick = function(){
 overlayDetails.onclick = function(){
   overlayDetails.style.display = 'none';
   popupDetails.style.display = 'none';
+  let disblock=2;
+  socket.emit('allowBtn',({room,disblock}));
 }
 closePopupDetails.onclick = function() {
   overlayDetails.style.display = 'none';
   popupDetails.style.display = 'none';
+  let disblock=2;
+  socket.emit('allowBtn',({room,disblock}));
 };
 okDetails.onclick = function(){
   mostrarIDDetailsSelected();

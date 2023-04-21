@@ -13,7 +13,6 @@ CREATE TABLE Sala (
             Nombre varchar(80) UNIQUE NOT NULL,
             Password varchar(40) NOT NULL, 
             EstadoDotVoting TINYINT NOT NULL default 0, 
-            UsedWIP INT NOT NULL DEFAULT 0,
             WIP INT NOT NULL DEFAULT 3,
             PRIMARY KEY (ID)
             );

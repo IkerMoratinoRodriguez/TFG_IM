@@ -1694,6 +1694,15 @@ io.on('connection', socket =>{
     });
    });
 
+    socket.on('blockButton',({room,block})=>{
+        console.log("llega"+block);
+        socket.broadcast.to(room).emit('blockButtonReturn',block);
+    });
+    socket.on('allowBtn',({room,disblock})=>{
+        socket.broadcast.to(room).emit('allowBtnReturn',disblock);
+    });
+   
+
 /*
     KANBAN
 */
@@ -1743,6 +1752,7 @@ io.on('connection', socket =>{
    });
 
    socket.on('showElemsKanbanMove',room=>{
+        socket.broadcast.to(room).emit('blockButton',1);
         loadUserStoriesMove(connection,room,(res)=>{
             console.log(res);
             if(res.length != 0){ 
@@ -1787,6 +1797,7 @@ io.on('connection', socket =>{
     });
     
     socket.on('showElemsKanbanMoveDoingDone',room=>{
+        socket.broadcast.to(room).emit('blockButton',2);
         loadUserStoriesMoveDoingDone(connection,room,(res)=>{
             console.log(res);
             if(res.length != 0){ 
@@ -1831,6 +1842,7 @@ io.on('connection', socket =>{
     });
     
     socket.on('showElemsDeleteKn',room=>{
+        socket.broadcast.to(room).emit('blockButton',3);
         listUSToDeleteKN(connection,room,(res)=>{
             if(res.length != 0){ 
                 if(res[0].ID) 
@@ -1873,6 +1885,13 @@ io.on('connection', socket =>{
         });
     });
 
+    socket.on('releaseButton',({room,btnBlock})=>{
+        socket.broadcast.to(room).emit('releaseButtonReturn',btnBlock);
+    });
+
+    socket.on('blockWipButton',room=>{
+        socket.broadcast.to(room).emit('blockButton',4);
+    });
 
 
 });

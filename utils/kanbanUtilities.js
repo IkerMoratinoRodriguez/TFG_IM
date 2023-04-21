@@ -104,7 +104,7 @@ function loadUserStoriesMoveDoingDone(connection, sala, callback){
 
 function deleteFromkanban(connection,id,callback){
     let consulta = `UPDATE pb_user_story
-    SET EstadoKanban = 4
+    SET EstadoKanban = 0
     WHERE ID=${id};`;
 
     connection.query(consulta,function(e,result){
