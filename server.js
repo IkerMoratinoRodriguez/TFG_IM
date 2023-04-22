@@ -48,7 +48,7 @@ const{addUserRoomMoscow,eliminarUsuarioSalaMoscow} = require('./utils/moscowTabl
 const{addPostitMoscow, loadRoomPostitsMoscow, deletePostitMoscow} = require('./utils/postitMoscow');
     //PRODUCT BACKLOG
 const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('./utils/productBacklogTable');
-const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS, loadEpicsOrderedProductBacklog, loadFeaturesOrderedProductBacklog,loadUSOrderedProductBacklog, loadEpicsOrderedEProductBacklog, loadFeaturesEOrderedProductBacklog, loadUSOrderedEProductBacklog} = require('./utils/productBacklogItems');
+const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS, loadEpicsOrderedProductBacklog, loadFeaturesOrderedProductBacklog,loadUSOrderedProductBacklog, loadEpicsOrderedEProductBacklog, loadFeaturesEOrderedProductBacklog, loadUSOrderedEProductBacklog, getEpicByID, getFeatureByID} = require('./utils/productBacklogItems');
     //KANBAN
 const {addUserRoomKanban, eliminarUsuarioSalaKanban} = require('./utils/kanbanTable');
 const {loadUserStories,changeUSKanbanState, actualizarKanban, loadUserStoriesMove, loadUserStoriesMoveDoingDone, deleteFromkanban, listUSToDeleteKN, loadWip,loadUsedWip, updateWip} = require('./utils/kanbanUtilities');
@@ -1702,6 +1702,33 @@ io.on('connection', socket =>{
         socket.broadcast.to(room).emit('allowBtnReturn',disblock);
     });
    
+    socket.on('loadFatherEpic',epica=>{
+        console.log(epica);
+        getEpicByID(connection,epica,(res)=>{
+            if(res==1){
+                msg=`ERROR CARGNDO EL TÍTULO DE LA ÉPICA PADRE`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('loadFatherEpicReturn',res[0]);
+            }
+        })
+    });
+
+    socket.on('loadFatherFeature',epica=>{
+        getFeatureByID(connection,epica,(res)=>{
+            if(res==1){
+                msg=`ERROR CARGNDO EL TÍTULO DE LA FEATURE PADRE`;
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                socket.emit('loadFatherFeatureReturn',res[0]);
+            }
+        })
+    });
+
+
+
 
 /*
     KANBAN

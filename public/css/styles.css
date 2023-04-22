@@ -1784,6 +1784,11 @@ body{
     margin-top: 10px;
     height: 40px;
 }
+.epic-father{
+    margin-left: 10%;
+    font-size: 25px;
+    margin-top: 40px;
+}
 
 /*
     KANBAN

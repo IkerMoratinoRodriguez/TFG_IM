@@ -384,6 +384,30 @@ function updateUS(connection, id, titulo, descripcion, prio, esti, callback){
     });
 }
 
+function getEpicByID(connection,id,callback){
+    let query = `SELECT Titulo
+    FROM pb_epica
+    WHERE ID=${id}`;
+    connection.query(query, function(e,r){
+        if(e)
+            callback(1);
+        else
+            callback(r);
+    });
+}
+
+function getFeatureByID(connection,id,callback){
+    let query = `SELECT Titulo
+    FROM pb_feature
+    WHERE ID=${id}`;
+    connection.query(query, function(e,r){
+        if(e)
+            callback(1);
+        else
+            callback(r);
+    });
+}
+
 
 module.exports={
     addEpicToProductBacklog,
@@ -407,6 +431,8 @@ module.exports={
     loadUSOrderedProductBacklog,
     loadEpicsOrderedEProductBacklog,
     loadFeaturesEOrderedProductBacklog,
-    loadUSOrderedEProductBacklog
+    loadUSOrderedEProductBacklog,
+    getEpicByID,
+    getFeatureByID
 }
  

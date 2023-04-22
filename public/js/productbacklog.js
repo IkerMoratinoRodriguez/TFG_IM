@@ -15,6 +15,8 @@ const inputPriorizationAddEpic = document.getElementById('priorization-input-add
 const inputEstimationAddEpic = document.getElementById('estimation-input-add-e');
 const añadirAddEpic = document.getElementById('btn-modificar-add-e');
 const titlePopupAdd = document.getElementById('title-popup-add-e');
+const fatherEpicTitle = document.getElementById('father-epic-title');
+const fatherFeatureTitle = document.getElementById('father-feature-title');
 
 //POPUP ELIMINAR ELEMENTO
 const closePopupDelete = document.getElementById("popupclose-delete");
@@ -164,6 +166,15 @@ socket.on('loadDetailsOfElementReturn',elemLoad=>{
   inputDescriptionAddEpic.value=elemLoad[0].Descripcion;
   inputEstimationAddEpic.value=elemLoad[0].Estimacion;
   inputPriorizationAddEpic.value=elemLoad[0].Priorizacion;
+  if(tipoElem==2){
+    let epica=elemLoad[0].IDEpic;
+    socket.emit('loadFatherEpic',epica);
+  }else if(tipoElem==3){
+    let epica=elemLoad[0].IDEpic;
+    socket.emit('loadFatherEpic',epica);
+    let feature=elemLoad[0].IDFeature;
+    socket.emit('loadFatherFeature',feature);
+  }
   disblock=2;
   socket.emit('allowBtn',({room,disblock}));
 });
@@ -188,6 +199,14 @@ socket.on('allowBtnReturn',disblock=>{
     btnElementDetails.disabled=false;
   }
 });
+socket.on('loadFatherEpicReturn',res=>{
+  fatherEpicTitle.style.display='block';
+  fatherEpicTitle.innerHTML=`Título de épica padre: ${res.Titulo}`;
+})
+socket.on('loadFatherFeatureReturn',res=>{
+  fatherFeatureTitle.style.display='block';
+  fatherFeatureTitle.innerHTML=`Título de feature padre: ${res.Titulo}`;
+})
 
 
 /*
@@ -252,10 +271,14 @@ btnOrderEstimation.onclick = function(){
 overlayAddEpic.onclick = function(){
   overlayAddEpic.style.display = 'none';
   popupAddEpic.style.display = 'none';
+  fatherEpicTitle.style.display='none';
+  fatherFeatureTitle.style.display='none';
 }
 closePopupAddEpic.onclick = function() {
   overlayAddEpic.style.display = 'none';
   popupAddEpic.style.display = 'none';
+  fatherEpicTitle.style.display='none';
+  fatherFeatureTitle.style.display='none';
 };
 añadirAddEpic.onclick = function(){
   titulo = inputTitleAddEpic.value;
