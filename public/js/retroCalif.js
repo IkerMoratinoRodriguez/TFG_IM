@@ -3,6 +3,7 @@ const { username, room } = Qs.parse(location.search, {
     ignoreQueryPrefix:true
 });
 
+
 //POPUP ADD POSTIT
 const closePopup = document.getElementById("popupclose");
 const overlay = document.getElementById("overlay");
@@ -100,7 +101,7 @@ socket.on('loadRetroCalifHistoryListReturn',titles=>{
     poolRetro.innerHTML="";
     retros=titles.length;
     for(i=0;i<titles.length;i++){
-        let html = `<input class="retro-list-history" type="radio" name="history" value="${titles[i].Nombre}" id="retro${i}"/> ${titles[i].Nombre}<br>`;
+        let html = `<input class="retro-list-history" type="radio" name="history" value="${titles[i].Nombre}" id="retro${i}"/> ${titles[i].Nombre} (${titles[i].Fecha})<br>`;
         poolRetro.innerHTML+=html;
     }
 });

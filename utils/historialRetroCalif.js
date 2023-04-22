@@ -17,7 +17,7 @@ function listRetroCalif(connection,sala,callback){
         if(e){
             callback(e);
         }else if(idRoom != -1){
-            let updateQuery = `SELECT Nombre FROM historial_retro_calif WHERE IDSala=${idRoom}`;
+            let updateQuery = `SELECT Nombre,Fecha FROM historial_retro_calif WHERE IDSala=${idRoom}`;
             connection.query(updateQuery,function(error, result){
                 if(error)
                     console.log(error);
