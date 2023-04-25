@@ -66,6 +66,11 @@ socket.on('showElemsKanbanReturn',res=>{
 socket.on('addToDoKanbanReturn',()=>{
     socket.emit('actualizarKanban',room);
 });
+socket.on('deleteKNSelectedReturn',()=>{
+    location.reload();
+    socket.emit('actualizarKanban',room);
+});
+
 socket.on('actualizarKanbanReturn',res=>{
     mostrarKanban(res);
 });

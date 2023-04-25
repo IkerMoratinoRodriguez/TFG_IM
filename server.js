@@ -1894,8 +1894,8 @@ io.on('connection', socket =>{
                 }
             })
         }
-        socket.emit('addToDoKanbanReturn');
-        socket.broadcast.to(room).emit('addToDoKanbanReturn');
+        socket.emit('deleteKNSelectedReturn');
+        socket.broadcast.to(room).emit('deleteKNSelectedReturn');
     });
 
     socket.on('updateWip',({newWip,room})=>{
