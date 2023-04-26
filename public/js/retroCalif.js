@@ -203,13 +203,11 @@ btnPublic.onclick = function(){
 /*
     ON CLIC BOTÓN OPCIONES
  */
-//POP UP CLOSED INITIALY
 overlayOptions.onclick = function(){
     overlayOptions.style.display = 'none';
     popupOptions.style.display = 'none';
     socket.emit('allowOptionsRetroCalif',room);
 } 
-// Close Popup Event
 closePopupOptions.onclick = function() {
     overlayOptions.style.display = 'none';
     popupOptions.style.display = 'none';
@@ -232,6 +230,7 @@ btnDeleteSeleced.onclick = function(){
         }
     }
     socket.emit('titlesToDeleteRetroCalif',{titlesDelete,room});
+    location.reload();
 }
 /*
     GUARDAR RETRO
