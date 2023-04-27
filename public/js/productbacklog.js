@@ -92,6 +92,8 @@ socket.on('createEpicPBReturn',infoSend=>{
 socket.on('loadEpicsPB',epicas=>{
     console.log(epicas);
     maxEpic=epicas.length;
+    epicDeletePool.innerHTML='';
+    epicDetailsPool.innerHTML='';
     for(i=0;i<epicas.length;i++){
       let info = {
         id: epicas[i].ID,
@@ -110,6 +112,8 @@ socket.on('createFeaturePBReturn',infoSend=>{
 });
 socket.on('loadFeaturesPB',features=>{
   maxFeature=features.length;
+  featureDeletePool.innerHTML='';
+  featureDetailsPool.innerHTML='';
   for(i=0;i<features.length;i++){
     let info = {
       id: features[i].ID,
@@ -128,6 +132,8 @@ socket.on('createUSPBReturn',infoSend=>{
 });
 socket.on('loadUSsPB',us=>{
   maxUS=us.length;
+  usDeletePool.innerHTML='';
+  usDetailsPool.innerHTML='';
   for(i=0;i<us.length;i++){
     let info = {
       id: us[i].ID,
@@ -167,7 +173,7 @@ socket.on('loadDetailsOfElementReturn',elemLoad=>{
   inputEstimationAddEpic.value=elemLoad[0].Estimacion;
   inputPriorizationAddEpic.value=elemLoad[0].Priorizacion;
   if(tipoElem==2){
-    let epica=elemLoad[0].IDEpic;
+    let epica=elemLoad[0].IDEpica;
     socket.emit('loadFatherEpic',epica);
   }else if(tipoElem==3){
     let epica=elemLoad[0].IDEpic;
