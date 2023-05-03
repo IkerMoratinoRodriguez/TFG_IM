@@ -51,7 +51,7 @@ const {addUserRoomProductBacklog, eliminarUsuarioSalaProductBacklog} = require('
 const {addEpicToProductBacklog, loadEpicsProductBacklog, addFeatureToProductBacklog,loadFeaturesProductBacklog, addUSToProductBacklog, loadUSProductBacklog, deleteEpic, deleteFeature, deleteUS,featuresOfEpic, propertiesOfEpic, propertiesOfFeature, propertiesOfUS, updateEpic, updateFeature, updateUS, loadEpicsOrderedProductBacklog, loadFeaturesOrderedProductBacklog,loadUSOrderedProductBacklog, loadEpicsOrderedEProductBacklog, loadFeaturesEOrderedProductBacklog, loadUSOrderedEProductBacklog, getEpicByID, getFeatureByID} = require('./utils/productBacklogItems');
     //KANBAN
 const {addUserRoomKanban, eliminarUsuarioSalaKanban} = require('./utils/kanbanTable');
-const {loadUserStories,changeUSKanbanState, actualizarKanban, loadUserStoriesMove, loadUserStoriesMoveDoingDone, deleteFromkanban, listUSToDeleteKN, loadWip,loadUsedWip, updateWip} = require('./utils/kanbanUtilities');
+const {loadUserStories,loadEpics,loadFeatures,loadFeaturesTitle,loadEpicsTitle,changeUSKanbanState, changeEpicKanbanState, changeFeatureKanbanState, actualizarKanban, loadUserStoriesMove, loadUserStoriesMoveDoingDone, deleteFromkanban, listUSToDeleteKN, loadWip,loadUsedWip, updateWip} = require('./utils/kanbanUtilities');
 
 io.on('connection', socket =>{
 
@@ -1748,6 +1748,36 @@ io.on('connection', socket =>{
             
         });
    });
+   socket.on('showFeaturesKanban',room=>{
+        loadFeaturesTitle(connection,room,0,(res)=>{
+            console.log(res);
+            if(res.length != 0){ //hay algo
+                if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('showFeaturesKanbanReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        });
+   });
+   socket.on('showEpicsKanban',room=>{
+        loadEpicsTitle(connection,room,0,(res)=>{
+            console.log(res);
+            if(res.length != 0){ //hay algo
+                if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('showEpicsKanbanReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS ÉPICAS DEL PRODUCT BACKLOG:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        });
+   });
 
    socket.on('addToDoKanban',({usKanban,room})=>{
         for(j=0;j<usKanban.length;j++){
@@ -1777,6 +1807,35 @@ io.on('connection', socket =>{
             }
         })
    });
+   socket.on('actualizarKanbanFeatures',room=>{
+        loadFeatures(connection,room, (res)=>{
+            if(res.length != 0){ //hay algo
+                if(res[0].Titulo) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('actualizarKanbanFeaturesReturn',res);
+                else{
+                    msg=`ERROR ACTUALIZANDO EL KANBAN`;
+                    console.log(res);
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+        })
+   });
+   socket.on('actualizarKanbanEpics',room=>{
+        loadEpics(connection,room, (res)=>{
+            if(res.length != 0){ //hay algo
+                if(res[0].Titulo) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
+                    socket.emit('actualizarKanbaEpicsReturn',res);
+                else{
+                    msg=`ERROR ACTUALIZANDO EL KANBAN`;
+                    console.log(res);
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+        })
+   });
+
 
    socket.on('showElemsKanbanMove',room=>{
         socket.broadcast.to(room).emit('blockButton',1);
@@ -1785,6 +1844,36 @@ io.on('connection', socket =>{
             if(res.length != 0){ 
                 if(res[0].ID) 
                     socket.emit('showElemsKanbanMoveReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA MOVER DE TO DO A DOING:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        })
+    });
+   socket.on('showFeaturesKanbanMove',room=>{
+        loadFeaturesTitle(connection,room,1,(res)=>{
+            console.log(res);
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                    socket.emit('showFeaturesKanbanMoveReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA MOVER DE TO DO A DOING:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        })
+    });
+   socket.on('showEpicsKanbanMove',room=>{
+        loadEpicsTitle(connection,room,1,(res)=>{
+            console.log(res);
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                    socket.emit('showEpicsKanbanMoveReturn',res);
                 else{
                     msg=`ERROR CARGANDO LAS US PARA MOVER DE TO DO A DOING:${room}`;
                     console.log(msg);
@@ -1839,6 +1928,36 @@ io.on('connection', socket =>{
             
         })
     });
+    socket.on('showEpicsKanbanMoveDoingDone',room=>{
+        loadEpicsTitle(connection,room,2,(res)=>{
+            console.log(res);
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                socket.emit('showEpicsKanbanMoveDoingDoneReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA MOVER DE DOING A DONE:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        })
+    });
+    socket.on('showFeaturesKanbanMoveDoingDone',room=>{
+        loadFeaturesTitle(connection,room,2,(res)=>{
+            console.log(res);
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                socket.emit('showFeaturesKanbanMoveDoingDoneReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA MOVER DE DOING A DONE:${room}`;
+                    console.log(msg);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+            
+        })
+    });
     
     socket.on('moveDoingDoneKanban',({usKanbanMove,room})=>{
         for(j=0;j<usKanbanMove.length;j++){
@@ -1874,6 +1993,34 @@ io.on('connection', socket =>{
             if(res.length != 0){ 
                 if(res[0].ID) 
                     socket.emit('showElemsDeleteKnReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA ELIMINAR`;
+                    console.log(msg);
+                    console.log(res);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+        });
+    });
+    socket.on('showEpicsDeleteKn',room=>{
+        loadEpicsTitle(connection,room,3,(res)=>{
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                    socket.emit('showEpicsDeleteKnReturn',res);
+                else{
+                    msg=`ERROR CARGANDO LAS US PARA ELIMINAR`;
+                    console.log(msg);
+                    console.log(res);
+                    socket.emit('unexpectedError',msg);
+                }
+            }
+        });
+    });
+    socket.on('showFeaturesDeleteKn',room=>{
+        loadFeaturesTitle(connection,room,3,(res)=>{
+            if(res.length != 0){ 
+                if(res[0].ID) 
+                    socket.emit('showFeaturesDeleteKnReturn',res);
                 else{
                     msg=`ERROR CARGANDO LAS US PARA ELIMINAR`;
                     console.log(msg);

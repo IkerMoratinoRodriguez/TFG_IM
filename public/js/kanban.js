@@ -63,18 +63,40 @@ socket.on('unexpectedError',msg=>{
 socket.on('showElemsKanbanReturn',res=>{
     aniadirTitulosKnTitlesPool(res);
 });
+socket.on('showFeaturesKanbanReturn',res=>{
+    aniadirTitulosKnTitlesPool(res);
+});
+socket.on('showEpicsKanbanReturn',res=>{
+    aniadirTitulosKnTitlesPool(res);
+});
 socket.on('addToDoKanbanReturn',()=>{
+    todoPool.innerHTML = '';
+    doingPool.innerHTML = '';
+    donePool.innerHTML = '';
     socket.emit('actualizarKanban',room);
+    socket.emit('actualizarKanbanFeatures',room);
+    socket.emit('actualizarKanbanEpics',room);
 });
 socket.on('deleteKNSelectedReturn',()=>{
     location.reload();
     socket.emit('actualizarKanban',room);
 });
-
 socket.on('actualizarKanbanReturn',res=>{
-    mostrarKanban(res);
+    mostrarKanban(res,1);
+});
+socket.on('actualizarKanbanFeaturesReturn',res=>{
+    mostrarKanban(res,2);
+});
+socket.on('actualizarKanbaEpicsReturn',res=>{
+    mostrarKanban(res,3);
 });
 socket.on('showElemsKanbanMoveReturn',res=>{
+    aniadirTitulosKnTitlesPoolMove(res);
+});
+socket.on('showFeaturesKanbanMoveReturn',res=>{
+    aniadirTitulosKnTitlesPoolMove(res);
+});
+socket.on('showEpicsKanbanMoveReturn',res=>{
     aniadirTitulosKnTitlesPoolMove(res);
 });
 socket.on('moveToDoDoingKanbanReturn',()=>{
@@ -83,7 +105,19 @@ socket.on('moveToDoDoingKanbanReturn',()=>{
 socket.on('showElemsKanbanMoveDoingDoneReturn',res=>{
     aniadirTitulosKnTitlesPoolMoveDoingDone(res);
 });
+socket.on('showEpicsKanbanMoveDoingDoneReturn',res=>{
+    aniadirTitulosKnTitlesPoolMoveDoingDone(res);
+});
+socket.on('showFeaturesKanbanMoveDoingDoneReturn',res=>{
+    aniadirTitulosKnTitlesPoolMoveDoingDone(res);
+});
 socket.on('showElemsDeleteKnReturn',res=>{
+    listarUSToDelete(res); 
+});
+socket.on('showEpicsDeleteKnReturn',res=>{
+    listarUSToDelete(res); 
+});
+socket.on('showFeaturesDeleteKnReturn',res=>{
     listarUSToDelete(res); 
 });
 //WIP
@@ -128,19 +162,28 @@ socket.on('releaseButtonReturn',btnBlock=>{
     ON CLICK DOM
 */
 btnAddElem.onclick = function(){
+    knTitlesPool.innerHTML='';
     socket.emit('showElemsKanban',room); 
+    socket.emit('showFeaturesKanban',room); 
+    socket.emit('showEpicsKanban',room); 
     overlayAddKn.style.display = 'block';
     popupAddKn.style.display = 'block';
 }
 btnMoveDoDoing.onclick = function(){
+    knTitlesPoolMove.innerHTML='';
     socket.emit('showElemsKanbanMove',room); 
+    socket.emit('showFeaturesKanbanMove',room); 
+    socket.emit('showEpicsKanbanMove',room); 
     titlePopupMove.innerHTML='TO DO -> DOING';
     moveOp=1;
     overlayMove.style.display = 'block';
     popupMove.style.display = 'block';
 }
 btnMoveDoingDone.onclick = function(){
+    knTitlesPoolMove.innerHTML='';
     socket.emit('showElemsKanbanMoveDoingDone',room); 
+    socket.emit('showEpicsKanbanMoveDoingDone',room); 
+    socket.emit('showFeaturesKanbanMoveDoingDone',room); 
     titlePopupMove.innerHTML='DOING -> DONE';
     moveOp=2;
     overlayMove.style.display = 'block';
@@ -158,7 +201,10 @@ wipTitle.onclick = function(){
 btnRemoveDone.onclick = function(){
     overlayDeleteKn.style.display = 'block';
     popupDeleteKn.style.display = 'block';
+    deleteKnTitlesPool.innerHTML='';
     socket.emit('showElemsDeleteKn',room);
+    socket.emit('showEpicsDeleteKn',room);
+    socket.emit('showFeaturesDeleteKn',room);
 }
 
 
@@ -310,7 +356,6 @@ btnDeleteKn.onclick = function() {
     FUNCIONES
 */
 function aniadirTitulosKnTitlesPool(titulos){
-    knTitlesPool.innerHTML='';
     usPB=titulos.length;
     for(i=0;i<titulos.length;i++){
         html=`<input id="us${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
@@ -319,7 +364,6 @@ function aniadirTitulosKnTitlesPool(titulos){
 }
 
 function aniadirTitulosKnTitlesPoolMove(titulos){
-    knTitlesPoolMove.innerHTML='';
     usPBMove=titulos.length;
     for(i=0;i<titulos.length;i++){
         html=`<input id="usMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
@@ -328,7 +372,6 @@ function aniadirTitulosKnTitlesPoolMove(titulos){
 }
 
 function aniadirTitulosKnTitlesPoolMoveDoingDone(titulos){
-    knTitlesPoolMove.innerHTML='';
     usPBMove=titulos.length;
     for(i=0;i<titulos.length;i++){
         html=`<input id="usMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
@@ -337,7 +380,6 @@ function aniadirTitulosKnTitlesPoolMoveDoingDone(titulos){
 }
 
 function listarUSToDelete(titulos){
-    deleteKnTitlesPool.innerHTML='';
     usDelete=titulos.length;
     for(i=0;i<titulos.length;i++){
         html=`<input id="usDelete${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
@@ -345,13 +387,11 @@ function listarUSToDelete(titulos){
     }
 }
 
-function mostrarKanban(userStories){
+function mostrarKanban(userStories,tipoElem){
     let todo = [];
     let doing = [];
     let done = [];
-    todoPool.innerHTML = '';
-    doingPool.innerHTML = '';
-    donePool.innerHTML = '';
+    console.log(userStories);
     for(i=0;i<userStories.length;i++){
         let info = {
             title:userStories[i].Titulo,
@@ -365,29 +405,70 @@ function mostrarKanban(userStories){
         else if(userStories[i].EstadoKanban == 3)
             done.push(info);
     }
-    console.log(todo);
     for(i=0;i<todo.length;i++){
-        html=`<div class="postit-kn">
-                    <p class="postit-title-kn">${todo[i].title}</p>
-                    <p class="postit-esti">E:${todo[i].est}</p>
-                    <p class="postit-prio">P:${todo[i].prio}</p>
-                </div>`;
+        if (tipoElem == 1){
+            html=`<div class="postit-kn">
+            <p class="postit-title-kn">${todo[i].title}</p>
+            <p class="postit-esti">E:${todo[i].est}</p>
+            <p class="postit-prio">P:${todo[i].prio}</p>
+        </div>`;
+        }else if (tipoElem == 2){
+            html=`<div class="postit-kn-f">
+            <p class="postit-title-kn">${todo[i].title}</p>
+            <p class="postit-esti">E:${todo[i].est}</p>
+            <p class="postit-prio">P:${todo[i].prio}</p>
+        </div>`;
+        }else if (tipoElem == 3){
+            html=`<div class="postit-kn-e">
+            <p class="postit-title-kn">${todo[i].title}</p>
+            <p class="postit-esti">E:${todo[i].est}</p>
+            <p class="postit-prio">P:${todo[i].prio}</p>
+        </div>`;
+        }
         todoPool.innerHTML+=html;
     }
     for(i=0;i<doing.length;i++){
-        html=`<div class="postit-kn">
+        if (tipoElem == 1){
+            html=`<div class="postit-kn">
                     <p class="postit-title-kn">${doing[i].title}</p>
                     <p class="postit-esti">E:${doing[i].est}</p>
                     <p class="postit-prio">P:${doing[i].prio}</p>
                 </div>`;
+        }else if (tipoElem == 2){
+            html=`<div class="postit-kn-f">
+                    <p class="postit-title-kn">${doing[i].title}</p>
+                    <p class="postit-esti">E:${doing[i].est}</p>
+                    <p class="postit-prio">P:${doing[i].prio}</p>
+                </div>`;
+        }else if (tipoElem == 3){
+            html=`<div class="postit-kn-e">
+                    <p class="postit-title-kn">${doing[i].title}</p>
+                    <p class="postit-esti">E:${doing[i].est}</p>
+                    <p class="postit-prio">P:${doing[i].prio}</p>
+                </div>`;
+        }
         doingPool.innerHTML+=html;
     }
     for(i=0;i<done.length;i++){
-        html=`<div class="postit-kn">
+        if (tipoElem == 1){
+            html=`<div class="postit-kn">
                     <p class="postit-title-kn">${done[i].title}</p>
                     <p class="postit-esti">E:${done[i].est}</p>
                     <p class="postit-prio">P:${done[i].prio}</p>
                 </div>`;
+        }else if (tipoElem == 2){
+            html=`<div class="postit-kn-f">
+                    <p class="postit-title-kn">${done[i].title}</p>
+                    <p class="postit-esti">E:${done[i].est}</p>
+                    <p class="postit-prio">P:${done[i].prio}</p>
+                </div>`;
+        }else if (tipoElem == 3){
+            html=`<div class="postit-kn-e">
+                    <p class="postit-title-kn">${done[i].title}</p>
+                    <p class="postit-esti">E:${done[i].est}</p>
+                    <p class="postit-prio">P:${done[i].prio}</p>
+                </div>`;
+        }
         donePool.innerHTML+=html;
     }
     

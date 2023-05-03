@@ -1892,6 +1892,22 @@ body{
     margin-top: 20px;
     height: 150px;
 }
+.postit-kn-e{
+    float: left;
+    background-color: rgb(231, 145, 248);
+    width: 40%;
+    margin-left: 5%;
+    margin-top: 20px;
+    height: 150px;
+}
+.postit-kn-f{
+    float: left;
+    background-color: rgb(158, 250, 244);
+    width: 40%;
+    margin-left: 5%;
+    margin-top: 20px;
+    height: 150px;
+}
 
 .postit-title-kn{
     width: 90%;
