@@ -1870,9 +1870,9 @@ body{
     left: 50%;
     background: whitesmoke;
     width: 1000px;
-    height: 750px;
+    height: 790px;
     margin-left: -500px; /*Half the value of width to center div*/
-    margin-top: -320px; /*Half the value of height to center div*/
+    margin-top: -395px; /*Half the value of height to center div*/
     z-index: 200;
 }
 
@@ -1883,6 +1883,12 @@ body{
     border-style: inset;
 }
 
+.kn-titles-mod{
+    margin-left: 2%;
+    width: 96%;
+    height: 130px;
+    border-style: inset;
+}
 
 .postit-kn{
     float: left;

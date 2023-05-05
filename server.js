@@ -1789,8 +1789,38 @@ io.on('connection', socket =>{
                 }
             })
         }
-        socket.emit('addToDoKanbanReturn');
-        socket.broadcast.to(room).emit('addToDoKanbanReturn');
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+   });
+
+   socket.on('addFeToDoKanban',({feKanban,room})=>{
+        for(j=0;j<feKanban.length;j++){
+            changeFeatureKanbanState(connection,feKanban[j],1,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+   });
+
+   socket.on('addEpToDoKanban',({epKanban,room})=>{
+        console.log("EPICA");
+        console.log(epKanban);
+        for(j=0;j<epKanban.length;j++){
+            changeEpicKanbanState(connection,epKanban[j],1,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
    });
 
    socket.on('actualizarKanban',room=>{
@@ -1901,8 +1931,8 @@ io.on('connection', socket =>{
                     socket.emit('loadWipUsadoReturn',res[0].Total);
                     socket.broadcast.to(room).emit('loadWipUsadoReturn',res[0].Total);
                     //Actualizar tableros
-                    socket.emit('moveToDoDoingKanbanReturn');
-                    socket.broadcast.to(room).emit('moveToDoDoingKanbanReturn');
+                    socket.emit('reload');
+                    socket.broadcast.to(room).emit('relaod');
                 }else{
                     console.log(res);
                     msg=`HA OCURRIDO UN ERROR OBTENIENDO EL WIP USADO DE LA SALA`;
@@ -1911,6 +1941,34 @@ io.on('connection', socket =>{
                 }
             });
     });
+
+    socket.on('moveFeToDoDoingKanban',({feKanbanMove,room})=>{
+        for(j=0;j<feKanbanMove.length;j++){
+            changeFeatureKanbanState(connection,feKanbanMove[j],2,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+   });
+
+    socket.on('moveEpToDoDoingKanban',({epKanbanMove,room})=>{
+        for(j=0;j<epKanbanMove.length;j++){
+            changeEpicKanbanState(connection,epKanbanMove[j],2,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+   });
     
     socket.on('showElemsKanbanMoveDoingDone',room=>{
         socket.broadcast.to(room).emit('blockButton',2);
@@ -1986,6 +2044,34 @@ io.on('connection', socket =>{
             }
         });
     });
+
+    socket.on('moveFeDoingDoneKanban',({feKanbanMove,room})=>{
+        for(j=0;j<feKanbanMove.length;j++){
+            changeFeatureKanbanState(connection,feKanbanMove[j],3,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+   });
+
+    socket.on('moveEpDoingDoneKanban',({epKanbanMove,room})=>{
+        for(j=0;j<epKanbanMove.length;j++){
+            changeEpicKanbanState(connection,epKanbanMove[j],3,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+   });
     
     socket.on('showElemsDeleteKn',room=>{
         socket.broadcast.to(room).emit('blockButton',3);
@@ -2041,8 +2127,34 @@ io.on('connection', socket =>{
                 }
             })
         }
-        socket.emit('deleteKNSelectedReturn');
-        socket.broadcast.to(room).emit('deleteKNSelectedReturn');
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+    });
+    socket.on('deleteEpicKNSelected',({deleteEpKnbn,room})=>{
+        for(j=0;j<deleteEpKnbn.length;j++){
+            changeEpicKanbanState(connection,deleteEpKnbn[j],0,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
+    });
+    socket.on('deleteFeatureKNSelected',({deleteFeKnbn,room})=>{
+        for(j=0;j<deleteFeKnbn.length;j++){
+            changeFeatureKanbanState(connection,deleteFeKnbn[j],0,(e)=>{
+                if(e!=0){
+                    msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
+                    console.log(e);
+                    socket.emit('unexpectedError',msg);
+                }
+            })
+        }
+        socket.emit('reload');
+        socket.broadcast.to(room).emit('reload');
     });
 
     socket.on('updateWip',({newWip,room})=>{
