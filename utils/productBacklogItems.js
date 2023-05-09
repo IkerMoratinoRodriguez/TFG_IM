@@ -47,7 +47,7 @@ function loadEpicsOrderedProductBacklog(connection,sala,callback){
             let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion
             FROM pb_epica
             WHERE IDSala = ${id}
-            ORDER BY Priorizacion DESC`;
+            ORDER BY Priorizacion ASC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);

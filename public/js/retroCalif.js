@@ -160,7 +160,7 @@ btnMorePositive.onclick = function(){
     popup.style.display = 'block';
     title.innerHTML="TÍTULO DE POSTIT EN ASPECTOS POSITIVOS";
     sec=1;
-    puntuacion=5;
+    puntuacion=7;
 }
 
 btnMoreNegative.onclick = function(){
@@ -359,7 +359,7 @@ function loadRoomPostits(postits){
         ti = postits[i].Tipo;
         createPostit(postits[i].Titulo, ti);
         if(ti==1)
-            pts=5;
+            pts=7;
         else if(ti==2)
             pts=-5;
         else if(ti==3)
@@ -430,7 +430,7 @@ function calcularPuntuacion(puntuaciones){
 
 function actualizarPuntuacionGlobal(seccion){
     if(seccion==1)
-        pts=5;
+        pts=7;
     else if(seccion==2)
         pts=-5;
     else if(seccion==3)
