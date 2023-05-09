@@ -1839,6 +1839,7 @@ io.on('connection', socket =>{
    });
    socket.on('actualizarKanbanFeatures',room=>{
         loadFeatures(connection,room, (res)=>{
+            console.log(res);
             if(res.length != 0){ //hay algo
                 if(res[0].Titulo) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
                     socket.emit('actualizarKanbanFeaturesReturn',res);
@@ -2132,7 +2133,7 @@ io.on('connection', socket =>{
     });
     socket.on('deleteEpicKNSelected',({deleteEpKnbn,room})=>{
         for(j=0;j<deleteEpKnbn.length;j++){
-            changeEpicKanbanState(connection,deleteEpKnbn[j],0,(e)=>{
+            changeEpicKanbanState(connection,deleteEpKnbn[j],4,(e)=>{
                 if(e!=0){
                     msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
                     console.log(e);
@@ -2145,7 +2146,7 @@ io.on('connection', socket =>{
     });
     socket.on('deleteFeatureKNSelected',({deleteFeKnbn,room})=>{
         for(j=0;j<deleteFeKnbn.length;j++){
-            changeFeatureKanbanState(connection,deleteFeKnbn[j],0,(e)=>{
+            changeFeatureKanbanState(connection,deleteFeKnbn[j],4,(e)=>{
                 if(e!=0){
                     msg=`ERROR AÑADIENDO EL ELEMENTO A LA COLUMNA TO DO DEL KANBAN`;
                     console.log(e);

@@ -100,6 +100,7 @@ socket.on('loadEpicsPB',epicas=>{
         title:epicas[i].Titulo,
         prio:epicas[i].Priorizacion,
         est:epicas[i].Estimacion,
+        estK:epicas[i].EstadoKanban
       }
       crearItemPB(info,1);
       aniadirEpicLista(i,info.title,info.id);
@@ -120,6 +121,7 @@ socket.on('loadFeaturesPB',features=>{
       title:features[i].Titulo,
       prio:features[i].Priorizacion,
       est:features[i].Estimacion,
+      estK:features[i].EstadoKanban
     }
     crearItemPB(info,2);
     aniadirFeatiureLista(i,info.title,info.id); //i actúa como índice en vez de el identificador para buscar cual es el seleccionado y que no de error si algun ID no existe
@@ -140,6 +142,7 @@ socket.on('loadUSsPB',us=>{
       title:us[i].Titulo,
       prio:us[i].Priorizacion,
       est:us[i].Estimacion,
+      estK:us[i].EstadoKanban
     }
     crearItemPB(info,3);
     aniadirUSLista(i,info.title,info.id);
@@ -440,9 +443,21 @@ btnOkSelectFeature.onclick = function(){
   FUNCIONES 
 */
 function crearItemPB(info, tipo){
+  let estaKanNum=info.estK, estaKan='';
+  if(estaKanNum == 0){
+    estaKan='⚪ New';
+  }else if(estaKanNum == 1){
+    estaKan='🔵 To do';
+  }else if(estaKanNum == 2){
+    estaKan='🔴 Doing';
+  }else if(estaKanNum == 3){
+    estaKan='🟢 Done';
+  }else if(estaKanNum == 4){
+    estaKan='⚫ Closed';
+  }
   html = `<div>
     <div class="titulo-elem-pb">
-        <p class="title-titulo">${info.title}</p>
+        <p class="title-titulo">${info.title} (Estado: ${estaKan})</p>
     </div>
     <p class="estimation-pb">${info.est}</p>
     <p class="priorization-pb">${info.prio}</p>
