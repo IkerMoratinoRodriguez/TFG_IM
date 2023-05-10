@@ -426,14 +426,14 @@ function aniadirTitulosKnTitlesPool(titulos){
 function aniadirEpicTitulosKnTitlesPool(titulos){
     epPB=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="ep${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="ep${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         knTitlesPoolEp.innerHTML+=html;
     }
 }
 function aniadirFeatureTitulosKnTitlesPool(titulos){
     fePB=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="fe${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="fe${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         knTitlesPoolFe.innerHTML+=html;
     }
 }
@@ -448,14 +448,14 @@ function aniadirTitulosKnTitlesPoolMove(titulos){
 function aniadirEpicTitulosKnTitlesPoolMove(titulos){
     epPBMove=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="epMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="epMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         knTitlesPoolMoveEp.innerHTML+=html;
     }
 }
 function aniadirFeatureTitulosKnTitlesPoolMove(titulos){
     fePBMove=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="feMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="feMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         knTitlesPoolMoveFe.innerHTML+=html;
     }
 }
@@ -470,14 +470,14 @@ function aniadirTitulosKnTitlesPoolMoveDoingDone(titulos){
 function aniadirEpicTitulosKnTitlesPoolMoveDoingDone(titulos){
     epPBMove=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="epMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="epMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         knTitlesPoolMoveEp.innerHTML+=html;
     }
 }
 function aniadirFeatureTitulosKnTitlesPoolMoveDoingDone(titulos){
     fePBMove=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="feMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="feMoveDoDoing${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         knTitlesPoolMoveFe.innerHTML+=html;
     }
 }
@@ -492,14 +492,14 @@ function listarUSToDelete(titulos){
 function listarEpicToDelete(titulos){
     epDelete=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="epDelete${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="epDelete${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         deleteKnTitlesPoolEp.innerHTML+=html;
     }
 }
 function listarFeatureToDelete(titulos){
     feDelete=titulos.length;
     for(i=0;i<titulos.length;i++){
-        html=`<input id="feDelete${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion} | Estimación:${titulos[i].Estimacion}<br>`;
+        html=`<input id="feDelete${i}" class="selected-postit" type="checkbox" value="${titulos[i].ID}"/>${titulos[i].Titulo} | Priorización:${titulos[i].Priorizacion}<br>`;
         deleteKnTitlesPoolFe.innerHTML+=html;
     }
 }
@@ -532,13 +532,11 @@ function mostrarKanban(userStories,tipoElem){
         }else if (tipoElem == 2){
             html=`<div class="postit-kn-f">
             <p class="postit-title-kn">${todo[i].title}</p>
-            <p class="postit-esti">E:${todo[i].est}</p>
             <p class="postit-prio">P:${todo[i].prio}</p>
         </div>`;
         }else if (tipoElem == 3){
             html=`<div class="postit-kn-e">
             <p class="postit-title-kn">${todo[i].title}</p>
-            <p class="postit-esti">E:${todo[i].est}</p>
             <p class="postit-prio">P:${todo[i].prio}</p>
         </div>`;
         }
@@ -554,13 +552,11 @@ function mostrarKanban(userStories,tipoElem){
         }else if (tipoElem == 2){
             html=`<div class="postit-kn-f">
                     <p class="postit-title-kn">${doing[i].title}</p>
-                    <p class="postit-esti">E:${doing[i].est}</p>
                     <p class="postit-prio">P:${doing[i].prio}</p>
                 </div>`;
         }else if (tipoElem == 3){
             html=`<div class="postit-kn-e">
                     <p class="postit-title-kn">${doing[i].title}</p>
-                    <p class="postit-esti">E:${doing[i].est}</p>
                     <p class="postit-prio">P:${doing[i].prio}</p>
                 </div>`;
         }
@@ -576,13 +572,11 @@ function mostrarKanban(userStories,tipoElem){
         }else if (tipoElem == 2){
             html=`<div class="postit-kn-f">
                     <p class="postit-title-kn">${done[i].title}</p>
-                    <p class="postit-esti">E:${done[i].est}</p>
                     <p class="postit-prio">P:${done[i].prio}</p>
                 </div>`;
         }else if (tipoElem == 3){
             html=`<div class="postit-kn-e">
                     <p class="postit-title-kn">${done[i].title}</p>
-                    <p class="postit-esti">E:${done[i].est}</p>
                     <p class="postit-prio">P:${done[i].prio}</p>
                 </div>`;
         }

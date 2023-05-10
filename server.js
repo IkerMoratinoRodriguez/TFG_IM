@@ -1352,7 +1352,30 @@ io.on('connection', socket =>{
      PRODUCT BACKLOG
     */
    socket.on('createEpicPB',info=>{
-        addEpicToProductBacklog(connection,info.title, info.desc, info.prio, info.est, info.sala,(err)=>{
+        addEpicToProductBacklog(connection,info.title, info.desc, info.prio, info.sala,(err)=>{
+            console.log(err); //ERR O DEVUELVE EL ERROR O EL ID (PODRÍA SER COMO MUCHO 999 Y NO CREO EN ESTE CASO)
+            if(err.length > 3){
+                msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
+                console.log(err);
+                console.log(msg);
+                socket.emit('unexpectedError',msg);
+            }else{
+                let infoSend = {
+                    sala:info.sala,
+                    title:info.title,
+                    desc:info.des,
+                    prio:info.prio,
+                    id: err
+                  }
+                socket.broadcast.to(info.sala).emit('createEpicPBReturn',infoSend);
+                socket.emit('createEpicPBReturn',infoSend);
+            }
+        });
+   });
+
+   socket.on('createFeaturePB',info=>{
+        console.log(info);
+        addFeatureToProductBacklog(connection,info.title, info.desc, info.prio, info.sala, info.idE,(err)=>{
             console.log(err); //ERR O DEVUELVE EL ERROR O EL ID (PODRÍA SER COMO MUCHO 999 Y NO CREO EN ESTE CASO)
             if(err.length > 3){
                 msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
@@ -1367,31 +1390,6 @@ io.on('connection', socket =>{
                     prio:info.prio,
                     est:info.est,
                     id: err
-                  }
-                socket.broadcast.to(info.sala).emit('createEpicPBReturn',infoSend);
-                socket.emit('createEpicPBReturn',infoSend);
-            }
-        });
-   });
-
-   socket.on('createFeaturePB',info=>{
-        console.log(info);
-        addFeatureToProductBacklog(connection,info.title, info.desc, info.prio, info.est, info.sala, info.idE,(err)=>{
-            console.log(err); //ERR O DEVUELVE EL ERROR O EL ID (PODRÍA SER COMO MUCHO 999 Y NO CREO EN ESTE CASO)
-            if(err.length > 3){
-                msg=`ERROR AÑADIENDO ÉPICA AL PRODUCT BACKLOG EN LA SALA:${info.sala}`;
-                console.log(err);
-                console.log(msg);
-                socket.emit('unexpectedError',msg);
-            }else{
-                let infoSend = {
-                    sala:info.sala,
-                    title:info.title,
-                    desc:info.des,
-                    prio:info.prio,
-                    est:info.est,
-                    id: err,
-                    idE: info.idE
                   }
                 socket.broadcast.to(info.sala).emit('createFeaturePBReturn',infoSend);
                 socket.emit('createFeaturePBReturn',infoSend);
@@ -1616,6 +1614,7 @@ io.on('connection', socket =>{
 
    socket.on('orderPrioriry',room=>{
     loadEpicsOrderedProductBacklog(connection,room,(res)=>{
+
         if(res.length != 0){
             if(res[0].ID) //Compruebo por ejemplo el primer ID (si no hay es que ha saltado un error)
                 socket.emit('loadEpicsPB',res);

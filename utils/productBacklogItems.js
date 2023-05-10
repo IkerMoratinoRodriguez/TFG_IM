@@ -1,4 +1,4 @@
-function addEpicToProductBacklog(connection,titulo, descripcion, priorizacion, estimacion, sala,callback){
+function addEpicToProductBacklog(connection,titulo, descripcion, priorizacion, sala,callback){
     let room = `SELECT roomID('${sala}') as result;`;
 
     connection.query(room,function(err,result){
@@ -6,7 +6,7 @@ function addEpicToProductBacklog(connection,titulo, descripcion, priorizacion, e
         if(err){
             callback(err);
         }else if(id != -1){
-            let consulta = `SELECT insertEpicPBandReturnID('${titulo}','${descripcion}',${priorizacion},${estimacion},${id}) as ID;`;
+            let consulta = `SELECT insertEpicPBandReturnID('${titulo}','${descripcion}',${priorizacion},${id}) as ID;`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -79,7 +79,7 @@ function loadEpicsOrderedEProductBacklog(connection,sala,callback){
     });
 }
 
-function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion, estimacion, sala, epica, callback){
+function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion, sala, epica, callback){
     let room = `SELECT roomID('${sala}') as result;`;
 
     connection.query(room,function(err,result){
@@ -87,7 +87,7 @@ function addFeatureToProductBacklog(connection,titulo, descripcion, priorizacion
         if(err){
             callback(err);
         }else if(id != -1){
-            let consulta = `SELECT insertFeaturePBandReturnID('${titulo}','${descripcion}',${priorizacion},${estimacion},${id},${epica}) as ID;`;
+            let consulta = `SELECT insertFeaturePBandReturnID('${titulo}','${descripcion}',${priorizacion},${id},${epica}) as ID;`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -128,7 +128,7 @@ function loadFeaturesOrderedProductBacklog(connection,sala,callback){
             let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion, EstadoKanban
             FROM pb_feature
             WHERE IDSala = ${id}
-            ORDER BY Priorizacion DESC`;
+            ORDER BY Priorizacion ASC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);
@@ -209,7 +209,7 @@ function loadUSOrderedProductBacklog(connection,sala,callback){
             let consulta = `SELECT ID, Titulo, Priorizacion, Estimacion, EstadoKanban
             FROM pb_user_story
             WHERE IDSala = ${id}
-            ORDER BY Priorizacion DESC`;
+            ORDER BY Priorizacion ASC`;
             connection.query(consulta,function(e,result){
                 if(e)
                     callback(e);

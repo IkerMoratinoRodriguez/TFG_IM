@@ -782,24 +782,24 @@ END$$
 
 -- INSERTAR EPICA EN EL PRODUCT BACKLOG Y DEVOLVER EL ID
 DELIMITER $$
-CREATE FUNCTION insertEpicPBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT) 
+CREATE FUNCTION insertEpicPBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, roomInput INT) 
 RETURNS INT
 DETERMINISTIC 
 BEGIN
 	DECLARE idOutput INT;
-	INSERT INTO pb_epica(Titulo, Descripcion, Priorizacion, Estimacion, IDSala) VALUES(titleInput, descInput, prioInput, estiInput, roomInput);
+	INSERT INTO pb_epica(Titulo, Descripcion, Priorizacion, IDSala) VALUES(titleInput, descInput, prioInput, roomInput);
     SET idOutput = (SELECT MAX(ID) as ID FROM pb_epica);
     RETURN idOutput;
 END$$
 
 -- INSERTAR FEATURE EN EL PRODUCT BACKLOG Y DEVOLVER EL ID
 DELIMITER $$
-CREATE FUNCTION insertFeaturePBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, estiInput INT, roomInput INT, epicInput INT) 
+CREATE FUNCTION insertFeaturePBandReturnID(titleInput VARCHAR(200), descInput VARCHAR(1000), prioInput INT, roomInput INT, epicInput INT) 
 RETURNS INT
 DETERMINISTIC 
 BEGIN
 	DECLARE idOutput INT;
-	INSERT INTO pb_feature(Titulo, Descripcion, Priorizacion, Estimacion, IDSala, IDEpica) VALUES(titleInput, descInput, prioInput, estiInput, roomInput, epicInput);
+	INSERT INTO pb_feature(Titulo, Descripcion, Priorizacion, IDSala, IDEpica) VALUES(titleInput, descInput, prioInput, roomInput, epicInput);
     SET idOutput = (SELECT MAX(ID) as ID FROM pb_feature);
     RETURN idOutput;
 END$$

@@ -17,6 +17,8 @@ const añadirAddEpic = document.getElementById('btn-modificar-add-e');
 const titlePopupAdd = document.getElementById('title-popup-add-e');
 const fatherEpicTitle = document.getElementById('father-epic-title');
 const fatherFeatureTitle = document.getElementById('father-feature-title');
+const inputPrio = document.getElementById('input-prio');
+const inputEst = document.getElementById('input-est');
 
 //POPUP ELIMINAR ELEMENTO
 const closePopupDelete = document.getElementById("popupclose-delete");
@@ -85,6 +87,7 @@ socket.on('unexpectedError',msg=>{
   alert(msg);
 });
 socket.on('createEpicPBReturn',infoSend=>{
+  location.reload();
   crearItemPB(infoSend,1);
   aniadirEpicLista(maxEpic,infoSend.title,infoSend.id);
   maxEpic++;
@@ -107,6 +110,7 @@ socket.on('loadEpicsPB',epicas=>{
     }
 });
 socket.on('createFeaturePBReturn',infoSend=>{
+  location.reload();
   crearItemPB(infoSend,2);
   aniadirFeatiureLista(maxFeature,infoSend.title,infoSend.id);
   maxFeature++;
@@ -128,6 +132,7 @@ socket.on('loadFeaturesPB',features=>{
   }
 });
 socket.on('createUSPBReturn',infoSend=>{
+  location.reload();
   crearItemPB(infoSend,3);
   aniadirUSLista(maxUS,infoSend.title,infoSend.id);
   maxUS++;
@@ -171,6 +176,13 @@ socket.on('loadDetailsOfElementReturn',elemLoad=>{
   overlayAddEpic.style.display = 'block';
   popupAddEpic.style.display = 'block';
   titlePopupAdd.textContent = "Detalles del elemento seleccionado";
+  if(tipoElem == 1 || tipoElem == 2){
+    inputEst.style.display='none';
+    inputPrio.style.marginLeft='33%';
+  }else{
+    inputEst.style.display='block';
+    inputPrio.style.marginLeft='0%';
+  }
   inputTitleAddEpic.value=elemLoad[0].Titulo;
   inputDescriptionAddEpic.value=elemLoad[0].Descripcion;
   inputEstimationAddEpic.value=elemLoad[0].Estimacion;
@@ -224,6 +236,8 @@ socket.on('loadFatherFeatureReturn',res=>{
 btnAddEpic.onclick = function(){
   overlayAddEpic.style.display = 'block';
   popupAddEpic.style.display = 'block';
+  inputEst.style.display= 'none';
+  inputPrio.style.marginLeft = '33%';
   titlePopupAdd.textContent = "Añadir épica al product backlog";
   tipoElem=1;
   nuevoElem=true;
@@ -232,6 +246,8 @@ btnAddEpic.onclick = function(){
 btnAddFeature.onclick = function(){
   overlaySelectEpic.style.display = 'block';
   popupSelectEpic.style.display = 'block';
+  inputEst.style.display= 'none';
+  inputPrio.style.marginLeft = '33%';
   titlePopupAdd.textContent = "Añadir feature al product backlog";
   tipoElem=2;
   nuevoElem=true;
@@ -240,6 +256,8 @@ btnAddFeature.onclick = function(){
 btnAddUserStorie.onclick = function(){
   overlaySelectEpic.style.display = 'block';
   popupSelectEpic.style.display = 'block';
+  inputEst.style.display= 'block';
+  inputPrio.style.marginLeft = '0%';
   titlePopupAdd.textContent = "Añadir historia de usuario al product backlog";
   tipoElem=3;
   nuevoElem=true;
@@ -256,6 +274,7 @@ btnElementDetails.onclick = function(){
   socket.emit('blockButton',({room,block}))
   overlayDetails.style.display = 'block';
   popupDetails.style.display = 'block';
+  
   nuevoElem=false;
   añadirAddEpic.innerHTML='MODIFICAR';
 }
@@ -263,12 +282,16 @@ btnOrderPriority.onclick = function(){
   epicPool.innerHTML='';
   featuresPool.innerHTML='';
   userStoriesPool.innerHTML='';
+  desplegableEpic.innerHTML='';
+  desplegableFeature.innerHTML='';
   socket.emit('orderPrioriry',room);
 }
 btnOrderEstimation.onclick = function(){
   epicPool.innerHTML='';
   featuresPool.innerHTML='';
   userStoriesPool.innerHTML='';
+  desplegableEpic.innerHTML='';
+  desplegableFeature.innerHTML='';
   socket.emit('orderEstimation',room);
 }
 
@@ -295,7 +318,9 @@ añadirAddEpic.onclick = function(){
   priorizacion = inputPriorizationAddEpic.value;
   estimacion = inputEstimationAddEpic.value;
 
-  if (titulo =="" ||  descripcion =="" || priorizacion < 1 || estimacion < 1 || priorizacion == "" || estimacion == "" ){
+  if ((tipoElem == 1 || tipoElem == 2) && (titulo =="" ||  descripcion =="" || priorizacion < 1 || priorizacion == "")){
+    alert("Error: Algún campo está vacío o es incorrecto. Por favor, compruebe que ha completado bien el formulario.");
+  }else if ((tipoElem == 3) && (titulo =="" ||  descripcion =="" || priorizacion < 1 || estimacion < 1 || priorizacion == "" || estimacion == "" )){
     alert("Error: Algún campo está vacío o es incorrecto. Por favor, compruebe que ha completado bien el formulario.");
   }else{
     let info = {
@@ -455,11 +480,17 @@ function crearItemPB(info, tipo){
   }else if(estaKanNum == 4){
     estaKan='⚫ Closed';
   }
+  let e=0;
+  if(tipoElem == 1 || tipoElem == 2 || info.est == 0){
+    e="-";
+  }else{
+    e=info.est;
+  }
   html = `<div>
     <div class="titulo-elem-pb">
         <p class="title-titulo">${info.title} (Estado: ${estaKan})</p>
     </div>
-    <p class="estimation-pb">${info.est}</p>
+    <p class="estimation-pb">${e}</p>
     <p class="priorization-pb">${info.prio}</p>
     </div>`;
     if(tipo ==1){
